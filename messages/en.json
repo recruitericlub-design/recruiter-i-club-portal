@@ -1,0 +1,72 @@
+{
+  "nav": {
+    "home": "Home",
+    "advantages": "Advantages",
+    "roadmap": "How It Works",
+    "industries": "Industries",
+    "calculator": "Calculator",
+    "candidates": "Candidate Database",
+    "faq": "FAQ",
+    "portalLogin": "Client Portal",
+    "orderWorkers": "Hire Staff"
+  },
+  "hero": {
+    "badge": "🇪🇺 Licensed B2B Workforce Provider in EU & Ukraine",
+    "titleStart": "Qualified Workforce from Asia & Europe",
+    "titleHighlight": "Turnkey in 21–35 Days",
+    "subtitle": "Official sourcing, Visa D processing, logistics, and legal management for certified welders, builders, CNC operators, and production workforce. Guaranteed replacement policy.",
+    "ctaPrimary": "Calculate Demand & View Candidates",
+    "ctaSecondary": "Employer Portal Login",
+    "stat1Value": "2,450+",
+    "stat1Label": "Employed Specialists",
+    "stat2Value": "98.4%",
+    "stat2Label": "Trial Period Completion",
+    "stat3Value": "30 Days",
+    "stat3Label": "Free Replacement Guarantee",
+    "stat4Value": "0 €",
+    "stat4Label": "Prepayment Before Approval"
+  },
+  "calculator": {
+    "title": "Smart Workforce Calculator",
+    "subtitle": "Select trade and worker count — get instant time estimates and access candidate profiles",
+    "specialty": "Specialty",
+    "workersCount": "Number of Workers",
+    "experience": "Experience Requirement",
+    "country": "Source Region",
+    "estTime": "Estimated arrival time:",
+    "estCost": "Average salary range:",
+    "submitBtn": "Submit Requisition to CRM",
+    "successTitle": "Requisition Logged in CRM!",
+    "successDesc": "Your account manager will reach out within 15 minutes with verified dossiers."
+  },
+  "roadmap": {
+    "title": "Transparent Hiring Roadmap",
+    "subtitle": "Full cycle from requisition to first shift backed by our real-time CRM",
+    "step1Title": "1. Audit & Specifications",
+    "step1Desc": "We define certifications, work conditions, salary expectations, and SLA.",
+    "step2Title": "2. Video Testing & Screening",
+    "step2Desc": "Practical tests on production facilities (video recording of welds, CNC machine operations).",
+    "step3Title": "3. Employer Approval",
+    "step3Desc": "Review video pitches and CVs in your B2B dashboard and click 'Approve' in 1 click.",
+    "step4Title": "4. Visa D & Legal Permits",
+    "step4Desc": "Work permit acquisition, insurance, and embassy appointment scheduling.",
+    "step5Title": "5. Transit & Onboarding",
+    "step5Desc": "Airport pickup, housing onboarding, safety training, and bilingual supervisor support."
+  },
+  "portal": {
+    "title": "B2B Employer Portal",
+    "subtitle": "Track candidate status, visas, and documentation in real time",
+    "login": "Client Portal Login",
+    "loginDesc": "Enter company representative phone or email",
+    "pin": "One-time passcode",
+    "enter": "Sign In",
+    "logout": "Sign Out",
+    "candidates": "Assigned Candidates",
+    "contracts": "Contracts & Invoices",
+    "newOrder": "New Requisition",
+    "approve": "Approve Candidate",
+    "reject": "Request Replacement",
+    "downloadResume": "Download CV",
+    "viewVideo": "Watch Video Pitch"
+  }
+}
