@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { 
   ShieldCheck, 
@@ -10,53 +10,50 @@ import {
   Users, 
   FileCheck2, 
   Clock, 
-  Play
+  Play,
+  Compass
 } from "lucide-react";
 import { ClientLoginModal } from "./ClientLoginModal";
+import { InteractiveGlobe3D } from "./InteractiveGlobe3D";
+import { playSciFiBeep } from "@/lib/soundFX";
 
-interface HeroSectionProps { messages: any; locale: string; }
+interface HeroSectionProps {
+  messages: any;
+  locale: string;
+}
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ messages, locale }) => {
-  const [isLoginModalOpen, setIsLoginModalOpen] = React.useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
   return (
     <section className="relative min-h-[92vh] flex items-center justify-center pt-28 pb-16 overflow-hidden">
-      {/* Background Video Container with Cinematic Overlays */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        {/* Poster / Fallback high-res industrial background */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center scale-105 transition-transform duration-1000"
-          style={{
-            backgroundImage: `url("https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=2000&q=80")`,
-          }}
-        />
-
-        {/* Video layer (HTML5 background video container ready for client video) */}
+      {/* Background Video & Cinematic Dark Overlays */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <video
           autoPlay
           loop
           muted
           playsInline
           poster="https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=2000&q=80"
-          className="w-full h-full object-cover opacity-35"
+          className="w-full h-full object-cover opacity-20"
         >
-          {/* Default industrial b-roll preview */}
           <source 
             src="https://assets.mixkit.co/videos/preview/mixkit-welder-working-in-a-metal-workshop-43098-large.mp4" 
             type="video/mp4" 
           />
         </video>
 
-        {/* Cinematic Multi-layered Dark Gradients */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/85 to-slate-950/60" />
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-transparent" />
-        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-amber-500/15 blur-[140px] rounded-full pointer-events-none" />
+        {/* Multi-layered Gradients */}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/90 to-slate-950/70" />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent" />
+        <div className="absolute -top-40 left-1/3 w-[800px] h-[500px] bg-amber-500/10 blur-[150px] rounded-full" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           
-          {/* Main Hero Column */}
-          <div className="lg:col-span-8 space-y-8">
+          {/* Main Hero Left Column */}
+          <div className="lg:col-span-6 space-y-7 text-center sm:text-left">
             {/* Top Badge */}
             <motion.div
               initial={{ opacity: 0, y: -20 }}
@@ -64,7 +61,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, locale }) =>
               transition={{ duration: 0.6 }}
               className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full glass-card border-amber-500/30 text-amber-300 text-xs font-semibold tracking-wide shadow-gold-glow"
             >
-              <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0 animate-pulse" />
               <span>{messages.hero?.badge}</span>
             </motion.div>
 
@@ -86,7 +83,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, locale }) =>
               initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-base sm:text-lg text-slate-300 max-w-2xl leading-relaxed font-normal"
+              className="text-base sm:text-lg text-slate-300 max-w-xl leading-relaxed font-normal"
             >
               {messages.hero?.subtitle}
             </motion.p>
@@ -100,6 +97,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, locale }) =>
             >
               <a
                 href="#calculator"
+                onClick={() => playSciFiBeep(1200, 0.08)}
                 className="group relative inline-flex items-center justify-center gap-3 px-7 py-4 rounded-xl text-base font-bold text-black bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-400 hover:brightness-110 shadow-gold-glow-lg transition-all duration-300"
               >
                 <span>{messages.hero?.ctaPrimary}</span>
@@ -107,7 +105,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, locale }) =>
               </a>
 
               <button
-                onClick={() => setIsLoginModalOpen(true)}
+                onClick={() => {
+                  playSciFiBeep(980, 0.06);
+                  setIsLoginModalOpen(true);
+                }}
                 className="inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-xl text-base font-semibold text-slate-200 hover:text-white glass-card hover:bg-slate-900/90 border border-slate-700/80 transition-all duration-300"
               >
                 <Users className="w-4 h-4 text-amber-400" />
@@ -120,86 +121,33 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, locale }) =>
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-white/5 text-xs text-slate-400"
+              className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-white/5 text-xs text-slate-400 font-mono"
             >
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</span>
+                <span>Ліцензія ДСЗУ</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</span>
+                <span>Рентген-контроль швів</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>100% пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ D</span>
+                <span>100% візи D під ключ</span>
               </div>
             </motion.div>
           </div>
 
-          {/* Right Floating Card: Live Verification Preview */}
+          {/* Right Column: Interactive 3D Holographic Flight Globe */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.25 }}
-            className="lg:col-span-4 hidden lg:block"
+            transition={{ duration: 0.9, delay: 0.25 }}
+            className="lg:col-span-6 relative flex items-center justify-center"
           >
-            <div className="glass-card rounded-2xl p-6 border-white/10 relative overflow-hidden shadow-2xl">
-              <div className="absolute -top-16 -right-16 w-36 h-36 bg-amber-500/20 blur-3xl rounded-full" />
-              
-              <div className="flex items-center justify-between mb-4 border-b border-white/10 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
-                    CRM Live Candidate
-                  </span>
-                </div>
-                <span className="text-[10px] bg-amber-500/10 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-md">
-                  пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
-                </span>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <img
-                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&h=200&q=80"
-                    alt="Candidate portrait"
-                    className="w-14 h-14 rounded-xl object-cover border border-amber-500/40"
-                  />
-                  <div>
-                    <h4 className="text-sm font-bold text-white">пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ. (32 пїЅпїЅпїЅпїЅ)</h4>
-                    <p className="text-xs text-amber-400">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ MIG/MAG 135/136</p>
-                    <p className="text-[11px] text-slate-400">???? пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ 7 пїЅпїЅпїЅпїЅ</p>
-                  </div>
-                </div>
-
-                <div className="bg-slate-900/90 rounded-xl p-3 border border-white/5 space-y-2 text-xs">
-                  <div className="flex justify-between text-slate-400">
-                    <span>ВіпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ:</span>
-                    <span className="text-emerald-400 font-medium flex items-center gap-1">
-                      <CheckCircle2 className="w-3 h-3" /> пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 100%
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-slate-400">
-                    <span>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:</span>
-                    <span className="text-white font-medium">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ</span>
-                  </div>
-                  <div className="flex justify-between text-slate-400">
-                    <span>пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅ?пїЅпїЅпїЅ:</span>
-                    <span className="text-amber-300 font-semibold">24 пїЅпїЅ (ВіпїЅпїЅ D)</span>
-                  </div>
-                </div>
-
-                <a
-                  href="#calculator"
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 text-xs font-semibold transition-all"
-                >
-                  <Play className="w-3.5 h-3.5 fill-amber-300" />
-                  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ
-                </a>
-              </div>
-            </div>
+            <InteractiveGlobe3D />
           </motion.div>
+
         </div>
 
         {/* Bottom Key Metric Stats Grid */}
@@ -224,7 +172,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, locale }) =>
                 <div className="w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400 mb-3 group-hover:bg-amber-500 group-hover:text-black transition-colors duration-300">
                   <Icon className="w-4 h-4" />
                 </div>
-                <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-mono">
                   {stat.value}
                 </div>
                 <div className="text-xs text-slate-400 mt-1 font-medium leading-snug">
@@ -235,7 +183,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, locale }) =>
           })}
         </motion.div>
       </div>
-    <ClientLoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} locale={locale} messages={messages} />
+
+      {/* Client Login Modal */}
+      <ClientLoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+        locale={locale}
+        messages={messages}
+      />
     </section>
   );
 };
