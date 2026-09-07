@@ -12,6 +12,7 @@ import {
   Clock, 
   Play
 } from "lucide-react";
+import { ClientLoginModal } from "./ClientLoginModal";
 
 interface HeroSectionProps { messages: any; locale: string; }
 
