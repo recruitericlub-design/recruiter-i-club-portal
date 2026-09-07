@@ -102,9 +102,46 @@ export const CyberGridBackground: React.FC = () => {
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0 opacity-60"
-    />
+    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden select-none">
+      {/* 1. Canvas Interactive Golden Filaments & Particle Physics */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 pointer-events-none opacity-50"
+      />
+
+      {/* 2. Sub-pixel Analog Film Grain Micro-Texture (Eliminates AI plastic look) */}
+      <svg
+        className="absolute inset-0 w-full h-full opacity-[0.03] pointer-events-none mix-blend-overlay"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <filter id="noiseFilter">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.85"
+            numOctaves="3"
+            stitchTiles="stitch"
+          />
+          <feColorMatrix type="saturate" values="0" />
+        </filter>
+        <rect width="100%" height="100%" filter="url(#noiseFilter)" />
+      </svg>
+
+      {/* 3. CAD Engineering Blueprint Watermarks & Coordinates */}
+      <div className="hidden lg:block absolute top-28 left-6 font-mono text-[9px] text-slate-600/60 uppercase tracking-widest leading-relaxed">
+        <div>[GEO: UA-KYIV // 50.4501° N, 30.5234° E]</div>
+        <div className="text-amber-500/40">SYS: B2B DIRECT WORKFORCE TERMINAL 2026</div>
+      </div>
+
+      <div className="hidden lg:block absolute top-28 right-6 font-mono text-[9px] text-slate-600/60 uppercase tracking-widest text-right leading-relaxed">
+        <div>PROTOCOL: STATUTORY MILITARY IMMUNITY (ART. 23)</div>
+        <div className="text-emerald-500/40">STATUS: ENCRYPTED // LEGAL COMPLIANCE 100%</div>
+      </div>
+
+      {/* Subtle CAD Axis Crosshairs */}
+      <div className="absolute top-1/4 left-4 font-mono text-[10px] text-slate-700/40">+</div>
+      <div className="absolute top-1/4 right-4 font-mono text-[10px] text-slate-700/40">+</div>
+      <div className="absolute top-2/3 left-4 font-mono text-[10px] text-slate-700/40">+</div>
+      <div className="absolute top-2/3 right-4 font-mono text-[10px] text-slate-700/40">+</div>
+    </div>
   );
 };

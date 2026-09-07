@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import { AlertOctagon, ShieldCheck, ArrowRight, CheckCircle2, TrendingDown, Scale } from "lucide-react";
+import { SpotlightCard } from "./SpotlightCard";
+import { playSliderTick, playMechanicalClick } from "@/lib/soundFX";
 
 export const DerzhpratsiFinesCalculator: React.FC<{ locale: string }> = ({ locale }) => {
   const [workersCount, setWorkersCount] = useState<number>(5);
@@ -18,6 +20,16 @@ export const DerzhpratsiFinesCalculator: React.FC<{ locale: string }> = ({ local
   const totalFineRepeat = workersCount * fineRepeat;
   const totalPermitCost = workersCount * permitFee;
   const potentialSavings = totalFineFirst - totalPermitCost;
+
+  const handleSliderChange = (val: number) => {
+    playSliderTick();
+    setWorkersCount(val);
+  };
+
+  const handlePresetClick = (val: number) => {
+    playMechanicalClick();
+    setWorkersCount(val);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,7 +73,10 @@ export const DerzhpratsiFinesCalculator: React.FC<{ locale: string }> = ({ local
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           
           {/* Left: Interactive Controls */}
-          <div className="lg:col-span-6 glass-card rounded-2xl p-6 sm:p-8 border-white/10 flex flex-col justify-between space-y-6">
+          <SpotlightCard
+            spotlightColor="amber"
+            className="lg:col-span-6 p-6 sm:p-8 flex flex-col justify-between space-y-6"
+          >
             <div>
               <div className="flex items-center justify-between mb-4">
                 <label className="text-sm font-bold text-white">
@@ -77,29 +92,29 @@ export const DerzhpratsiFinesCalculator: React.FC<{ locale: string }> = ({ local
                 min={1}
                 max={50}
                 value={workersCount}
-                onChange={(e) => setWorkersCount(Number(e.target.value))}
+                onChange={(e) => handleSliderChange(Number(e.target.value))}
                 className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-400 mb-6"
               />
 
               <div className="grid grid-cols-3 gap-2 text-center text-xs font-mono text-slate-400 mb-6">
                 <button
                   type="button"
-                  onClick={() => setWorkersCount(5)}
-                  className={`p-2 rounded-lg border transition-all ${workersCount === 5 ? "bg-amber-500 text-black font-bold border-amber-400" : "bg-slate-950 border-white/5 hover:border-white/20"}`}
+                  onClick={() => handlePresetClick(5)}
+                  className={`p-2 rounded-lg border transition-all active:scale-95 ${workersCount === 5 ? "bg-amber-500 text-black font-bold border-amber-400" : "bg-slate-950 border-white/5 hover:border-white/20"}`}
                 >
                   5 осіб (Бригада)
                 </button>
                 <button
                   type="button"
-                  onClick={() => setWorkersCount(15)}
-                  className={`p-2 rounded-lg border transition-all ${workersCount === 15 ? "bg-amber-500 text-black font-bold border-amber-400" : "bg-slate-950 border-white/5 hover:border-white/20"}`}
+                  onClick={() => handlePresetClick(15)}
+                  className={`p-2 rounded-lg border transition-all active:scale-95 ${workersCount === 15 ? "bg-amber-500 text-black font-bold border-amber-400" : "bg-slate-950 border-white/5 hover:border-white/20"}`}
                 >
                   15 осіб (Зміна)
                 </button>
                 <button
                   type="button"
-                  onClick={() => setWorkersCount(30)}
-                  className={`p-2 rounded-lg border transition-all ${workersCount === 30 ? "bg-amber-500 text-black font-bold border-amber-400" : "bg-slate-950 border-white/5 hover:border-white/20"}`}
+                  onClick={() => handlePresetClick(30)}
+                  className={`p-2 rounded-lg border transition-all active:scale-95 ${workersCount === 30 ? "bg-amber-500 text-black font-bold border-amber-400" : "bg-slate-950 border-white/5 hover:border-white/20"}`}
                 >
                   30 осіб (Цех)
                 </button>
@@ -116,13 +131,17 @@ export const DerzhpratsiFinesCalculator: React.FC<{ locale: string }> = ({ local
               </div>
             </div>
 
-            <div className="pt-4 border-t border-white/5 text-[11px] text-slate-500">
-              * Розрахунок здійснено на базі мінімальної зарплати 8 647 грн згідно із Законом про Держбюджет на 2026 рік.
+            <div className="pt-4 border-t border-white/5 text-[11px] text-slate-500 flex items-center justify-between font-mono">
+              <span>* Розрахунок на базі МЗП 8 647 грн (2026 рік)</span>
+              <span className="text-amber-500/60">[СТ. 265 КЗПП]</span>
             </div>
-          </div>
+          </SpotlightCard>
 
           {/* Right: Calculations & Lead Capture */}
-          <div className="lg:col-span-6 glass-card rounded-2xl p-6 sm:p-8 border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-slate-900 to-slate-950 flex flex-col justify-between space-y-6 shadow-2xl">
+          <SpotlightCard
+            spotlightColor="rose"
+            className="lg:col-span-6 p-6 sm:p-8 border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-slate-900 to-slate-950 flex flex-col justify-between space-y-6 shadow-2xl"
+          >
             <div>
               <span className="text-xs uppercase font-bold tracking-wider text-slate-400 block mb-3">
                 Фінансовий ризик при перевірці Держпраці:
@@ -197,8 +216,14 @@ export const DerzhpratsiFinesCalculator: React.FC<{ locale: string }> = ({ local
                   </button>
                 </form>
               )}
+
+              {/* State Audit Seal */}
+              <div className="mt-4 pt-3 border-t border-white/5 text-[9px] font-mono text-slate-500 uppercase tracking-widest text-center flex items-center justify-center gap-1.5">
+                <ShieldCheck className="w-3 h-3 text-red-400/80" />
+                <span>[ ДЕРЖПРАЦІ АУДИТ 2026 // СТ. 265 КЗПП // ПОВНИЙ КОМПЛАЄНС ]</span>
+              </div>
             </div>
-          </div>
+          </SpotlightCard>
 
         </div>
 

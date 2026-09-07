@@ -2,6 +2,7 @@
 
 import React from "react";
 import { ShieldCheck, FileCheck, Lock, Globe, AlertCircle, CheckCircle2 } from "lucide-react";
+import { SpotlightCard } from "./SpotlightCard";
 
 export const WartimeSecurityProtocol: React.FC<{ locale: string }> = ({ locale }) => {
   const isUk = locale === "uk";
@@ -14,6 +15,7 @@ export const WartimeSecurityProtocol: React.FC<{ locale: string }> = ({ locale }
       desc: isUk
         ? "Кожен кандидат надає оригінал офіційної довідки правоохоронних органів країни походження з апостилем МЗС та перекладом на українську мову."
         : "Каждый кандидат предоставляет оригинал официальной справки об отсутствии судимостей с апостилем МИД и нотариальным переводом.",
+      code: "POLICE-CLEARANCE-APOSTILLE",
     },
     {
       icon: Lock,
@@ -21,6 +23,7 @@ export const WartimeSecurityProtocol: React.FC<{ locale: string }> = ({ locale }
       desc: isUk
         ? "Перед вклеюванням довгострокової візи D-04 дипломатичні установи України та консульські офіцери проводять біометричний скринінг за міжнародними безпековими реєстрами."
         : "Перед открытием визы D дипломатические службы Украины проводят биометрический скрининг по международным реестрам безопасности.",
+      code: "INTERPOL-BIO-VETTING-D04",
     },
     {
       icon: Globe,
@@ -28,6 +31,7 @@ export const WartimeSecurityProtocol: React.FC<{ locale: string }> = ({ locale }
       desc: isUk
         ? "Recruiter I Club принципово не залучає громадян РФ, Білорусі та країн зі списку FATF високого терористичного ризику. Працюємо лише з дружніми та нейтральними націями."
         : "Recruiter I Club принципиально не привлекает граждан РФ, Беларуси и стран высокого террористического риска. Работаем только с проверенными нациями.",
+      code: "EMBARGO-NON-COMPLIANT-GEO",
     },
     {
       icon: ShieldCheck,
@@ -35,6 +39,7 @@ export const WartimeSecurityProtocol: React.FC<{ locale: string }> = ({ locale }
       desc: isUk
         ? "Перед виходом на підприємство кандидати проходять двомовний інструктаж щодо сигналів повітряної тривоги, маршрутів до сертифікованих укриттів та надання домедичної допомоги."
         : "Кандидаты проходят двуязычный инструктаж по сигналам тревоги, маршрутам в сертифицированные бомбоубежища и первой помощи.",
+      code: "CIVIL-DEFENSE-ALARM-BRIEF",
     },
   ];
 
@@ -56,14 +61,15 @@ export const WartimeSecurityProtocol: React.FC<{ locale: string }> = ({ locale }
           </p>
         </div>
 
-        {/* 4 Pillars Grid */}
+        {/* 4 Pillars Grid with Cyan Spotlight */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {securityPillars.map((p, idx) => {
             const Icon = p.icon;
             return (
-              <div
+              <SpotlightCard
                 key={idx}
-                className="glass-card rounded-2xl p-6 border-white/10 flex flex-col justify-between hover:border-cyan-500/30 transition-all group"
+                spotlightColor="cyan"
+                className="p-6 flex flex-col justify-between"
               >
                 <div>
                   <div className="w-12 h-12 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-5 group-hover:scale-110 transition-transform">
@@ -72,16 +78,21 @@ export const WartimeSecurityProtocol: React.FC<{ locale: string }> = ({ locale }
                   <h3 className="text-base font-bold text-white mb-2 leading-snug">
                     {p.title}
                   </h3>
-                  <p className="text-xs text-slate-300 leading-relaxed">
+                  <p className="text-xs text-slate-300 leading-relaxed mb-4">
                     {p.desc}
                   </p>
                 </div>
 
-                <div className="pt-4 mt-6 border-t border-white/5 flex items-center gap-1.5 text-[10px] font-mono text-cyan-400">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>Верифікація обов'язкова</span>
+                <div>
+                  <div className="pt-3 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-cyan-400">
+                    <div className="flex items-center gap-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>Верифікація</span>
+                    </div>
+                    <span className="text-slate-500 text-[9px]">{p.code}</span>
+                  </div>
                 </div>
-              </div>
+              </SpotlightCard>
             );
           })}
         </div>

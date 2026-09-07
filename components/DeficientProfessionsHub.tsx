@@ -16,9 +16,12 @@ import {
   Truck, 
   Scissors, 
   Utensils, 
-  Tractor 
+  Tractor,
+  ShieldCheck
 } from "lucide-react";
 import { DEFICIENT_PROFESSIONS, DeficientProfession } from "@/lib/professionsData";
+import { SpotlightCard } from "./SpotlightCard";
+import { playMechanicalClick } from "@/lib/soundFX";
 
 export const DeficientProfessionsHub: React.FC<{ locale: string }> = ({ locale }) => {
   const [selectedIndustry, setSelectedIndustry] = useState<string>("all");
@@ -39,6 +42,11 @@ export const DeficientProfessionsHub: React.FC<{ locale: string }> = ({ locale }
   const filteredProfessions = selectedIndustry === "all"
     ? DEFICIENT_PROFESSIONS
     : DEFICIENT_PROFESSIONS.filter((p) => p.industryId === selectedIndustry);
+
+  const handleTabSelect = (tabId: string) => {
+    playMechanicalClick();
+    setSelectedIndustry(tabId);
+  };
 
   return (
     <section id="professions-hub" className="py-24 relative z-10 bg-slate-950/80 border-t border-white/10">
@@ -66,10 +74,10 @@ export const DeficientProfessionsHub: React.FC<{ locale: string }> = ({ locale }
             return (
               <button
                 key={tab.id}
-                onClick={() => setSelectedIndustry(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+                onClick={() => handleTabSelect(tab.id)}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap active:scale-95 ${
                   isActive
-                    ? "bg-amber-500 text-black shadow-gold-glow"
+                    ? "bg-cyan-500 text-black shadow-[0_0_20px_rgba(6,182,212,0.4)]"
                     : "bg-slate-900/90 text-slate-400 hover:text-white border border-white/5 hover:border-white/10"
                 }`}
               >
@@ -80,7 +88,7 @@ export const DeficientProfessionsHub: React.FC<{ locale: string }> = ({ locale }
           })}
         </div>
 
-        {/* Bento Grid Cards */}
+        {/* Bento Grid Cards with Cyan Spotlight */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProfessions.map((prof) => {
             const title = isUk ? prof.title.uk : isRu ? prof.title.ru : prof.title.en;
@@ -90,9 +98,10 @@ export const DeficientProfessionsHub: React.FC<{ locale: string }> = ({ locale }
             const salary = isUk ? prof.salaryBenchmark.uk : isRu ? prof.salaryBenchmark.ru : prof.salaryBenchmark.en;
 
             return (
-              <div
+              <SpotlightCard
                 key={prof.id}
-                className="glass-card rounded-2xl p-6 border-white/10 flex flex-col justify-between hover:border-amber-500/40 transition-all duration-300 group hover:shadow-[0_0_30px_rgba(245,158,11,0.15)] relative overflow-hidden"
+                spotlightColor="cyan"
+                className="p-6 flex flex-col justify-between"
               >
                 <div>
                   {/* Top Badges */}
@@ -101,13 +110,13 @@ export const DeficientProfessionsHub: React.FC<{ locale: string }> = ({ locale }
                       <TrendingUp className="w-3 h-3" />
                       <span>{prof.demandPercentage}% дефіцит</span>
                     </span>
-                    <span className="text-[10px] font-mono text-slate-400 bg-slate-950 px-2 py-0.5 rounded border border-white/5">
+                    <span className="text-[10px] font-mono text-cyan-400 bg-slate-950 px-2 py-0.5 rounded border border-cyan-500/20">
                       {prof.standards}
                     </span>
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-amber-300 transition-colors leading-snug mb-2">
+                  <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-cyan-300 transition-colors leading-snug mb-2">
                     {title}
                   </h3>
 
@@ -117,8 +126,8 @@ export const DeficientProfessionsHub: React.FC<{ locale: string }> = ({ locale }
                   </p>
 
                   {/* Shift Output Metric Box */}
-                  <div className="p-3 bg-slate-950/70 rounded-xl border border-white/5 space-y-1 mb-4">
-                    <span className="text-[10px] text-amber-400/90 font-bold uppercase tracking-wider block">
+                  <div className="p-3 bg-slate-950/80 rounded-xl border border-white/5 space-y-1 mb-4">
+                    <span className="text-[10px] text-cyan-400 font-bold uppercase tracking-wider block">
                       Норматив виробітки за зміну:
                     </span>
                     <p className="text-xs font-semibold text-slate-200">
@@ -144,13 +153,13 @@ export const DeficientProfessionsHub: React.FC<{ locale: string }> = ({ locale }
 
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-slate-500">Орієнтовна ставка:</span>
-                    <span className="font-mono text-amber-400 font-bold">{salary}</span>
+                    <span className="font-mono text-cyan-400 font-bold">{salary}</span>
                   </div>
 
                   <div className="flex items-center justify-between pt-2">
                     <a
                       href="#calculator"
-                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-black font-bold text-xs shadow-gold-glow hover:brightness-110 transition-all flex items-center gap-1.5"
+                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-cyan-500 text-black font-bold text-xs shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:brightness-110 transition-all flex items-center gap-1.5"
                     >
                       <span>Замовити під ключ</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -164,8 +173,14 @@ export const DeficientProfessionsHub: React.FC<{ locale: string }> = ({ locale }
                       <ChevronRight className="w-3.5 h-3.5" />
                     </Link>
                   </div>
+
+                  {/* CAD Tolerance Watermark */}
+                  <div className="pt-2 text-[9px] font-mono text-slate-600 uppercase tracking-widest flex items-center justify-between">
+                    <span>[ ТОЧНІСТЬ: 0.01 ММ ]</span>
+                    <span>[ ISO 9001 // ДЦЗ 2026 ]</span>
+                  </div>
                 </div>
-              </div>
+              </SpotlightCard>
             );
           })}
         </div>

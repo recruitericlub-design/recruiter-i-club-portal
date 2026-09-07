@@ -2,6 +2,7 @@
 
 import React from "react";
 import { ShieldAlert, ShieldCheck, CheckCircle2, XCircle, ArrowRight, AlertTriangle, Sparkles, Scale } from "lucide-react";
+import { SpotlightCard } from "./SpotlightCard";
 
 export const MobilizationComparisonSection: React.FC<{ locale: string }> = ({ locale }) => {
   const isUk = locale === "uk";
@@ -29,7 +30,10 @@ export const MobilizationComparisonSection: React.FC<{ locale: string }> = ({ lo
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
           
           {/* Card 1: Local Staff & Booking Risks */}
-          <div className="glass-card rounded-2xl p-6 sm:p-8 border-red-500/20 bg-gradient-to-b from-red-950/20 via-slate-900 to-slate-950 flex flex-col justify-between">
+          <SpotlightCard
+            spotlightColor="rose"
+            className="p-6 sm:p-8 border-red-500/20 bg-gradient-to-b from-red-950/20 via-slate-900 to-slate-950 flex flex-col justify-between"
+          >
             <div>
               <div className="flex items-center justify-between mb-6 pb-4 border-b border-red-500/20">
                 <div className="flex items-center gap-3">
@@ -73,14 +77,20 @@ export const MobilizationComparisonSection: React.FC<{ locale: string }> = ({ lo
               </ul>
             </div>
 
-            <div className="mt-8 pt-4 border-t border-white/5 text-[11px] text-slate-500 flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
-              <span>За опитуваннями EBA: 79.4% заводів уже зазнали зриву контрактів через мобілізацію ключових робітників.</span>
+            <div className="mt-8 pt-4 border-t border-white/5 text-[11px] text-slate-500 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
+                <span>EBA аналітика: 79.4% заводів зазнали зривів контрактів через мобілізацію.</span>
+              </div>
+              <span className="font-mono text-[9px] text-red-500/60">[РИЗИК 2026]</span>
             </div>
-          </div>
+          </SpotlightCard>
 
           {/* Card 2: Foreign Staff with Recruiter I Club */}
-          <div className="glass-card rounded-2xl p-6 sm:p-8 border-emerald-500/30 bg-gradient-to-b from-emerald-950/25 via-slate-900 to-slate-950 flex flex-col justify-between relative shadow-[0_0_40px_rgba(16,185,129,0.1)]">
+          <SpotlightCard
+            spotlightColor="emerald"
+            className="p-6 sm:p-8 border-emerald-500/30 bg-gradient-to-b from-emerald-950/25 via-slate-900 to-slate-950 flex flex-col justify-between relative shadow-[0_0_40px_rgba(16,185,129,0.1)]"
+          >
             <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold uppercase tracking-wider">
               100% Захищений вибір
             </div>
@@ -138,7 +148,7 @@ export const MobilizationComparisonSection: React.FC<{ locale: string }> = ({ lo
                 <ArrowRight className="w-3.5 h-3.5" />
               </a>
             </div>
-          </div>
+          </SpotlightCard>
 
         </div>
 

@@ -15,6 +15,8 @@ import {
   ChevronRight
 } from "lucide-react";
 import { KNOWLEDGE_ARTICLES, KnowledgeArticle } from "@/lib/knowledgeBase";
+import { SpotlightCard } from "./SpotlightCard";
+import { playMechanicalClick } from "@/lib/soundFX";
 
 interface BentoKnowledgeHubProps {
   locale: string;
@@ -44,6 +46,16 @@ export const BentoKnowledgeHub: React.FC<BentoKnowledgeHubProps> = ({
     ? KNOWLEDGE_ARTICLES
     : KNOWLEDGE_ARTICLES.filter((art) => art.roles.includes(activeRole as any));
 
+  const handleRoleChange = (role: RoleFilter) => {
+    playMechanicalClick();
+    setActiveRole(role);
+  };
+
+  const handleArticleClick = (article: KnowledgeArticle) => {
+    playMechanicalClick();
+    onSelectArticle(article);
+  };
+
   return (
     <section id="knowledge" className="py-24 relative z-10 bg-slate-950/70 border-t border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -70,8 +82,8 @@ export const BentoKnowledgeHub: React.FC<BentoKnowledgeHubProps> = ({
             return (
               <button
                 key={btn.id}
-                onClick={() => setActiveRole(btn.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+                onClick={() => handleRoleChange(btn.id)}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap active:scale-95 ${
                   isActive
                     ? "bg-amber-500 text-black shadow-gold-glow"
                     : "bg-slate-900/90 text-slate-400 hover:text-white border border-white/5 hover:border-white/10"
@@ -84,21 +96,19 @@ export const BentoKnowledgeHub: React.FC<BentoKnowledgeHubProps> = ({
           })}
         </div>
 
-        {/* Bento Grid Cards */}
+        {/* Bento Grid Cards with Dynamic Spotlight */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredArticles.map((article, idx) => {
+          {filteredArticles.map((article) => {
             const title = isUk ? article.title.uk : isRu ? article.title.ru : article.title.en;
             const category = isUk ? article.category.uk : isRu ? article.category.ru : article.category.en;
             const excerpt = isUk ? article.excerpt.uk : isRu ? article.excerpt.ru : article.excerpt.en;
 
             return (
-              <div
+              <SpotlightCard
                 key={article.id}
-                className="glass-card rounded-2xl p-6 border-white/10 flex flex-col justify-between hover:border-amber-500/40 transition-all duration-300 group hover:shadow-[0_0_30px_rgba(245,158,11,0.15)] relative overflow-hidden"
+                spotlightColor="amber"
+                className="p-6 flex flex-col justify-between"
               >
-                {/* Background Accent Gradient on Hover */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-2xl group-hover:bg-amber-500/10 transition-all pointer-events-none" />
-
                 <div>
                   {/* Category & Read Time */}
                   <div className="flex items-center justify-between mb-4">
@@ -113,7 +123,7 @@ export const BentoKnowledgeHub: React.FC<BentoKnowledgeHubProps> = ({
 
                   {/* Title */}
                   <h3
-                    onClick={() => onSelectArticle(article)}
+                    onClick={() => handleArticleClick(article)}
                     className="text-base sm:text-lg font-bold text-white group-hover:text-amber-300 transition-colors leading-snug mb-3 cursor-pointer"
                   >
                     {title}
@@ -137,9 +147,9 @@ export const BentoKnowledgeHub: React.FC<BentoKnowledgeHubProps> = ({
                   )}
 
                   {/* Action Buttons */}
-                  <div className="flex items-center justify-between pt-2">
+                  <div className="flex items-center justify-between pt-2 border-t border-white/5">
                     <button
-                      onClick={() => onSelectArticle(article)}
+                      onClick={() => handleArticleClick(article)}
                       className="text-xs font-bold text-amber-400 group-hover:text-amber-300 flex items-center gap-1.5 transition-all"
                     >
                       <span>Читати дослідження</span>
@@ -148,13 +158,20 @@ export const BentoKnowledgeHub: React.FC<BentoKnowledgeHubProps> = ({
 
                     <Link
                       href={`/${locale}/knowledge/${article.slug}`}
-                      className="text-[11px] text-slate-500 hover:text-slate-300 underline"
+                      className="text-[11px] text-slate-500 hover:text-slate-300 font-mono"
+                      title="Відкрити постійне посилання"
                     >
-                      Повна сторінка
+                      #SILO
                     </Link>
                   </div>
+
+                  {/* State Inspection Seal */}
+                  <div className="mt-3 text-[9px] font-mono text-slate-600 uppercase tracking-widest flex items-center gap-1.5">
+                    <ShieldCheck className="w-3 h-3 text-amber-500/50" />
+                    <span>[ ВТК ІНСПЕКЦІЯ // ДЦЗ 2026 // ЄС СТАНДАРТ ]</span>
+                  </div>
                 </div>
-              </div>
+              </SpotlightCard>
             );
           })}
         </div>

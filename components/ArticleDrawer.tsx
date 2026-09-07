@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { X, ExternalLink, Clock, Calendar, ShieldCheck, ArrowRight, CheckCircle2, User, Phone, Mail, Building2 } from "lucide-react";
 import { KnowledgeArticle } from "@/lib/knowledgeBase";
+import { playDrawerWhoosh, playMechanicalClick } from "@/lib/soundFX";
 
 interface ArticleDrawerProps {
   article: KnowledgeArticle | null;
@@ -24,9 +25,13 @@ export const ArticleDrawer: React.FC<ArticleDrawerProps> = ({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        playMechanicalClick();
+        onClose();
+      }
     };
     if (isOpen) {
+      playDrawerWhoosh();
       document.body.style.overflow = "hidden";
       window.addEventListener("keydown", handleKeyDown);
     } else {
