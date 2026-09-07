@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -11,7 +11,7 @@
   }
 
   html {
-    font-family: "Plus Jakarta Sans", var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: 'Manrope', var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -20,8 +20,34 @@
   body {
     @apply bg-slate-950 text-slate-100 antialiased selection:bg-amber-500 selection:text-black;
     font-family: inherit;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Manrope', sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  code, kbd, samp, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Bento Grid Neo-Brutalism & Liquid Glass */
+.bento-card {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.6);
+  border-radius: 1.25rem;
+  transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.bento-card:hover {
+  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: 0 20px 50px -10px rgba(245, 158, 11, 0.2);
+  transform: translateY(-3px);
 }
 
 /* Glassmorphism & High-tech Cards */
@@ -37,7 +63,7 @@
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .glass-card-hover:hover {
-  transform: translateY(-5px);
+  transform: translateY(-4px);
   border-color: rgba(245, 158, 11, 0.45);
   box-shadow: 0 25px 50px -10px rgba(245, 158, 11, 0.25);
 }
@@ -58,6 +84,23 @@
 .cyan-scan-line {
   background: linear-gradient(180deg, transparent 0%, rgba(56, 189, 248, 0.8) 50%, transparent 100%);
   box-shadow: 0 0 15px 2px rgba(56, 189, 248, 0.7);
+}
+
+/* Skeleton Shimmer Loading (Sustainable UX) */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, rgba(30, 41, 59, 0.6) 25%, rgba(51, 65, 85, 0.8) 50%, rgba(30, 41, 59, 0.6) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite ease-in-out;
+  border-radius: 0.5rem;
 }
 
 /* 3D Perspective Card Container */

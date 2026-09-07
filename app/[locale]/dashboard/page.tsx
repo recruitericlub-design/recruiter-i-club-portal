@@ -189,29 +189,69 @@ export default function ClientDashboardPage() {
   const getStatusBadge = (status: string | null) => {
     switch (status) {
       case "screening":
-        return { text: "🔍 На розгляді", bg: "bg-slate-800 text-slate-300 border-slate-700" };
+        return { text: "🔍 Відбір та скоринг", step: 0, bg: "bg-slate-800 text-slate-300 border-slate-700" };
       case "approved_by_client":
-        return { text: "✅ Утверджено вами", bg: "bg-emerald-950/80 text-emerald-300 border-emerald-500/40" };
-      case "rejected_by_client":
-        return { text: "❌ Відхилено (Пошук заміни)", bg: "bg-red-950/80 text-red-300 border-red-500/40" };
+      case "approved":
+        return { text: "1/6 ✅ Узгоджено ЛПР", step: 1, bg: "bg-emerald-950/80 text-emerald-300 border-emerald-500/40" };
+      case "docs_in_progress":
+        return { text: "2/6 📑 Збір довідок та ДЦЗ", step: 2, bg: "bg-amber-950/80 text-amber-300 border-amber-500/40" };
+      case "permit_issued":
+        return { text: "3/6 🏛️ Дозвіл ДЦЗ видано", step: 3, bg: "bg-cyan-950/80 text-cyan-300 border-cyan-500/40" };
       case "visa_d_processing":
-        return { text: "📑 Оформлення візи D", bg: "bg-amber-950/80 text-amber-300 border-amber-500/40" };
+      case "visa_approved":
       case "visa_ready":
-        return { text: "✈️ Віза D готова", bg: "bg-blue-950/80 text-blue-300 border-blue-500/40" };
+        return { text: "4/6 ✈️ Віза D відкрита", step: 4, bg: "bg-blue-950/80 text-blue-300 border-blue-500/40" };
+      case "transit_odesa":
       case "in_transit":
-        return { text: "🧳 В дорозі / Квитки куплено", bg: "bg-indigo-950/80 text-indigo-300 border-indigo-500/40" };
+        return { text: "5/6 🧳 Транзит Молдова / кордон", step: 5, bg: "bg-indigo-950/80 text-indigo-300 border-indigo-500/40" };
+      case "on_shift":
       case "working":
-        return { text: "🏭 Вийшов на зміну", bg: "bg-teal-950/80 text-teal-300 border-teal-500/40" };
+        return { text: "6/6 🏭 На зміні (Гарантія 30 днів)", step: 6, bg: "bg-teal-950/80 text-teal-300 border-teal-500/40" };
+      case "rejected_by_client":
+        return { text: "❌ Відхилено (Пошук заміни 0 €)", step: 0, bg: "bg-red-950/80 text-red-300 border-red-500/40" };
       default:
-        return { text: "🔍 Підбір", bg: "bg-slate-800 text-slate-300 border-slate-700" };
+        return { text: "🔍 Підбір анкети", step: 0, bg: "bg-slate-800 text-slate-300 border-slate-700" };
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white space-y-4">
-        <Loader2 className="w-10 h-10 animate-spin text-amber-400" />
-        <p className="text-sm text-slate-400">Завантаження кабінету роботодавця...</p>
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col p-4 sm:p-8 space-y-8">
+        {/* Skeleton Top Header */}
+        <div className="max-w-7xl w-full mx-auto flex items-center justify-between py-4 border-b border-white/10">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 skeleton-shimmer rounded-xl" />
+            <div className="space-y-2">
+              <div className="w-36 h-4 skeleton-shimmer" />
+              <div className="w-24 h-3 skeleton-shimmer" />
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="w-28 h-9 skeleton-shimmer rounded-lg" />
+            <div className="w-20 h-9 skeleton-shimmer rounded-lg" />
+          </div>
+        </div>
+
+        {/* Skeleton Bento Stats */}
+        <div className="max-w-7xl w-full mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="h-28 skeleton-shimmer rounded-2xl" />
+          <div className="h-28 skeleton-shimmer rounded-2xl" />
+          <div className="h-28 skeleton-shimmer rounded-2xl" />
+        </div>
+
+        {/* Skeleton Tabs & Cards Grid */}
+        <div className="max-w-7xl w-full mx-auto space-y-6">
+          <div className="flex gap-3">
+            <div className="w-44 h-10 skeleton-shimmer rounded-xl" />
+            <div className="w-44 h-10 skeleton-shimmer rounded-xl" />
+            <div className="w-48 h-10 skeleton-shimmer rounded-xl" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="h-96 skeleton-shimmer rounded-2xl" />
+            <div className="h-96 skeleton-shimmer rounded-2xl" />
+            <div className="h-96 skeleton-shimmer rounded-2xl" />
+          </div>
+        </div>
       </div>
     );
   }
@@ -409,6 +449,32 @@ export default function ClientDashboardPage() {
                             <p className="text-[11px] text-slate-400">
                               {cand.country || "За кордоном"} • {cand.experienceYears ? `${cand.experienceYears} років досвіду` : "Досвід перевірено"}
                             </p>
+                          </div>
+                        </div>
+
+                        {/* 6-stage Funnel Tracker */}
+                        <div className="p-3 bg-slate-950/60 rounded-xl border border-white/5 space-y-1.5 mb-4">
+                          <div className="flex items-center justify-between text-[11px] font-medium">
+                            <span className="text-slate-400">Воронка релокації:</span>
+                            <span className="text-amber-400 font-bold">{badge.step > 0 ? `Етап ${badge.step} з 6` : "Скринінг"}</span>
+                          </div>
+                          <div className="grid grid-cols-6 gap-1 h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                            {[1, 2, 3, 4, 5, 6].map((st) => (
+                              <div
+                                key={st}
+                                className={`h-full transition-all duration-300 ${
+                                  badge.step >= st ? "bg-amber-400 shadow-[0_0_6px_rgba(245,158,11,0.5)]" : "bg-slate-800"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                          <div className="flex justify-between text-[9px] text-slate-500 font-mono pt-0.5">
+                            <span className={badge.step >= 1 ? "text-amber-300" : ""}>1. ЛПР</span>
+                            <span className={badge.step >= 2 ? "text-amber-300" : ""}>2. Збір</span>
+                            <span className={badge.step >= 3 ? "text-amber-300" : ""}>3. ДЦЗ</span>
+                            <span className={badge.step >= 4 ? "text-amber-300" : ""}>4. Віза D</span>
+                            <span className={badge.step >= 5 ? "text-amber-300" : ""}>5. Транзит</span>
+                            <span className={badge.step >= 6 ? "text-emerald-400 font-bold" : ""}>6. Зміна</span>
                           </div>
                         </div>
 

@@ -1,13 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { locales } from "@/i18n";
 import { SchemaOrg } from "@/components/SchemaOrg";
 import "../globals.css";
-
-const inter = Inter({ subsets: ["latin", "cyrillic"], variable: "--font-inter" });
 
 export async function generateMetadata({
   params: { locale },
@@ -18,18 +15,18 @@ export async function generateMetadata({
   const isRu = locale === "ru";
 
   const title = isUk
-    ? "Recruiter I Club — Підбір та привіз кваліфікованого персоналу з Азії та Європи | Візи D під ключ"
+    ? "Recruiter I Club — Прямий міжнародний найм персоналу у ваш штат | Офіційні візи D та дозволи ДЦЗ"
     : isRu
-    ? "Recruiter I Club — Подбор и привоз квалифицированного персонала из Азии и Европы | Визы D под ключ"
-    : "Recruiter I Club — Turnkey International Staffing & Workforce Provider | Visa D";
+    ? "Recruiter I Club — Прямой международный найм персонала в ваш штат | Официальные разрешения ДЦЗ и визы D"
+    : "Recruiter I Club — Direct International Staffing & Workforce Provider | Official Work Permits";
 
   const description = isUk
-    ? "Офіційний підбір, оформлення робочих віз D та аутстафінг зварювальників, будівельників, операторів ЧПК та працівників складів з Узбекистану, Індії та Філіппін. Гарантія заміни 30 днів, 0 € авансу."
+    ? "Послуги з пошуку, підбору та правового супроводу працевлаштування іноземних громадян в Україні. Прямий найм у штат ТОВ/ФОП. Строки від 1 до 4 місяців, оплата 4×25%, гарантія заміни 30 днів."
     : isRu
-    ? "Официальный подбор, оформление рабочих виз D и аутстаффинг сварщиков, строителей, операторов ЧПУ и работников складов из Узбекистана, Индии и Филиппин. Гарантия замены 30 дней."
-    : "Official B2B recruitment, Visa D processing, and relocation of skilled industrial and construction personnel from Asia and Europe. Turnkey delivery in 21-35 days.";
+    ? "Услуги по поиску, подбору и правовому сопровождению трудоустройства иностранных граждан в Украине. Прямой найм в штат предприятия. Сроки от 1 до 4 месяцев, оплата 4×25%."
+    : "Direct international recruitment and legal employment support for industrial and construction companies in Ukraine. Timelines: 1 to 4 months, 4-stage 25% payments, 30-day warranty.";
 
-  const baseUrl = "https://recruiter-club.vercel.app";
+  const baseUrl = "https://recruiter-i-club-portal.vercel.app";
 
   return {
     metadataBase: new URL(baseUrl),
@@ -109,12 +106,15 @@ export default async function RootLayout({
   return (
     <html lang={locale} className="scroll-smooth dark">
       <head>
-        <link rel="alternate" hrefLang="uk" href="https://recruiter-club.vercel.app/uk" />
-        <link rel="alternate" hrefLang="ru" href="https://recruiter-club.vercel.app/ru" />
-        <link rel="alternate" hrefLang="en" href="https://recruiter-club.vercel.app/en" />
-        <link rel="alternate" hrefLang="x-default" href="https://recruiter-club.vercel.app/uk" />
+        <link rel="alternate" hrefLang="uk" href="https://recruiter-i-club-portal.vercel.app/uk" />
+        <link rel="alternate" hrefLang="ru" href="https://recruiter-i-club-portal.vercel.app/ru" />
+        <link rel="alternate" hrefLang="en" href="https://recruiter-i-club-portal.vercel.app/en" />
+        <link rel="alternate" hrefLang="x-default" href="https://recruiter-i-club-portal.vercel.app/uk" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
       </head>
-      <body className={`${inter.variable} font-sans bg-slate-950 text-slate-100 min-h-screen antialiased`}>
+      <body className="font-sans bg-slate-950 text-slate-100 min-h-screen antialiased selection:bg-amber-500 selection:text-black">
         <SchemaOrg locale={locale} />
         <NextIntlClientProvider messages={messages} locale={locale}>
           {children}

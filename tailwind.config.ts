@@ -10,8 +10,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: [
-          "var(--font-inter)",
-          "'Plus Jakarta Sans'",
+          "'Manrope'",
           "-apple-system",
           "BlinkMacSystemFont",
           "'Segoe UI'",

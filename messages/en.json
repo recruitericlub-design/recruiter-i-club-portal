@@ -11,20 +11,20 @@
     "orderWorkers": "Hire Staff"
   },
   "hero": {
-    "badge": "🇪🇺 Licensed B2B Workforce Provider in EU & Ukraine",
-    "titleStart": "Qualified Workforce from Asia & Europe",
-    "titleHighlight": "Turnkey in 21–35 Days",
-    "subtitle": "Official sourcing, Visa D processing, logistics, and legal management for certified welders, builders, CNC operators, and production workforce. Guaranteed replacement policy.",
-    "ctaPrimary": "Calculate Demand & View Candidates",
+    "badge": "🛡️ Official Work Permits & Visa D-04 • Starting from 3 Workers",
+    "titleStart": "Labor Shortage? Your Enterprise",
+    "titleHighlight": "Must Not Stop.",
+    "subtitle": "Direct international employment of skilled line personnel into your payroll from 3 workers. Direct contract — you are the employer. Timelines: 1 to 4 months (contractually fixed), 4-stage 25% payments, 30-day warranty.",
+    "ctaPrimary": "Calculate Cost & Demand",
     "ctaSecondary": "Employer Portal Login",
-    "stat1Value": "2,450+",
-    "stat1Label": "Employed Specialists",
-    "stat2Value": "98.4%",
-    "stat2Label": "Trial Period Completion",
-    "stat3Value": "30 Days",
-    "stat3Label": "Free Replacement Guarantee",
-    "stat4Value": "0 €",
-    "stat4Label": "Prepayment Before Approval"
+    "stat1Value": "from 3 workers",
+    "stat1Label": "Pilot Program «Start-3»",
+    "stat2Value": "1–4 mos.",
+    "stat2Label": "Guaranteed Arrival Timeline",
+    "stat3Value": "4 × 25%",
+    "stat3Label": "Milestone-based Safe Payments",
+    "stat4Value": "30 Days",
+    "stat4Label": "Legal Replacement Warranty"
   },
   "calculator": {
     "title": "Smart Workforce Calculator",

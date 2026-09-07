@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
     }
 
     if (!session) {
-      return NextResponse.json({ error: "РќРµРѕР±С…С–РґРЅР° Р°РІС‚РѕСЂРёР·Р°С†С–СЏ" }, { status: 401 });
+      return NextResponse.json({ error: "Необхідна авторизація" }, { status: 401 });
     }
 
     // Safety Rule: Employer ONLY sees candidates attached to their company
@@ -55,7 +55,7 @@ export async function GET(req: NextRequest) {
   } catch (error: any) {
     console.error("Fetch candidates error:", error);
     return NextResponse.json(
-      { error: "РџРѕРјРёР»РєР° Р·Р°РІР°РЅС‚Р°Р¶РµРЅРЅСЏ РєР°РЅРґРёРґР°С‚С–РІ", details: error.message },
+      { error: "Помилка завантаження кандидатів", details: error.message },
       { status: 500 }
     );
   }

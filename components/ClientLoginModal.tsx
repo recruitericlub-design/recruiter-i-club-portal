@@ -40,7 +40,7 @@ export const ClientLoginModal: React.FC<ClientLoginModalProps> = ({
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "������� �����������");
+        throw new Error(data.error || "Помилка авторизації. Перевірте реквізити.");
       }
 
       // Close modal and navigate to dashboard
@@ -74,11 +74,11 @@ export const ClientLoginModal: React.FC<ClientLoginModalProps> = ({
             <Lock className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-xl font-bold tracking-tight">
-              {messages.portal?.login || "���� ��� ������������"}
+            <h3 className="text-xl font-bold tracking-tight text-white">
+              {messages.portal?.login || "Вхід для роботодавця"}
             </h3>
             <p className="text-xs text-slate-400">
-              {messages.portal?.loginDesc || "B2B ������ ���������� �� ���������� ��������"}
+              {messages.portal?.loginDesc || "B2B-кабінет управління кандидатами та договорами"}
             </p>
           </div>
         </div>
@@ -94,7 +94,7 @@ export const ClientLoginModal: React.FC<ClientLoginModalProps> = ({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-              ������� ��� Email ������������ �������
+              Телефон або Email представника компанії
             </label>
             <div className="relative">
               <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
@@ -103,7 +103,7 @@ export const ClientLoginModal: React.FC<ClientLoginModalProps> = ({
                 required
                 value={login}
                 onChange={(e) => setLogin(e.target.value)}
-                placeholder="+380... ��� hr@company.com"
+                placeholder="+380... або ceo@company.ua"
                 className="w-full pl-10 pr-4 py-2.5 bg-slate-950 border border-slate-700/80 rounded-xl text-sm focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400 placeholder:text-slate-600 transition-all"
               />
             </div>
@@ -112,9 +112,9 @@ export const ClientLoginModal: React.FC<ClientLoginModalProps> = ({
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <label className="text-xs font-semibold text-slate-300">
-                {messages.portal?.pin || "ϲ� / OTP ���"}
+                {messages.portal?.pin || "PIN-код / OTP"}
               </label>
-              <span className="text-[11px] text-amber-400/80">�������� ϲ�: 7777</span>
+              <span className="text-[11px] text-amber-400/80 font-mono">Тестовий PIN: 7777</span>
             </div>
             <div className="relative">
               <KeyRound className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
@@ -123,9 +123,9 @@ export const ClientLoginModal: React.FC<ClientLoginModalProps> = ({
                 required
                 value={pin}
                 onChange={(e) => setPin(e.target.value)}
-                placeholder="4 �����"
+                placeholder="4 цифри"
                 maxLength={6}
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-950 border border-slate-700/80 rounded-xl text-sm tracking-widest focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400 placeholder:text-slate-600 transition-all"
+                className="w-full pl-10 pr-4 py-2.5 bg-slate-950 border border-slate-700/80 rounded-xl text-sm font-mono tracking-widest focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400 placeholder:text-slate-600 transition-all"
               />
             </div>
           </div>
@@ -138,11 +138,11 @@ export const ClientLoginModal: React.FC<ClientLoginModalProps> = ({
             {loading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span>�����������...</span>
+                <span>Авторизація...</span>
               </>
             ) : (
               <>
-                <span>{messages.portal?.enter || "����� � ������"}</span>
+                <span>{messages.portal?.enter || "Увійти в кабінет"}</span>
                 <ArrowRight className="w-4 h-4" />
               </>
             )}
@@ -151,9 +151,9 @@ export const ClientLoginModal: React.FC<ClientLoginModalProps> = ({
 
         <div className="mt-6 pt-5 border-t border-slate-800 text-center">
           <p className="text-xs text-slate-500">
-            ���� ������� �� �������?{" "}
+            Немає доступу до кабінету?{" "}
             <a href="#calculator" onClick={onClose} className="text-amber-400 hover:underline">
-              ������� ����� ������ �� ����
+              Подайте заявку на підбір
             </a>
           </p>
         </div>
