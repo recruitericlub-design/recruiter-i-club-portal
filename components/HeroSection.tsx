@@ -16,6 +16,7 @@ import {
 import { ClientLoginModal } from "./ClientLoginModal";
 import { InteractiveGlobe3D } from "./InteractiveGlobe3D";
 import { SpotlightCard } from "./SpotlightCard";
+import { HeroBentoGrid } from "./HeroBentoGrid";
 import { playSciFiBeep } from "@/lib/soundFX";
 
 interface HeroSectionProps {
@@ -55,38 +56,41 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, locale }) =>
           
           {/* Main Hero Left Column */}
           <div className="lg:col-span-6 space-y-7 text-center sm:text-left">
-            {/* Top Badge */}
+            {/* Top Badge matching Reference Image */}
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full glass-card border-amber-500/30 text-amber-300 text-xs font-semibold tracking-wide shadow-gold-glow"
+              className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-amber-500/30 text-amber-300 text-xs font-mono tracking-wide shadow-gold-glow"
             >
-              <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0 animate-pulse" />
-              <span>{messages.hero?.badge}</span>
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              <span>Свіжі довідки ДЦЗ та візи D-04 — Оновлено 2 хв тому</span>
             </motion.div>
 
-            {/* H1 Heading */}
+            {/* H1 Heading matching Reference Image */}
             <motion.h1
               initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.12]"
+              className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.12]"
             >
-              {messages.hero?.titleStart}{" "}
-              <span className="gold-gradient-text block sm:inline">
-                {messages.hero?.titleHighlight}
+              Людей бракує.{" "}
+              <span className="inline-block px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-400 text-sm font-mono font-bold align-middle mb-1.5 shadow-[0_0_15px_rgba(245,158,11,0.25)]">
+                -3%
+              </span>
+              <span className="block text-amber-400 font-black mt-1 drop-shadow-[0_0_30px_rgba(245,158,11,0.3)]">
+                Підприємство не має зупинятися.
               </span>
             </motion.h1>
 
-            {/* Subtitle */}
+            {/* Subtitle matching Reference Image */}
             <motion.p
               initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
               className="text-base sm:text-lg text-slate-300 max-w-xl leading-relaxed font-normal"
             >
-              {messages.hero?.subtitle}
+              Прямий міжнародний найм лінійного персоналу у ваш штат від 3 осіб. Наймайте напряму — роботодавець ви. Строк від 1 до 4 місяців (фіксовано в договорі). 4 платежі по 25% за результат, гарантія заміни 30 днів.
             </motion.p>
 
             {/* CTA Buttons */}
@@ -99,9 +103,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, locale }) =>
               <a
                 href="#calculator"
                 onClick={() => playSciFiBeep(1200, 0.08)}
-                className="group relative inline-flex items-center justify-center gap-3 px-7 py-4 rounded-xl text-base font-bold text-black bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-400 hover:brightness-110 shadow-gold-glow-lg transition-all duration-300"
+                className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl text-base font-bold text-black bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-400 hover:brightness-110 shadow-gold-glow-lg transition-all duration-300 active:scale-95"
               >
-                <span>{messages.hero?.ctaPrimary}</span>
+                <span>Замовити Персонал</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </a>
 
@@ -110,33 +114,48 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, locale }) =>
                   playSciFiBeep(980, 0.06);
                   setIsLoginModalOpen(true);
                 }}
-                className="inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-xl text-base font-semibold text-slate-200 hover:text-white glass-card hover:bg-slate-900/90 border border-slate-700/80 transition-all duration-300"
+                className="inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-xl text-base font-semibold text-slate-200 hover:text-white glass-card hover:bg-slate-900/90 border border-slate-700/80 transition-all duration-300 active:scale-95"
               >
                 <Users className="w-4 h-4 text-amber-400" />
-                <span>{messages.hero?.ctaSecondary}</span>
+                <span>{messages.hero?.ctaSecondary || "База кандидатів"}</span>
               </button>
             </motion.div>
 
-            {/* Micro Guarantees Bullet List */}
+            {/* 3 Technical Guarantee Blueprint Cards matching Reference Image */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-white/5 text-xs text-slate-400 font-mono"
+              className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-white/10 text-xs font-mono"
             >
-              <div className="flex items-center gap-2">
+              <div className="p-2.5 rounded-xl bg-slate-900/70 border border-white/10 flex items-center gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>Ліцензія ДСЗУ</span>
+                <div className="text-left">
+                  <div className="text-white font-bold text-[11px]">Ліцензія ДСЗУ</div>
+                  <div className="text-[9px] text-slate-500">Держреєстр 2026</div>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="p-2.5 rounded-xl bg-slate-900/70 border border-white/10 flex items-center gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>Рентген-контроль швів</span>
+                <div className="text-left">
+                  <div className="text-white font-bold text-[11px]">Рентген-контроль</div>
+                  <div className="text-[9px] text-slate-500">Шви під тиском 25 бар</div>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="p-2.5 rounded-xl bg-slate-900/70 border border-white/10 flex items-center gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>100% візи D під ключ</span>
+                <div className="text-left">
+                  <div className="text-white font-bold text-[11px]">100% візи під ключ</div>
+                  <div className="text-[9px] text-slate-500">Повний юридичний супровід</div>
+                </div>
               </div>
             </motion.div>
+
+            {/* Faint Prisma CRM code watermark from reference image */}
+            <div className="pt-2 font-mono text-[9px] text-slate-700/50 select-none pointer-events-none hidden sm:block">
+              <div>Prisma CRM structure {'{'}</div>
+              <div className="pl-3 text-slate-800">Prisme CRRM structure {'{'} candidate_status: VERIFIED, audit: D_04 {'}'}</div>
+            </div>
           </div>
 
           {/* Right Column: Interactive 3D Holographic Flight Globe */}
@@ -151,41 +170,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, locale }) =>
 
         </div>
 
-        {/* Bottom Key Metric Stats Grid */}
+        {/* 4-Module Master Bento Grid matching Reference Image */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6"
+          transition={{ duration: 0.8, delay: 0.45 }}
         >
-          {[
-            { value: messages.hero?.stat1Value, label: messages.hero?.stat1Label, icon: Users },
-            { value: messages.hero?.stat2Value, label: messages.hero?.stat2Label, icon: ShieldCheck },
-            { value: messages.hero?.stat3Value, label: messages.hero?.stat3Label, icon: Clock },
-            { value: messages.hero?.stat4Value, label: messages.hero?.stat4Label, icon: FileCheck2 },
-          ].map((stat, i) => {
-            const Icon = stat.icon;
-            return (
-              <SpotlightCard
-                key={i}
-                spotlightColor="amber"
-                className="p-5 flex flex-col justify-between"
-              >
-                <div className="w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400 mb-3 group-hover:bg-amber-500 group-hover:text-black transition-colors duration-300">
-                  <Icon className="w-4 h-4" />
-                </div>
-                <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-mono">
-                  {stat.value}
-                </div>
-                <div className="text-xs text-slate-400 mt-1 font-medium leading-snug">
-                  {stat.label}
-                </div>
-                <div className="mt-3 pt-2 border-t border-white/5 font-mono text-[9px] text-amber-500/50 uppercase tracking-widest">
-                  [ VERIFIED // 2026 ]
-                </div>
-              </SpotlightCard>
-            );
-          })}
+          <HeroBentoGrid locale={locale} messages={messages} />
         </motion.div>
 
         {/* Industrial Verification & National Resilience Seals Row (Concept 3) */}

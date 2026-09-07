@@ -48,13 +48,11 @@ export const Navbar: React.FC<NavbarProps> = ({ locale, messages }) => {
   };
 
   const navLinks = [
-    { href: `/${locale}#roadmap`, label: messages.nav?.roadmap || "Roadmap" },
-    { href: `/${locale}#terminal`, label: "3D Термінал" },
-    { href: `/${locale}#calculator`, label: messages.nav?.calculator || "Калькулятор" },
-    { href: `/${locale}#industries`, label: messages.nav?.industries || "Галузі" },
-    { href: `/${locale}#candidates`, label: messages.nav?.candidates || "Кандидати" },
-    { href: `/${locale}#knowledge`, label: "Експертиза" },
-    { href: `/${locale}#faq`, label: messages.nav?.faq || "FAQ" },
+    { href: `/${locale}#candidates`, label: "[База кандидатів]" },
+    { href: `/${locale}#knowledge`, label: "[Експертиза]" },
+    { href: `/${locale}#terminal`, label: "[3D Термінал]" },
+    { href: `/${locale}#fines-calculator`, label: "[Аудит 2026]" },
+    { href: `/${locale}#faq`, label: "[Про нас]" },
   ];
 
   return (
@@ -66,27 +64,27 @@ export const Navbar: React.FC<NavbarProps> = ({ locale, messages }) => {
             <Link href={`/${locale}`} className="flex items-center gap-3 group">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 p-[1px] shadow-gold-glow">
                 <div className="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center group-hover:bg-transparent transition-colors duration-300">
-                  <Building2 className="w-5 h-5 text-amber-400 group-hover:text-black transition-colors" />
+                  <ShieldCheck className="w-5 h-5 text-amber-400 group-hover:text-black transition-colors" />
                 </div>
               </div>
               <div className="flex flex-col">
-                <span className="text-xl font-bold tracking-tight text-white flex items-center gap-1.5 font-sans">
-                  RECRUITER <span className="text-amber-400 font-serif italic">I</span> CLUB
+                <span className="text-xl font-black tracking-tight text-white flex items-center gap-1.5 font-sans">
+                  <span className="text-amber-400 font-serif italic text-2xl leading-none">I</span> CLUB
                 </span>
-                <span className="text-[10px] uppercase tracking-widest text-slate-400 font-medium font-mono">
-                  B2B Staffing Ecosystem
+                <span className="text-[9px] uppercase tracking-widest text-slate-400 font-medium font-mono">
+                  Recruiter I Club Portal
                 </span>
               </div>
             </Link>
 
-            {/* Desktop Nav */}
-            <nav className="hidden md:flex items-center gap-7">
+            {/* Desktop Nav in Brackets Style from Reference */}
+            <nav className="hidden md:flex items-center gap-5">
               {navLinks.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
                   onClick={() => playSciFiBeep(960, 0.04)}
-                  className="text-sm font-medium text-slate-300 hover:text-amber-400 transition-colors duration-200"
+                  className="text-xs font-mono font-medium text-slate-300 hover:text-amber-400 transition-colors duration-200"
                 >
                   {link.label}
                 </a>
@@ -108,7 +106,7 @@ export const Navbar: React.FC<NavbarProps> = ({ locale, messages }) => {
                 {soundOn ? (
                   <>
                     <Volume2 className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
-                    <span className="text-[10px] font-bold">AUDIO ON</span>
+                    <span className="text-[10px] font-bold">AUDIO</span>
                   </>
                 ) : (
                   <>
@@ -120,7 +118,7 @@ export const Navbar: React.FC<NavbarProps> = ({ locale, messages }) => {
 
               {/* Language Switcher */}
               <div className="flex items-center bg-slate-900/80 rounded-lg p-1 border border-white/5 text-xs font-semibold">
-                {(["uk", "ru", "en"] as const).map((l) => (
+                {(["uk", "en"] as const).map((l) => (
                   <button
                     key={l}
                     onClick={() => changeLocale(l)}
@@ -130,7 +128,7 @@ export const Navbar: React.FC<NavbarProps> = ({ locale, messages }) => {
                         : "text-slate-400 hover:text-white"
                     }`}
                   >
-                    {l}
+                    {l === "uk" ? "UA" : "UK"}
                   </button>
                 ))}
               </div>
@@ -141,20 +139,19 @@ export const Navbar: React.FC<NavbarProps> = ({ locale, messages }) => {
                   playSciFiBeep(1100, 0.06);
                   setIsLoginModalOpen(true);
                 }}
-                className="flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium text-slate-200 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-700/60 transition-all duration-200"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-300 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-700/60 transition-all duration-200"
               >
                 <LogIn className="w-3.5 h-3.5 text-amber-400" />
-                <span>{messages.nav?.portalLogin || "Кабінет клієнта"}</span>
+                <span>Кабінет</span>
               </button>
 
-              {/* CTA Button */}
+              {/* CTA Button matching Reference Image */}
               <a
                 href="#calculator"
                 onClick={() => playSciFiBeep(1400, 0.08)}
-                className="relative group overflow-hidden flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold text-black bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-400 hover:brightness-110 shadow-gold-glow transition-all duration-300"
+                className="relative group overflow-hidden flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold text-black bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-400 hover:brightness-110 shadow-gold-glow transition-all duration-300 active:scale-95"
               >
-                <span>{messages.nav?.orderWorkers || "Замовити персонал"}</span>
-                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                <span>Замовити Персонал</span>
               </a>
             </div>
 

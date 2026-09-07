@@ -326,25 +326,37 @@ export const InteractiveGlobe3D: React.FC = () => {
         className="w-full h-full cursor-grab active:cursor-grabbing"
       />
 
-      {/* Floating HUD Telemetry Overlay */}
-      <div className="absolute top-3 left-3 bg-slate-900/85 backdrop-blur-md p-3 rounded-xl border border-amber-500/30 text-[11px] font-mono pointer-events-none space-y-1 shadow-lg">
-        <div className="flex items-center gap-2 text-amber-400 font-bold">
-          <Navigation className="w-3.5 h-3.5 animate-spin" />
-          <span>RELOCATION RADAR HUD</span>
+      {/* Floating HUD Telemetry Overlay matching Reference Image */}
+      <div className="absolute top-6 left-4 bg-slate-950/90 backdrop-blur-md p-3.5 rounded-xl border border-amber-500/30 text-[11px] font-mono pointer-events-none space-y-1.5 shadow-2xl z-20">
+        <div className="text-amber-400 font-bold tracking-wider text-[11px]">
+          Поточний проект: <span className="text-white">20-09</span>
         </div>
-        <p className="text-slate-400 text-[10px]">
-          LAT: 50.4501° N • LON: 30.5234° E
-        </p>
-        <p className="text-emerald-400 text-[10px] flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-          ACTIVE AIR CORRIDORS: 5 DIRECT
-        </p>
+        <div className="text-slate-300 text-[10px]">
+          ETA: <span className="text-amber-400 font-bold">48h</span>
+        </div>
+        <div className="text-slate-400 text-[10px] flex items-center gap-1">
+          <span>Координати:</span>
+          <span className="text-cyan-400 font-semibold">Ташкент &gt; Київ</span>
+        </div>
+        <div className="pt-1 text-[9px] text-emerald-400 flex items-center gap-1.5 border-t border-white/10">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+          <span>ПОВІТРЯНИЙ КОРИДОР АКТИВНИЙ</span>
+        </div>
+      </div>
+
+      {/* Orbit Degree Markers matching Reference Image */}
+      <div className="pointer-events-none absolute inset-0 z-10 font-mono text-[10px] text-slate-500/70 select-none">
+        <span className="absolute top-2 left-1/2 -translate-x-1/2 text-amber-500/60 font-bold">200</span>
+        <span className="absolute top-12 right-10 text-slate-400">:200</span>
+        <span className="absolute top-1/2 right-2 -translate-y-1/2 text-amber-500/60 font-bold">150</span>
+        <span className="absolute bottom-6 left-1/2 -translate-x-1/2 text-slate-400">166</span>
+        <span className="absolute bottom-16 left-8 text-amber-500/60 font-bold">230</span>
       </div>
 
       {/* Drag Instruction Badge */}
-      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-slate-950/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 text-[11px] text-slate-300 pointer-events-none flex items-center gap-2 shadow-xl">
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-slate-950/85 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 text-[10px] font-mono text-slate-300 pointer-events-none flex items-center gap-2 shadow-xl z-20">
         <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-        <span>Потягніть мишкою, щоб покрутити 3D-глобус</span>
+        <span>Орбіта 360° // Потягніть мишкою</span>
       </div>
     </div>
   );
