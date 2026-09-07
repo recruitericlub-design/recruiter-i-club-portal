@@ -5,10 +5,14 @@ import { RadarTelemetryTicker } from "@/components/RadarTelemetryTicker";
 import { CyberGridBackground } from "@/components/CyberGridBackground";
 import { HeroSection } from "@/components/HeroSection";
 import { RoadmapSection } from "@/components/RoadmapSection";
+import { MobilizationComparisonSection } from "@/components/MobilizationComparisonSection";
 import { HologramCandidateScanner } from "@/components/HologramCandidateScanner";
 import { CalculatorSection } from "@/components/CalculatorSection";
+import { DerzhpratsiFinesCalculator } from "@/components/DerzhpratsiFinesCalculator";
 import { IndustriesSection } from "@/components/IndustriesSection";
+import { DeficientProfessionsHub } from "@/components/DeficientProfessionsHub";
 import { CandidateShowcase } from "@/components/CandidateShowcase";
+import { WartimeSecurityProtocol } from "@/components/WartimeSecurityProtocol";
 import { B2BTrustSection } from "@/components/B2BTrustSection";
 import { HomeKnowledgeSection } from "@/components/HomeKnowledgeSection";
 import { FaqSection } from "@/components/FaqSection";
@@ -40,7 +44,10 @@ export default async function HomePage({
         {/* 2. Interactive Step-by-Step CRM Hiring Roadmap */}
         <RoadmapSection messages={messages} />
 
-        {/* 3. Cybernetic Hologram & X-Ray Radiography Inspection Terminal */}
+        {/* 3. Mobilization Immunity vs Local Hiring Risk Comparison */}
+        <MobilizationComparisonSection locale={locale} />
+
+        {/* 4. Cybernetic Hologram & X-Ray Radiography Inspection Terminal */}
         <section id="terminal" className="py-16 relative z-10 px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-10">
             <span className="text-cyan-400 text-xs font-mono uppercase tracking-widest block mb-2 font-bold">
@@ -56,22 +63,31 @@ export default async function HomePage({
           <HologramCandidateScanner />
         </section>
 
-        {/* 4. Smart Workforce Need Calculator & Direct CRM Lead Form */}
+        {/* 5. Smart Workforce Need Calculator & Direct CRM Lead Form */}
         <CalculatorSection messages={messages} />
 
-        {/* 5. Target Industry Sectors */}
+        {/* 6. Derzhpratsi Labor Fines Calculator (2026 Audit Defense) */}
+        <DerzhpratsiFinesCalculator locale={locale} />
+
+        {/* 7. Target Industry Sectors */}
         <IndustriesSection />
 
-        {/* 6. Live Pre-screened Candidate Dossier Showcase */}
+        {/* 8. Interactive Deficient Professions Hub (SEO SILO Gateway) */}
+        <DeficientProfessionsHub locale={locale} />
+
+        {/* 9. Live Pre-screened Candidate Dossier Showcase */}
         <CandidateShowcase />
 
-        {/* 7. Legal & Financial Guarantees */}
+        {/* 10. Wartime Security & Background Check Protocol */}
+        <WartimeSecurityProtocol locale={locale} />
+
+        {/* 11. Legal & Financial Guarantees */}
         <B2BTrustSection />
 
-        {/* 8. Bento Knowledge Hub & Contextual Research */}
+        {/* 12. Bento Knowledge Hub & Contextual Research */}
         <HomeKnowledgeSection locale={locale} />
 
-        {/* 9. Comprehensive FAQ for Employers */}
+        {/* 13. Comprehensive FAQ for Employers */}
         <FaqSection />
       </main>
 
