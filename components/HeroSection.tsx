@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { ClientLoginModal } from "./ClientLoginModal";
 import { InteractiveGlobe3D } from "./InteractiveGlobe3D";
+import { SpotlightCard } from "./SpotlightCard";
 import { playSciFiBeep } from "@/lib/soundFX";
 
 interface HeroSectionProps {
@@ -165,9 +166,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, locale }) =>
           ].map((stat, i) => {
             const Icon = stat.icon;
             return (
-              <div
+              <SpotlightCard
                 key={i}
-                className="glass-card glass-card-hover rounded-2xl p-5 border-white/5 relative group"
+                spotlightColor="amber"
+                className="p-5 flex flex-col justify-between"
               >
                 <div className="w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400 mb-3 group-hover:bg-amber-500 group-hover:text-black transition-colors duration-300">
                   <Icon className="w-4 h-4" />
@@ -178,9 +180,60 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, locale }) =>
                 <div className="text-xs text-slate-400 mt-1 font-medium leading-snug">
                   {stat.label}
                 </div>
-              </div>
+                <div className="mt-3 pt-2 border-t border-white/5 font-mono text-[9px] text-amber-500/50 uppercase tracking-widest">
+                  [ VERIFIED // 2026 ]
+                </div>
+              </SpotlightCard>
             );
           })}
+        </motion.div>
+
+        {/* Industrial Verification & National Resilience Seals Row (Concept 3) */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="mt-10 pt-8 border-t border-white/[0.08] flex flex-wrap items-center justify-center sm:justify-between gap-6 text-center"
+        >
+          <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-900/60 border border-white/5 backdrop-blur-md">
+            <div className="w-8 h-8 rounded-full border border-amber-500/40 flex items-center justify-center text-[10px] font-mono font-bold text-amber-400">
+              ISO
+            </div>
+            <div className="text-left">
+              <div className="text-[11px] font-bold text-white font-mono">UKR-ISO 9001:2026</div>
+              <div className="text-[9px] text-slate-400">Кваліфікаційний ВТК аудит</div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-900/60 border border-emerald-500/20 backdrop-blur-md">
+            <div className="w-8 h-8 rounded-full border border-emerald-500/40 flex items-center justify-center text-[10px] font-mono font-bold text-emerald-400">
+              100%
+            </div>
+            <div className="text-left">
+              <div className="text-[11px] font-bold text-white font-mono">СТ. 23 ЗУ // ІМУНІТЕТ</div>
+              <div className="text-[9px] text-emerald-400/80">Звільнення від мобілізації</div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-900/60 border border-cyan-500/20 backdrop-blur-md">
+            <div className="w-8 h-8 rounded-full border border-cyan-500/40 flex items-center justify-center text-[10px] font-mono font-bold text-cyan-400">
+              ДЦЗ
+            </div>
+            <div className="text-left">
+              <div className="text-[11px] font-bold text-white font-mono">ОФІЦІЙНИЙ ДОЗВІЛ</div>
+              <div className="text-[9px] text-slate-400">Прямий контракт у штат</div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-900/60 border border-white/5 backdrop-blur-md">
+            <div className="w-8 h-8 rounded-full border border-amber-500/30 flex items-center justify-center text-[10px] font-mono font-bold text-amber-300">
+              SLA
+            </div>
+            <div className="text-left">
+              <div className="text-[11px] font-bold text-white font-mono">ГАРАНТІЯ 30 ДНІВ</div>
+              <div className="text-[9px] text-slate-400">Безкоштовна заміна 0 грн</div>
+            </div>
+          </div>
         </motion.div>
       </div>
 
