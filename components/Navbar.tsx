@@ -48,12 +48,13 @@ export const Navbar: React.FC<NavbarProps> = ({ locale, messages }) => {
   };
 
   const navLinks = [
-    { href: "#roadmap", label: messages.nav?.roadmap || "Roadmap" },
-    { href: "#terminal", label: "3D Термінал" },
-    { href: "#calculator", label: messages.nav?.calculator || "Калькулятор" },
-    { href: "#industries", label: messages.nav?.industries || "Галузі" },
-    { href: "#candidates", label: messages.nav?.candidates || "Кандидати" },
-    { href: "#faq", label: messages.nav?.faq || "FAQ" },
+    { href: `/${locale}#roadmap`, label: messages.nav?.roadmap || "Roadmap" },
+    { href: `/${locale}#terminal`, label: "3D Термінал" },
+    { href: `/${locale}#calculator`, label: messages.nav?.calculator || "Калькулятор" },
+    { href: `/${locale}#industries`, label: messages.nav?.industries || "Галузі" },
+    { href: `/${locale}#candidates`, label: messages.nav?.candidates || "Кандидати" },
+    { href: `/${locale}#knowledge`, label: "Експертиза" },
+    { href: `/${locale}#faq`, label: messages.nav?.faq || "FAQ" },
   ];
 
   return (

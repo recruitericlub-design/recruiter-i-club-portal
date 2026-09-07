@@ -10,6 +10,7 @@ import { CalculatorSection } from "@/components/CalculatorSection";
 import { IndustriesSection } from "@/components/IndustriesSection";
 import { CandidateShowcase } from "@/components/CandidateShowcase";
 import { B2BTrustSection } from "@/components/B2BTrustSection";
+import { HomeKnowledgeSection } from "@/components/HomeKnowledgeSection";
 import { FaqSection } from "@/components/FaqSection";
 import { Footer } from "@/components/Footer";
 
@@ -67,7 +68,10 @@ export default async function HomePage({
         {/* 7. Legal & Financial Guarantees */}
         <B2BTrustSection />
 
-        {/* 8. Comprehensive FAQ for Employers */}
+        {/* 8. Bento Knowledge Hub & Contextual Research */}
+        <HomeKnowledgeSection locale={locale} />
+
+        {/* 9. Comprehensive FAQ for Employers */}
         <FaqSection />
       </main>
 
