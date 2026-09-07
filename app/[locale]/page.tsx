@@ -25,7 +25,7 @@ export default async function HomePage({
       {/* Main Content Area */}
       <main className="flex-grow">
         {/* 1. Cinematic Hero Section with Background Video & Real-time Stats */}
-        <HeroSection messages={messages} onOpenLogin={() => {}} />
+        <HeroSection messages={messages} locale={locale} />
 
         {/* 2. Interactive Step-by-Step CRM Hiring Roadmap */}
         <RoadmapSection messages={messages} />

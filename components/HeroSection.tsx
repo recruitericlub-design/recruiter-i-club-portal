@@ -13,12 +13,10 @@ import {
   Play
 } from "lucide-react";
 
-interface HeroSectionProps {
-  messages: any;
-  onOpenLogin: () => void;
-}
+interface HeroSectionProps { messages: any; locale: string; }
 
-export const HeroSection: React.FC<HeroSectionProps> = ({ messages, onOpenLogin }) => {
+export const HeroSection: React.FC<HeroSectionProps> = ({ messages, locale }) => {
+  const [isLoginModalOpen, setIsLoginModalOpen] = React.useState(false);
   return (
     <section className="relative min-h-[92vh] flex items-center justify-center pt-28 pb-16 overflow-hidden">
       {/* Background Video Container with Cinematic Overlays */}
@@ -108,7 +106,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, onOpenLogin 
               </a>
 
               <button
-                onClick={onOpenLogin}
+                onClick={() => setIsLoginModalOpen(true)}
                 className="inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-xl text-base font-semibold text-slate-200 hover:text-white glass-card hover:bg-slate-900/90 border border-slate-700/80 transition-all duration-300"
               >
                 <Users className="w-4 h-4 text-amber-400" />
@@ -125,15 +123,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, onOpenLogin 
             >
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>������� ������ �� ����������������</span>
+                <span>пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>�������� ����-����� ����������</span>
+                <span>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>100% ��������� ������� ��� D</span>
+                <span>100% пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ D</span>
               </div>
             </motion.div>
           </div>
@@ -156,7 +154,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, onOpenLogin 
                   </span>
                 </div>
                 <span className="text-[10px] bg-amber-500/10 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-md">
-                  ������� �� ������
+                  пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
                 </span>
               </div>
 
@@ -168,26 +166,26 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, onOpenLogin 
                     className="w-14 h-14 rounded-xl object-cover border border-amber-500/40"
                   />
                   <div>
-                    <h4 className="text-sm font-bold text-white">������ �. (32 ����)</h4>
-                    <p className="text-xs text-amber-400">������������ MIG/MAG 135/136</p>
-                    <p className="text-[11px] text-slate-400">???? ���������� � ����� 7 ����</p>
+                    <h4 className="text-sm font-bold text-white">пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ. (32 пїЅпїЅпїЅпїЅ)</h4>
+                    <p className="text-xs text-amber-400">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ MIG/MAG 135/136</p>
+                    <p className="text-[11px] text-slate-400">???? пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ 7 пїЅпїЅпїЅпїЅ</p>
                   </div>
                 </div>
 
                 <div className="bg-slate-900/90 rounded-xl p-3 border border-white/5 space-y-2 text-xs">
                   <div className="flex justify-between text-slate-400">
-                    <span>³������ ��� �� �������:</span>
+                    <span>ВіпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ:</span>
                     <span className="text-emerald-400 font-medium flex items-center gap-1">
-                      <CheckCircle2 className="w-3 h-3" /> ����� �� 100%
+                      <CheckCircle2 className="w-3 h-3" /> пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 100%
                     </span>
                   </div>
                   <div className="flex justify-between text-slate-400">
-                    <span>��������� ���������:</span>
-                    <span className="text-white font-medium">����������� ������� ������</span>
+                    <span>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:</span>
+                    <span className="text-white font-medium">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ</span>
                   </div>
                   <div className="flex justify-between text-slate-400">
-                    <span>����� ������ �� ��?���:</span>
-                    <span className="text-amber-300 font-semibold">24 �� (³�� D)</span>
+                    <span>пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅ?пїЅпїЅпїЅ:</span>
+                    <span className="text-amber-300 font-semibold">24 пїЅпїЅ (ВіпїЅпїЅ D)</span>
                   </div>
                 </div>
 
@@ -196,7 +194,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, onOpenLogin 
                   className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 text-xs font-semibold transition-all"
                 >
                   <Play className="w-3.5 h-3.5 fill-amber-300" />
-                  ����������� ���������� � ���
+                  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ
                 </a>
               </div>
             </div>
@@ -236,6 +234,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, onOpenLogin 
           })}
         </motion.div>
       </div>
+    <ClientLoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} locale={locale} messages={messages} />
     </section>
   );
 };
