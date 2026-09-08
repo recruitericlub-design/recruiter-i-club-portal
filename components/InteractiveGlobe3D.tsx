@@ -130,15 +130,15 @@ export const InteractiveGlobe3D: React.FC = () => {
     }
   ];
 
-  // Cartographic Inscriptions directly on Map Surface
+  // Cartographic Inscriptions directly on Map Surface (Precise non-overlapping coordinates)
   const countryInscriptions = [
-    { country: "УКРАЇНА", city: "Київ ★", lat: 49.2, lon: 31.5, size: 26, isGold: true },
-    { country: "УЗБЕКИСТАН", city: "Ташкент •", lat: 41.5, lon: 64.5, size: 18, isGold: false },
-    { country: "ІНДІЯ", city: "Нью-Делі •", lat: 23.0, lon: 78.5, size: 22, isGold: false },
-    { country: "ФІЛІППІНИ", city: "Маніла •", lat: 13.0, lon: 122.5, size: 16, isGold: false },
-    { country: "БАНГЛАДЕШ", city: "Дакка •", lat: 24.0, lon: 90.2, size: 15, isGold: false },
-    { country: "НЕПАЛ", city: "Катманду •", lat: 28.5, lon: 84.0, size: 14, isGold: false },
-    { country: "МОЛДОВА", city: "Кишинів •", lat: 47.0, lon: 28.8, size: 13, isGold: false },
+    { country: "УКРАЇНА", city: "Київ ★", lat: 48.8, lon: 32.2, size: 21, isGold: true },
+    { country: "УЗБЕКИСТАН", city: "Ташкент •", lat: 41.5, lon: 64.5, size: 16, isGold: false },
+    { country: "ІНДІЯ", city: "Нью-Делі •", lat: 22.0, lon: 78.5, size: 21, isGold: false },
+    { country: "ФІЛІППІНИ", city: "Маніла •", lat: 13.0, lon: 122.5, size: 14, isGold: false },
+    { country: "БАНГЛАДЕШ", city: "Дакка •", lat: 24.2, lon: 90.0, size: 13, isGold: false },
+    { country: "НЕПАЛ", city: "Катманду •", lat: 28.5, lon: 84.0, size: 13, isGold: false },
+    { country: "МОЛДОВА", city: "", lat: 46.8, lon: 28.5, size: 10, isGold: false },
   ];
 
   const [projectedPins, setProjectedPins] = useState<{ pin: CityPin; x: number; y: number; visible: boolean; opacity: number; scale: number }[]>([]);
@@ -338,7 +338,7 @@ export const InteractiveGlobe3D: React.FC = () => {
 
           // High-contrast dark halo outline
           offCtx.font = `bold ${item.size}px "Segoe UI", Arial, sans-serif`;
-          offCtx.strokeStyle = "rgba(0, 0, 0, 0.92)";
+          offCtx.strokeStyle = "rgba(0, 0, 0, 0.94)";
           offCtx.lineWidth = 4.8;
           offCtx.lineJoin = "round";
           offCtx.strokeText(item.country, x, y);
@@ -531,7 +531,7 @@ export const InteractiveGlobe3D: React.FC = () => {
         onTouchEnd={handleTouchEnd}
       />
 
-      {/* Professional Cartographic Hub Markers (Restrained, no neon) */}
+      {/* Interactive Hub Pips (Clean, non-intrusive, no overlap with text) */}
       <div className="absolute inset-0 pointer-events-none">
         {projectedPins.map(({ pin, x, y, visible, opacity, scale }) => {
           if (!visible) return null;
@@ -546,36 +546,35 @@ export const InteractiveGlobe3D: React.FC = () => {
                 left: `${x}px`,
                 top: `${y}px`,
                 opacity,
-                transform: `translate(-50%, -100%) scale(${scale})`,
+                transform: `translate(-50%, -50%) scale(${scale})`,
               }}
               className="absolute pointer-events-auto transition-opacity duration-150"
               onClick={() => setSelectedCity(isSelected ? null : pin)}
               onMouseEnter={() => setHoveredCity(pin)}
               onMouseLeave={() => setHoveredCity(null)}
             >
-              <div className="relative flex flex-col items-center cursor-pointer group">
-                {/* Precision Cartographic Dot */}
+              <div className="relative flex items-center justify-center cursor-pointer group">
+                {/* Precision Micro-Pip */}
                 <div
-                  className={`w-2.5 h-2.5 rounded-full border flex items-center justify-center transition-transform ${
+                  className={`rounded-full border transition-all ${
                     isMain
-                      ? "bg-amber-400 border-amber-200 shadow-sm scale-110"
-                      : "bg-sky-400 border-sky-200 hover:scale-125"
+                      ? "w-3 h-3 bg-amber-400 border-amber-100 shadow-[0_0_8px_rgba(245,158,11,0.6)]"
+                      : "w-2.5 h-2.5 bg-sky-400 border-sky-100 group-hover:scale-125"
                   }`}
-                >
-                  <div className="w-0.5 h-0.5 rounded-full bg-slate-950" />
-                </div>
+                />
 
-                {/* For Kyiv: always visible refined badge. For others: show badge on hover/select or compact flag */}
-                {(isMain || isHovered || isSelected) && (
+                {/* Refined Tooltip on Hover or Select only (Prevents clutter over map typography) */}
+                {(isHovered || isSelected) && (
                   <div
-                    className={`mt-1 px-2 py-0.5 rounded border text-[9px] font-mono font-bold flex items-center gap-1.5 backdrop-blur-md shadow-md whitespace-nowrap transition-all ${
+                    className={`absolute bottom-full mb-1.5 px-2.5 py-1 rounded-md border text-[10px] font-mono font-bold flex items-center gap-1.5 backdrop-blur-md shadow-xl whitespace-nowrap z-40 transition-all ${
                       isMain
-                        ? "bg-slate-950/90 border-amber-500/80 text-amber-300"
-                        : "bg-slate-950/90 border-sky-400/80 text-sky-200 scale-105"
+                        ? "bg-slate-950/95 border-amber-500/80 text-amber-300"
+                        : "bg-slate-950/95 border-sky-400/80 text-sky-200"
                     }`}
                   >
-                    <span className="text-[10px]">{pin.flag}</span>
-                    <span className="tracking-wider">{pin.name}</span>
+                    <span>{pin.flag}</span>
+                    <span>{pin.name}</span>
+                    <span className="text-[8px] text-white/50 font-normal">({pin.country})</span>
                   </div>
                 )}
               </div>
@@ -617,7 +616,7 @@ export const InteractiveGlobe3D: React.FC = () => {
       <div className="absolute bottom-3 left-3 pointer-events-none hidden sm:flex items-center gap-3 px-2.5 py-1 rounded bg-slate-950/70 border border-white/10 text-[9px] font-mono text-slate-400 backdrop-blur-sm">
         <span className="flex items-center gap-1">
           <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-          <span className="text-amber-300 font-bold">Україна</span>
+          <span className="text-amber-300 font-bold">Україна (Хаб)</span>
         </span>
         <span className="flex items-center gap-1">
           <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
