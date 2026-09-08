@@ -17,6 +17,8 @@ import { ClientLoginModal } from "./ClientLoginModal";
 import { InteractiveGlobe3D } from "./InteractiveGlobe3D";
 import { SpotlightCard } from "./SpotlightCard";
 import { HeroBentoGrid } from "./HeroBentoGrid";
+import { ContainerTextFlip } from "./ui/container-text-flip";
+import { PointerHighlight } from "./ui/pointer-highlight";
 import { playSciFiBeep } from "@/lib/soundFX";
 
 interface HeroSectionProps {
@@ -72,13 +74,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, locale }) =>
               initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.12]"
+              className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.15]"
             >
-              Людей бракує.{" "}
-              <span className="inline-block px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-400 text-sm font-mono font-bold align-middle mb-1.5 shadow-[0_0_15px_rgba(245,158,11,0.25)]">
-                -3%
-              </span>
-              <span className="block text-amber-400 font-black mt-1 drop-shadow-[0_0_30px_rgba(245,158,11,0.3)]">
+              Людей бракує:{" "}
+              <ContainerTextFlip
+                words={[
+                  "Зварювальників 135/136",
+                  "Операторів ЧПУ",
+                  "Арматурників",
+                  "Будівельників",
+                  "Швачок",
+                  "Електриків",
+                ]}
+                className="my-1 sm:my-0"
+              />
+              <span className="block text-amber-400 font-black mt-2 drop-shadow-[0_0_30px_rgba(245,158,11,0.3)]">
                 Підприємство не має зупинятися.
               </span>
             </motion.h1>
@@ -90,7 +100,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, locale }) =>
               transition={{ duration: 0.7, delay: 0.2 }}
               className="text-base sm:text-lg text-slate-300 max-w-xl leading-relaxed font-normal"
             >
-              Прямий міжнародний найм лінійного персоналу у ваш штат від 3 осіб. Наймайте напряму — роботодавець ви. Строк від 1 до 4 місяців (фіксовано в договорі). 4 платежі по 25% за результат, гарантія заміни 30 днів.
+              <PointerHighlight badgeText="100% Легально">
+                <span className="text-white font-semibold underline decoration-amber-500/50 underline-offset-4">
+                  Прямий міжнародний найм
+                </span>
+              </PointerHighlight>{" "}
+              лінійного персоналу у ваш штат від 3 осіб. Наймайте напряму — роботодавець ви. Строк від 1 до 4 місяців (фіксовано в договорі). 4 платежі по 25% за результат, гарантія заміни 30 днів.
             </motion.p>
 
             {/* CTA Buttons */}
