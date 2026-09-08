@@ -12,13 +12,15 @@ interface ContainerTextFlipProps {
 
 export const ContainerTextFlip: React.FC<ContainerTextFlipProps> = ({
   words,
-  duration = 3000,
+  duration = 3200,
   className = "",
   wordClassName = "",
 }) => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     if (words.length <= 1) return;
     const interval = setInterval(() => {
       setCurrentWordIndex((prev) => (prev + 1) % words.length);
@@ -29,16 +31,16 @@ export const ContainerTextFlip: React.FC<ContainerTextFlipProps> = ({
 
   return (
     <span
-      className={`relative inline-flex items-center justify-center overflow-hidden py-1 px-2.5 rounded-lg border border-amber-500/30 bg-amber-500/10 font-bold backdrop-blur-sm ${className}`}
+      className={`relative inline-flex items-center justify-center overflow-hidden py-1 px-3 rounded-lg border border-amber-500/30 bg-amber-500/10 font-bold backdrop-blur-sm ${className}`}
       style={{ perspective: "1000px" }}
     >
       <AnimatePresence mode="wait">
         <motion.span
           key={words[currentWordIndex]}
-          initial={{ opacity: 0, y: 20, rotateX: -90 }}
+          initial={isMounted ? { opacity: 0, y: 15, rotateX: -90 } : false}
           animate={{ opacity: 1, y: 0, rotateX: 0 }}
-          exit={{ opacity: 0, y: -20, rotateX: 90 }}
-          transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
+          exit={{ opacity: 0, y: -15, rotateX: 90 }}
+          transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
           className={`inline-block text-amber-400 whitespace-nowrap drop-shadow-[0_0_12px_rgba(245,158,11,0.4)] ${wordClassName}`}
         >
           {words[currentWordIndex]}

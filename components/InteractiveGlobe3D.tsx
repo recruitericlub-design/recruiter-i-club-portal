@@ -18,33 +18,34 @@ export const InteractiveGlobe3D: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [selectedCity, setSelectedCity] = useState<CityPin | null>(null);
+  const [hoveredCity, setHoveredCity] = useState<CityPin | null>(null);
 
-  // STARTING ORIENTATION: Ukraine is right in front and center!
+  // STARTING ORIENTATION: Ukraine is front and center from the very first frame!
   // rotY = 30.5° * PI / 180 = 0.53 rad (centered on Kyiv longitude)
   // rotX = -0.38 rad (~22° tilt from Mediterranean, Europe & Ukraine in upper-center)
   const rotRef = useRef({ x: -0.38, y: 0.53 });
   const isDraggingRef = useRef(false);
   const lastMouseRef = useRef({ x: 0, y: 0 });
-  const velocityRef = useRef({ x: 0, y: 0.0005 });
+  const velocityRef = useRef({ x: 0, y: 0.00045 });
 
   // Clean, professional cartographic partner network
   const cities: CityPin[] = [
-    { id: "kyiv", name: "КИЇВ", country: "Україна", flag: "🇺🇦", code: "UA", lat: 50.4501, lon: 30.5234, workers: "Головний B2B Хаб прямого найму в штат", isMainHub: true },
-    { id: "tashkent", name: "ТАШКЕНТ", country: "Узбекистан", flag: "🇺🇿", code: "UZ", lat: 41.2995, lon: 69.2401, workers: "480+ атестованих майстрів" },
-    { id: "delhi", name: "НЬЮ-ДЕЛІ", country: "Індія", flag: "🇮🇳", code: "IN", lat: 28.6139, lon: 77.2090, workers: "320+ виробничих фахівців" },
-    { id: "manila", name: "МАНІЛА", country: "Філіппіни", flag: "🇵🇭", code: "PH", lat: 14.5995, lon: 120.9842, workers: "190+ операторів та швачок" },
-    { id: "dhaka", name: "ДАККА", country: "Бангладеш", flag: "🇧🇩", code: "BD", lat: 23.8103, lon: 90.4125, workers: "150+ монтажників" },
-    { id: "kathmandu", name: "КАТМАНДУ", country: "Непал", flag: "🇳🇵", code: "NP", lat: 27.7172, lon: 85.3240, workers: "110+ будівельників" },
-    { id: "chisinau", name: "КИШИНІВ", country: "Молдова", flag: "🇲🇩", code: "MD", lat: 47.0105, lon: 28.8638, workers: "Транзитний логістичний коридор" },
+    { id: "kyiv", name: "Київ", country: "Україна", flag: "🇺🇦", code: "UA", lat: 50.4501, lon: 30.5234, workers: "Головний B2B Хаб прямого найму в штат", isMainHub: true },
+    { id: "tashkent", name: "Ташкент", country: "Узбекистан", flag: "🇺🇿", code: "UZ", lat: 41.2995, lon: 69.2401, workers: "480+ атестованих майстрів" },
+    { id: "delhi", name: "Нью-Делі", country: "Індія", flag: "🇮🇳", code: "IN", lat: 28.6139, lon: 77.2090, workers: "320+ виробничих фахівців" },
+    { id: "manila", name: "Маніла", country: "Філіппіни", flag: "🇵🇭", code: "PH", lat: 14.5995, lon: 120.9842, workers: "190+ операторів та швачок" },
+    { id: "dhaka", name: "Дакка", country: "Бангладеш", flag: "🇧🇩", code: "BD", lat: 23.8103, lon: 90.4125, workers: "150+ монтажників" },
+    { id: "kathmandu", name: "Катманду", country: "Непал", flag: "🇳🇵", code: "NP", lat: 27.7172, lon: 85.3240, workers: "110+ будівельників" },
+    { id: "chisinau", name: "Кишинів", country: "Молдова", flag: "🇲🇩", code: "MD", lat: 47.0105, lon: 28.8638, workers: "Транзитний логістичний коридор" },
   ];
 
   // Sovereign Country Borders Polygons (Baked directly into NASA Earth texture)
   const countryPolygons: { name: string; stroke: string; fill: string; width: number; points: [number, number][] }[] = [
     {
       name: "Україна",
-      stroke: "rgba(245, 158, 11, 0.95)",
-      fill: "rgba(245, 158, 11, 0.24)",
-      width: 3.5,
+      stroke: "rgba(245, 158, 11, 0.98)",
+      fill: "rgba(245, 158, 11, 0.28)",
+      width: 4.2,
       points: [
         [52.38, 33.19], [52.10, 34.20], [51.50, 34.80], [50.80, 35.30],
         [50.10, 36.50], [49.80, 38.00], [49.25, 40.23], [48.60, 39.80],
@@ -59,9 +60,9 @@ export const InteractiveGlobe3D: React.FC = () => {
     },
     {
       name: "Узбекистан",
-      stroke: "rgba(56, 189, 248, 0.88)",
-      fill: "rgba(56, 189, 248, 0.18)",
-      width: 2.2,
+      stroke: "rgba(56, 189, 248, 0.90)",
+      fill: "rgba(56, 189, 248, 0.20)",
+      width: 2.5,
       points: [
         [45.0, 56.0], [45.6, 58.5], [44.9, 61.5], [42.0, 63.0],
         [41.0, 66.0], [41.3, 69.2], [41.0, 71.5], [40.5, 73.0],
@@ -71,9 +72,9 @@ export const InteractiveGlobe3D: React.FC = () => {
     },
     {
       name: "Індія",
-      stroke: "rgba(56, 189, 248, 0.88)",
-      fill: "rgba(56, 189, 248, 0.16)",
-      width: 2.2,
+      stroke: "rgba(56, 189, 248, 0.90)",
+      fill: "rgba(56, 189, 248, 0.18)",
+      width: 2.5,
       points: [
         [35.5, 74.8], [34.5, 77.5], [31.5, 79.0], [30.0, 81.0],
         [27.0, 88.0], [27.5, 92.0], [28.0, 97.0], [24.0, 95.0],
@@ -85,9 +86,9 @@ export const InteractiveGlobe3D: React.FC = () => {
     },
     {
       name: "Філіппіни",
-      stroke: "rgba(56, 189, 248, 0.88)",
-      fill: "rgba(56, 189, 248, 0.18)",
-      width: 2.0,
+      stroke: "rgba(56, 189, 248, 0.90)",
+      fill: "rgba(56, 189, 248, 0.20)",
+      width: 2.2,
       points: [
         [18.5, 121.0], [18.0, 122.5], [16.0, 122.5], [14.0, 124.2],
         [12.5, 125.5], [9.5, 126.2], [6.0, 126.0], [5.5, 125.0],
@@ -97,9 +98,9 @@ export const InteractiveGlobe3D: React.FC = () => {
     },
     {
       name: "Бангладеш",
-      stroke: "rgba(56, 189, 248, 0.88)",
-      fill: "rgba(56, 189, 248, 0.18)",
-      width: 2.0,
+      stroke: "rgba(56, 189, 248, 0.90)",
+      fill: "rgba(56, 189, 248, 0.20)",
+      width: 2.2,
       points: [
         [26.5, 88.5], [26.0, 89.8], [25.2, 92.0], [23.8, 92.5],
         [21.5, 92.2], [21.7, 91.8], [22.3, 90.5], [21.8, 89.5],
@@ -108,9 +109,9 @@ export const InteractiveGlobe3D: React.FC = () => {
     },
     {
       name: "Непал",
-      stroke: "rgba(56, 189, 248, 0.88)",
-      fill: "rgba(56, 189, 248, 0.18)",
-      width: 2.0,
+      stroke: "rgba(56, 189, 248, 0.90)",
+      fill: "rgba(56, 189, 248, 0.20)",
+      width: 2.2,
       points: [
         [30.4, 80.5], [30.0, 81.5], [28.8, 83.5], [28.0, 85.5],
         [27.7, 88.2], [26.8, 88.0], [26.5, 87.0], [27.5, 85.0],
@@ -119,14 +120,25 @@ export const InteractiveGlobe3D: React.FC = () => {
     },
     {
       name: "Молдова",
-      stroke: "rgba(56, 189, 248, 0.88)",
-      fill: "rgba(56, 189, 248, 0.18)",
-      width: 2.0,
+      stroke: "rgba(56, 189, 248, 0.90)",
+      fill: "rgba(56, 189, 248, 0.20)",
+      width: 2.2,
       points: [
         [48.4, 27.5], [48.2, 28.5], [47.5, 29.2], [46.5, 30.0],
         [45.5, 28.2], [46.0, 28.1], [47.0, 27.6], [48.0, 27.0], [48.4, 27.5]
       ]
     }
+  ];
+
+  // Cartographic Inscriptions directly on Map Surface
+  const countryInscriptions = [
+    { country: "УКРАЇНА", city: "Київ ★", lat: 49.2, lon: 31.5, size: 26, isGold: true },
+    { country: "УЗБЕКИСТАН", city: "Ташкент •", lat: 41.5, lon: 64.5, size: 18, isGold: false },
+    { country: "ІНДІЯ", city: "Нью-Делі •", lat: 23.0, lon: 78.5, size: 22, isGold: false },
+    { country: "ФІЛІППІНИ", city: "Маніла •", lat: 13.0, lon: 122.5, size: 16, isGold: false },
+    { country: "БАНГЛАДЕШ", city: "Дакка •", lat: 24.0, lon: 90.2, size: 15, isGold: false },
+    { country: "НЕПАЛ", city: "Катманду •", lat: 28.5, lon: 84.0, size: 14, isGold: false },
+    { country: "МОЛДОВА", city: "Кишинів •", lat: 47.0, lon: 28.8, size: 13, isGold: false },
   ];
 
   const [projectedPins, setProjectedPins] = useState<{ pin: CityPin; x: number; y: number; visible: boolean; opacity: number; scale: number }[]>([]);
@@ -150,7 +162,7 @@ export const InteractiveGlobe3D: React.FC = () => {
       }
     `;
 
-    // Fragment Shader: Natural Earth, Correct Northern Orientation, Sun-Facing Delicate Atmosphere
+    // Fragment Shader: Pure Photorealistic Earth, Razor-sharp Natural Sphere, No Fake Neon
     const fsSource = `
       precision highp float;
       varying vec2 vUv;
@@ -166,22 +178,12 @@ export const InteractiveGlobe3D: React.FC = () => {
         float d = length(st);
         float R = uRadius;
 
-        // Thin, Natural Atmospheric Limb (Only where sunlight illuminates!)
+        // Razor-sharp natural sphere boundary (NO fake neon outer rings!)
         if (d > R) {
-          float haloDist = (d - R) / (R * 0.045);
-          if (haloDist < 1.0) {
-            vec3 sunDir = normalize(vec3(0.55, 0.40, 0.80));
-            float sunFacing = max(0.0, dot(vec2(st.x, st.y) / d, normalize(sunDir.xy)));
-            float haloAlpha = pow(1.0 - haloDist, 3.0) * 0.45 * pow(sunFacing, 1.6);
-            vec3 haloColor = vec3(0.35, 0.65, 0.95);
-            gl_FragColor = vec4(haloColor, haloAlpha);
-          } else {
-            discard;
-          }
-          return;
+          discard;
         }
 
-        // Correct spherical normal (North Pole at +y / Top)
+        // Exact spherical normal (North Pole at +y / Top)
         float z = sqrt(max(0.0, R * R - d * d));
         vec3 normal = vec3(st.x / R, st.y / R, z / R);
 
@@ -204,7 +206,7 @@ export const InteractiveGlobe3D: React.FC = () => {
 
         vec4 texColor = texture2D(uEarthTexture, uv);
 
-        // Natural Angled Sunlight
+        // Natural Angled Sunlight (Direct, authentic shading)
         vec3 sunDir = normalize(vec3(0.55, 0.40, 0.80));
         float NdotL = dot(normal, sunDir);
         float diffuse = clamp(NdotL * 0.85 + 0.35, 0.18, 1.0);
@@ -216,9 +218,9 @@ export const InteractiveGlobe3D: React.FC = () => {
         float isWater = smoothstep(0.32, 0.0, texColor.r);
         vec3 specular = vec3(0.9, 0.95, 1.0) * specFactor * 0.32 * isWater;
 
-        // Thin Rayleigh Horizon Edge Scattering
-        float rim = pow(1.0 - normal.z, 3.2);
-        vec3 rimGlow = vec3(0.28, 0.60, 0.95) * rim * 0.45;
+        // Thin Internal Rayleigh Atmospheric Limb (Real orbital blue haze)
+        float rim = pow(1.0 - normal.z, 3.5);
+        vec3 rimGlow = vec3(0.24, 0.55, 0.90) * rim * 0.5;
 
         vec3 finalColor = texColor.rgb * diffuse + specular + rimGlow;
 
@@ -277,7 +279,7 @@ export const InteractiveGlobe3D: React.FC = () => {
     const uRadiusLoc = gl.getUniformLocation(program, "uRadius");
     const uEarthTextureLoc = gl.getUniformLocation(program, "uEarthTexture");
 
-    // Texture setup: Bake realistic country borders directly into texture!
+    // Texture setup: Bake realistic country borders & high-precision typography directly into texture!
     const texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texImage2D(
@@ -289,7 +291,7 @@ export const InteractiveGlobe3D: React.FC = () => {
     earthImage.crossOrigin = "anonymous";
     earthImage.src = "/earth-blue-marble.jpg";
     earthImage.onload = () => {
-      // Offscreen canvas to bake country borders onto the satellite image
+      // Offscreen canvas to bake country borders and labels onto the satellite image
       const offCanvas = document.createElement("canvas");
       const tw = 2048;
       const th = 1024;
@@ -325,6 +327,41 @@ export const InteractiveGlobe3D: React.FC = () => {
           offCtx.stroke();
         });
 
+        // 3. Bake Professional Cartographic Country Inscriptions & Capital Names
+        countryInscriptions.forEach((item) => {
+          const x = ((item.lon + 180) / 360) * tw;
+          const y = ((90 - item.lat) / 180) * th;
+
+          offCtx.save();
+          offCtx.textAlign = "center";
+          offCtx.textBaseline = "middle";
+
+          // High-contrast dark halo outline
+          offCtx.font = `bold ${item.size}px "Segoe UI", Arial, sans-serif`;
+          offCtx.strokeStyle = "rgba(0, 0, 0, 0.92)";
+          offCtx.lineWidth = 4.8;
+          offCtx.lineJoin = "round";
+          offCtx.strokeText(item.country, x, y);
+
+          // Fill text
+          offCtx.fillStyle = item.isGold ? "#fef08a" : "#ffffff";
+          offCtx.fillText(item.country, x, y);
+
+          // Capital city inscription
+          if (item.city) {
+            const citySize = Math.round(item.size * 0.68);
+            offCtx.font = `bold ${citySize}px "Segoe UI", Arial, sans-serif`;
+            offCtx.strokeStyle = "rgba(0, 0, 0, 0.90)";
+            offCtx.lineWidth = 3.6;
+            offCtx.strokeText(item.city, x, y + item.size * 0.95);
+
+            offCtx.fillStyle = item.isGold ? "#fde047" : "#bae6fd";
+            offCtx.fillText(item.city, x, y + item.size * 0.95);
+          }
+
+          offCtx.restore();
+        });
+
         // Upload baked high-precision texture to WebGL with UNPACK_FLIP_Y_WEBGL = 1
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
@@ -354,7 +391,7 @@ export const InteractiveGlobe3D: React.FC = () => {
       // Natural steady axial rotation (West to East)
       if (!isDraggingRef.current) {
         rotRef.current.y += velocityRef.current.y;
-        velocityRef.current.y = velocityRef.current.y * 0.96 + 0.0005 * 0.04;
+        velocityRef.current.y = velocityRef.current.y * 0.96 + 0.00045 * 0.04;
       }
 
       gl.clearColor(0.0, 0.0, 0.0, 0.0);
@@ -376,35 +413,44 @@ export const InteractiveGlobe3D: React.FC = () => {
 
       gl.drawArrays(gl.TRIANGLES, 0, 6);
 
-      // Project Cartographic Markers in 3D Space
+      // Project Cartographic Markers using exact inverse spherical rotation
       const cssRadius = Math.min(rect.width, rect.height) * 0.38;
       const cx = rect.width / 2;
       const cy = rect.height / 2;
 
+      const rotX = rotRef.current.x;
+      const rotY = rotRef.current.y;
+
       const newPins = cities.map((city) => {
-        const phi = (90 - city.lat) * (Math.PI / 180);
-        const lam = city.lon * (Math.PI / 180);
+        const latRad = city.lat * (Math.PI / 180);
+        const lonRad = city.lon * (Math.PI / 180);
 
-        // Position relative to current rotation rotY
-        const x0 = cssRadius * Math.sin(phi) * Math.sin(lam - rotRef.current.y);
-        const y0 = cssRadius * Math.cos(phi);
-        const z0 = cssRadius * Math.sin(phi) * Math.cos(lam - rotRef.current.y);
+        // 3D Point on World Sphere
+        const Px = Math.cos(latRad) * Math.sin(lonRad);
+        const Py = Math.sin(latRad);
+        const Pz = Math.cos(latRad) * Math.cos(lonRad);
 
-        // Pitch rotation around X
-        const rotX = rotRef.current.x;
-        const y1 = y0 * Math.cos(rotX) - z0 * Math.sin(rotX);
-        const z1 = y0 * Math.sin(rotX) + z0 * Math.cos(rotX);
+        // Invert Yaw (Y)
+        const p1x = Px * Math.cos(rotY) - Pz * Math.sin(rotY);
+        const p1y = Py;
+        const p1z = Px * Math.sin(rotY) + Pz * Math.cos(rotY);
 
-        const isFacing = z1 > 0;
-        const horizonFactor = Math.max(0, Math.min(1, z1 / (cssRadius * 0.35)));
+        // Invert Pitch (X)
+        const p2x = p1x;
+        const p2y = p1y * Math.cos(rotX) + p1z * Math.sin(rotX);
+        const p2z = -p1y * Math.sin(rotX) + p1z * Math.cos(rotX);
+
+        // Visible only when facing camera (p2z > 0)
+        const isFacing = p2z > 0.20;
+        const horizonFactor = Math.max(0, Math.min(1, (p2z - 0.20) / 0.35));
 
         return {
           pin: city,
-          x: cx + x0,
-          y: cy - y1, // in CSS top is 0, y increases downward
+          x: cx + p2x * cssRadius,
+          y: cy - p2y * cssRadius, // in CSS top is 0, y increases downward
           visible: isFacing && horizonFactor > 0.05,
           opacity: horizonFactor,
-          scale: Math.max(0.8, Math.min(1.05, 0.8 + (z1 / cssRadius) * 0.25)),
+          scale: Math.max(0.8, Math.min(1.05, 0.8 + p2z * 0.25)),
         };
       });
 
@@ -473,10 +519,7 @@ export const InteractiveGlobe3D: React.FC = () => {
       ref={containerRef}
       className="relative w-full aspect-square max-w-[540px] mx-auto select-none touch-none"
     >
-      {/* Delicate Deep-Space Backlight (No cheap neon) */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-sky-950/20 via-transparent to-amber-950/10 rounded-full pointer-events-none" />
-
-      {/* WebGL Photorealistic Earth Canvas with Baked Sovereign Borders */}
+      {/* WebGL Photorealistic Earth Canvas with Baked Sovereign Borders & Inscriptions */}
       <canvas
         ref={canvasRef}
         className="w-full h-full cursor-grab active:cursor-grabbing block"
@@ -493,6 +536,7 @@ export const InteractiveGlobe3D: React.FC = () => {
         {projectedPins.map(({ pin, x, y, visible, opacity, scale }) => {
           if (!visible) return null;
           const isSelected = selectedCity?.id === pin.id;
+          const isHovered = hoveredCity?.id === pin.id;
           const isMain = pin.isMainHub;
 
           return (
@@ -506,30 +550,34 @@ export const InteractiveGlobe3D: React.FC = () => {
               }}
               className="absolute pointer-events-auto transition-opacity duration-150"
               onClick={() => setSelectedCity(isSelected ? null : pin)}
+              onMouseEnter={() => setHoveredCity(pin)}
+              onMouseLeave={() => setHoveredCity(null)}
             >
               <div className="relative flex flex-col items-center cursor-pointer group">
                 {/* Precision Cartographic Dot */}
                 <div
-                  className={`w-2.5 h-2.5 rounded-full border flex items-center justify-center ${
+                  className={`w-2.5 h-2.5 rounded-full border flex items-center justify-center transition-transform ${
                     isMain
-                      ? "bg-amber-400 border-amber-200"
-                      : "bg-sky-400 border-sky-200"
+                      ? "bg-amber-400 border-amber-200 shadow-sm scale-110"
+                      : "bg-sky-400 border-sky-200 hover:scale-125"
                   }`}
                 >
-                  <div className="w-1 h-1 rounded-full bg-slate-950" />
+                  <div className="w-0.5 h-0.5 rounded-full bg-slate-950" />
                 </div>
 
-                {/* Refined Engineering Label Badge */}
-                <div
-                  className={`mt-1 px-2 py-0.5 rounded border text-[9px] font-mono font-bold flex items-center gap-1.5 backdrop-blur-md shadow-md transition-colors ${
-                    isMain
-                      ? "bg-slate-950/90 border-amber-500/70 text-amber-300"
-                      : "bg-slate-950/85 border-white/20 text-slate-200 group-hover:border-sky-400"
-                  }`}
-                >
-                  <span className="text-[10px]">{pin.flag}</span>
-                  <span className="tracking-wider">{pin.name}</span>
-                </div>
+                {/* For Kyiv: always visible refined badge. For others: show badge on hover/select or compact flag */}
+                {(isMain || isHovered || isSelected) && (
+                  <div
+                    className={`mt-1 px-2 py-0.5 rounded border text-[9px] font-mono font-bold flex items-center gap-1.5 backdrop-blur-md shadow-md whitespace-nowrap transition-all ${
+                      isMain
+                        ? "bg-slate-950/90 border-amber-500/80 text-amber-300"
+                        : "bg-slate-950/90 border-sky-400/80 text-sky-200 scale-105"
+                    }`}
+                  >
+                    <span className="text-[10px]">{pin.flag}</span>
+                    <span className="tracking-wider">{pin.name}</span>
+                  </div>
+                )}
               </div>
             </div>
           );
@@ -569,11 +617,11 @@ export const InteractiveGlobe3D: React.FC = () => {
       <div className="absolute bottom-3 left-3 pointer-events-none hidden sm:flex items-center gap-3 px-2.5 py-1 rounded bg-slate-950/70 border border-white/10 text-[9px] font-mono text-slate-400 backdrop-blur-sm">
         <span className="flex items-center gap-1">
           <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-          <span className="text-amber-300">Україна</span>
+          <span className="text-amber-300 font-bold">Україна</span>
         </span>
         <span className="flex items-center gap-1">
           <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
-          <span>Країни найму</span>
+          <span>Країни відбору</span>
         </span>
       </div>
     </div>
