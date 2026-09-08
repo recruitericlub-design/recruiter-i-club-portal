@@ -16,7 +16,6 @@ import {
 import { ClientLoginModal } from "./ClientLoginModal";
 import { InteractiveGlobe3D } from "./InteractiveGlobe3D";
 import { SpotlightCard } from "./SpotlightCard";
-import { HeroBentoGrid } from "./HeroBentoGrid";
 import { ContainerTextFlip } from "./ui/container-text-flip";
 import { PointerHighlight } from "./ui/pointer-highlight";
 import { playSciFiBeep } from "@/lib/soundFX";
@@ -57,16 +56,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, locale }) =>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           
           {/* Main Hero Left Column */}
-          <div className="lg:col-span-6 space-y-7 text-center sm:text-left">
-            {/* Top Badge matching Reference Image */}
+          <div className="lg:col-span-5 space-y-7 text-center sm:text-left">
+            {/* Top Badge with Ukrainian Flag and Tryzub Guarantee */}
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-amber-500/30 text-amber-300 text-xs font-mono tracking-wide shadow-gold-glow"
+              className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-slate-900/95 border border-amber-500/40 text-amber-300 text-xs font-mono tracking-wide shadow-gold-glow"
             >
-              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-              <span>Свіжі довідки ДЦЗ та візи D-04 — Оновлено 2 хв тому</span>
+              <span className="text-sm">🇺🇦</span>
+              <span className="font-bold text-white">ПІДТРИМКА УКРАЇНСЬКОГО БІЗНЕСУ:</span>
+              <span className="text-amber-400">100% захист від мобілізації (ст. 23 ЗУ)</span>
             </motion.div>
 
             {/* H1 Heading matching Reference Image */}
@@ -166,33 +166,24 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, locale }) =>
               </div>
             </motion.div>
 
-            {/* Faint Prisma CRM code watermark from reference image */}
-            <div className="pt-2 font-mono text-[9px] text-slate-700/50 select-none pointer-events-none hidden sm:block">
-              <div>Prisma CRM structure {'{'}</div>
-              <div className="pl-3 text-slate-800">Prisme CRRM structure {'{'} candidate_status: VERIFIED, audit: D_04 {'}'}</div>
+            {/* Ukrainian State Employment Service compliance statement */}
+            <div className="pt-2 font-mono text-[10px] text-slate-400 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              <span>Офіційна акредитація: Ліцензія ДСЗУ №412-26 // 100% юридичний захист роботодавця</span>
             </div>
           </div>
 
-          {/* Right Column: Interactive 3D Holographic Flight Globe */}
+          {/* Right Column: Interactive 3D Holographic Flight Globe & Side Dossier */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.9, delay: 0.25 }}
-            className="lg:col-span-6 relative flex items-center justify-center"
+            className="lg:col-span-7 relative flex items-center justify-center w-full"
           >
             <InteractiveGlobe3D />
           </motion.div>
 
         </div>
-
-        {/* 4-Module Master Bento Grid matching Reference Image */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.45 }}
-        >
-          <HeroBentoGrid locale={locale} messages={messages} />
-        </motion.div>
 
         {/* Industrial Verification & National Resilience Seals Row (Concept 3) */}
         <motion.div

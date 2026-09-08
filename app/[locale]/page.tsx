@@ -1,7 +1,6 @@
 import React from "react";
 import { getMessages } from "next-intl/server";
 import { Navbar } from "@/components/Navbar";
-import { RadarTelemetryTicker } from "@/components/RadarTelemetryTicker";
 import { CyberGridBackground } from "@/components/CyberGridBackground";
 import { HeroSection } from "@/components/HeroSection";
 import { RoadmapSection } from "@/components/RoadmapSection";
@@ -37,9 +36,6 @@ export default async function HomePage({
 
       {/* Main Content Area */}
       <main className="flex-grow pt-20">
-        {/* Live Flight & Consular Radar Telemetry Bar */}
-        <RadarTelemetryTicker />
-
         {/* 1. Cinematic Hero with 3D Holographic Interactive Flight Globe */}
         <HeroSection messages={messages} locale={locale} />
 

@@ -60,19 +60,25 @@ export const Navbar: React.FC<NavbarProps> = ({ locale, messages }) => {
       <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 backdrop-blur-xl bg-slate-950/90 border-b border-amber-500/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
-            {/* Logo */}
+            {/* Official Gold Medallion Logo + Ukrainian State Pride Badge */}
             <Link href={`/${locale}`} className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 p-[1px] shadow-gold-glow">
-                <div className="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center group-hover:bg-transparent transition-colors duration-300">
-                  <ShieldCheck className="w-5 h-5 text-amber-400 group-hover:text-black transition-colors" />
-                </div>
+              <div className="relative w-11 h-11 rounded-full p-[1.5px] bg-gradient-to-tr from-amber-600 via-amber-400 to-yellow-300 shadow-gold-glow group-hover:scale-105 transition-transform duration-300">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img 
+                  src="/logo.png" 
+                  alt="Recruiter I Club Official Logo" 
+                  className="w-full h-full rounded-full object-cover bg-black"
+                />
               </div>
               <div className="flex flex-col">
                 <span className="text-xl font-black tracking-tight text-white flex items-center gap-1.5 font-sans">
                   <span className="text-amber-400 font-serif italic text-2xl leading-none">I</span> CLUB
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-[9px] font-mono font-bold text-amber-300">
+                    <span className="text-xs">🇺🇦</span> УКРАЇНА
+                  </span>
                 </span>
                 <span className="text-[9px] uppercase tracking-widest text-slate-400 font-medium font-mono">
-                  Recruiter I Club Portal
+                  Recruiter I Club • Прямий найм у штат
                 </span>
               </div>
             </Link>
@@ -116,19 +122,23 @@ export const Navbar: React.FC<NavbarProps> = ({ locale, messages }) => {
                 )}
               </button>
 
-              {/* Language Switcher */}
-              <div className="flex items-center bg-slate-900/80 rounded-lg p-1 border border-white/5 text-xs font-semibold">
-                {(["uk", "en"] as const).map((l) => (
+              {/* Three-Language Switcher: UA / RU / EN */}
+              <div className="flex items-center bg-slate-900/90 rounded-lg p-1 border border-amber-500/20 text-xs font-semibold">
+                {([
+                  { code: "uk", label: "UA" },
+                  { code: "ru", label: "RU" },
+                  { code: "en", label: "EN" }
+                ] as const).map(({ code, label }) => (
                   <button
-                    key={l}
-                    onClick={() => changeLocale(l)}
+                    key={code}
+                    onClick={() => changeLocale(code)}
                     className={`px-2.5 py-1 rounded transition-all uppercase ${
-                      locale === l
-                        ? "bg-amber-500 text-black shadow-sm font-bold"
+                      locale === code
+                        ? "bg-gradient-to-r from-amber-400 to-amber-500 text-black shadow-gold-glow font-bold"
                         : "text-slate-400 hover:text-white"
                     }`}
                   >
-                    {l === "uk" ? "UA" : "UK"}
+                    {label}
                   </button>
                 ))}
               </div>
@@ -187,20 +197,24 @@ export const Navbar: React.FC<NavbarProps> = ({ locale, messages }) => {
               <div className="flex items-center justify-between">
                 <span className="text-xs text-slate-400">Мова інтерфейсу:</span>
                 <div className="flex bg-slate-900 rounded-lg p-1 border border-white/5 text-xs font-semibold">
-                  {(["uk", "ru", "en"] as const).map((l) => (
+                  {([
+                    { code: "uk", label: "UA" },
+                    { code: "ru", label: "RU" },
+                    { code: "en", label: "EN" }
+                  ] as const).map(({ code, label }) => (
                     <button
-                      key={l}
+                      key={code}
                       onClick={() => {
-                        changeLocale(l);
+                        changeLocale(code);
                         setIsOpen(false);
                       }}
                       className={`px-3 py-1 rounded uppercase ${
-                        locale === l
-                          ? "bg-amber-500 text-black font-bold"
+                        locale === code
+                          ? "bg-amber-500 text-black font-bold shadow-gold-glow"
                           : "text-slate-400"
                       }`}
                     >
-                      {l}
+                      {label}
                     </button>
                   ))}
                 </div>

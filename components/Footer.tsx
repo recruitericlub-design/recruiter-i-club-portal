@@ -11,26 +11,30 @@ export const Footer: React.FC<{ locale: string }> = ({ locale }) => {
           {/* Col 1: Brand */}
           <div className="lg:col-span-2 space-y-4">
             <Link href={`/${locale}`} className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 p-[1px] shadow-gold-glow">
-                <div className="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center">
-                  <Building2 className="w-5 h-5 text-amber-400" />
-                </div>
+              <div className="w-12 h-12 rounded-full p-[1.5px] bg-gradient-to-tr from-amber-600 via-amber-400 to-yellow-300 shadow-gold-glow">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img 
+                  src="/logo.png" 
+                  alt="Recruiter I Club Official Logo" 
+                  className="w-full h-full rounded-full object-cover bg-black"
+                />
               </div>
               <div className="flex flex-col">
                 <span className="text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
                   RECRUITER <span className="text-amber-400 font-serif italic">I</span> CLUB
+                  <span className="text-xs">🇺🇦</span>
                 </span>
-                <span className="text-[10px] uppercase tracking-widest text-slate-400 font-medium">
-                  B2B Staffing Ecosystem
+                <span className="text-[10px] uppercase tracking-widest text-slate-400 font-medium font-mono">
+                  Прямий міжнародний найм у штат
                 </span>
               </div>
             </Link>
             <p className="text-xs text-slate-400 max-w-sm leading-relaxed">
-              Міжнародна рекрутингова екосистема повного циклу. Офіційний прямий підбір, оформлення дозволів ДЦЗ, віз D та правовий супровід працевлаштування виробничого, будівельного та логістичного персоналу для бізнесу в Україні.
+              Міжнародна рекрутингова екосистема повного циклу. Офіційний прямий підбір, оформлення дозволів ДЦЗ, віз D-04 та правовий супровід працевлаштування виробничого, будівельного та логістичного персоналу для українського бізнесу.
             </p>
-            <div className="flex items-center gap-2 text-slate-400 text-[11px]">
+            <div className="flex items-center gap-2 text-slate-300 text-[11px] font-mono">
               <ShieldCheck className="w-4 h-4 text-amber-400" />
-              <span>Офіційна ліцензія Державної служби зайнятості</span>
+              <span>Державна служба зайнятості України // Ст. 23 ЗУ</span>
             </div>
           </div>
 
