@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface CityPin {
   id: string;
@@ -19,14 +19,13 @@ export const InteractiveGlobe3D: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [selectedCity, setSelectedCity] = useState<CityPin | null>(null);
 
-  // STARTING ORIENTATION: Ukraine is front and center from the very first frame!
-  // Latitude ~49°N, Longitude ~31.5°E
-  // rotY = 31.5° * PI/180 = 0.55 rad (Longitude centered on Kyiv)
-  // rotX = -38° * PI/180 = -0.66 rad (Tilted slightly down so Ukraine is at eye level)
-  const rotRef = useRef({ x: -0.66, y: 0.55 });
+  // STARTING ORIENTATION: Ukraine is right in front and center!
+  // rotY = 30.5° * PI / 180 = 0.53 rad (centered on Kyiv longitude)
+  // rotX = -0.38 rad (~22° tilt from Mediterranean, Europe & Ukraine in upper-center)
+  const rotRef = useRef({ x: -0.38, y: 0.53 });
   const isDraggingRef = useRef(false);
   const lastMouseRef = useRef({ x: 0, y: 0 });
-  const velocityRef = useRef({ x: 0, y: 0.0006 });
+  const velocityRef = useRef({ x: 0, y: 0.0005 });
 
   // Clean, professional cartographic partner network
   const cities: CityPin[] = [
@@ -39,13 +38,13 @@ export const InteractiveGlobe3D: React.FC = () => {
     { id: "chisinau", name: "КИШИНІВ", country: "Молдова", flag: "🇲🇩", code: "MD", lat: 47.0105, lon: 28.8638, workers: "Транзитний логістичний коридор" },
   ];
 
-  // Sovereign Country Borders Polygons
+  // Sovereign Country Borders Polygons (Baked directly into NASA Earth texture)
   const countryPolygons: { name: string; stroke: string; fill: string; width: number; points: [number, number][] }[] = [
     {
       name: "Україна",
       stroke: "rgba(245, 158, 11, 0.95)",
-      fill: "rgba(245, 158, 11, 0.22)",
-      width: 3.2,
+      fill: "rgba(245, 158, 11, 0.24)",
+      width: 3.5,
       points: [
         [52.38, 33.19], [52.10, 34.20], [51.50, 34.80], [50.80, 35.30],
         [50.10, 36.50], [49.80, 38.00], [49.25, 40.23], [48.60, 39.80],
@@ -60,8 +59,8 @@ export const InteractiveGlobe3D: React.FC = () => {
     },
     {
       name: "Узбекистан",
-      stroke: "rgba(14, 165, 233, 0.85)",
-      fill: "rgba(14, 165, 233, 0.16)",
+      stroke: "rgba(56, 189, 248, 0.88)",
+      fill: "rgba(56, 189, 248, 0.18)",
       width: 2.2,
       points: [
         [45.0, 56.0], [45.6, 58.5], [44.9, 61.5], [42.0, 63.0],
@@ -72,8 +71,8 @@ export const InteractiveGlobe3D: React.FC = () => {
     },
     {
       name: "Індія",
-      stroke: "rgba(14, 165, 233, 0.85)",
-      fill: "rgba(14, 165, 233, 0.14)",
+      stroke: "rgba(56, 189, 248, 0.88)",
+      fill: "rgba(56, 189, 248, 0.16)",
       width: 2.2,
       points: [
         [35.5, 74.8], [34.5, 77.5], [31.5, 79.0], [30.0, 81.0],
@@ -86,8 +85,8 @@ export const InteractiveGlobe3D: React.FC = () => {
     },
     {
       name: "Філіппіни",
-      stroke: "rgba(14, 165, 233, 0.85)",
-      fill: "rgba(14, 165, 233, 0.16)",
+      stroke: "rgba(56, 189, 248, 0.88)",
+      fill: "rgba(56, 189, 248, 0.18)",
       width: 2.0,
       points: [
         [18.5, 121.0], [18.0, 122.5], [16.0, 122.5], [14.0, 124.2],
@@ -98,8 +97,8 @@ export const InteractiveGlobe3D: React.FC = () => {
     },
     {
       name: "Бангладеш",
-      stroke: "rgba(14, 165, 233, 0.85)",
-      fill: "rgba(14, 165, 233, 0.16)",
+      stroke: "rgba(56, 189, 248, 0.88)",
+      fill: "rgba(56, 189, 248, 0.18)",
       width: 2.0,
       points: [
         [26.5, 88.5], [26.0, 89.8], [25.2, 92.0], [23.8, 92.5],
@@ -109,8 +108,8 @@ export const InteractiveGlobe3D: React.FC = () => {
     },
     {
       name: "Непал",
-      stroke: "rgba(14, 165, 233, 0.85)",
-      fill: "rgba(14, 165, 233, 0.16)",
+      stroke: "rgba(56, 189, 248, 0.88)",
+      fill: "rgba(56, 189, 248, 0.18)",
       width: 2.0,
       points: [
         [30.4, 80.5], [30.0, 81.5], [28.8, 83.5], [28.0, 85.5],
@@ -120,8 +119,8 @@ export const InteractiveGlobe3D: React.FC = () => {
     },
     {
       name: "Молдова",
-      stroke: "rgba(14, 165, 233, 0.85)",
-      fill: "rgba(14, 165, 233, 0.16)",
+      stroke: "rgba(56, 189, 248, 0.88)",
+      fill: "rgba(56, 189, 248, 0.18)",
       width: 2.0,
       points: [
         [48.4, 27.5], [48.2, 28.5], [47.5, 29.2], [46.5, 30.0],
@@ -151,7 +150,7 @@ export const InteractiveGlobe3D: React.FC = () => {
       }
     `;
 
-    // Fragment Shader: Natural Earth Sphere, Subtle Rayleigh Atmosphere, No Cheap Neon
+    // Fragment Shader: Natural Earth, Correct Northern Orientation, Sun-Facing Delicate Atmosphere
     const fsSource = `
       precision highp float;
       varying vec2 vUv;
@@ -167,12 +166,14 @@ export const InteractiveGlobe3D: React.FC = () => {
         float d = length(st);
         float R = uRadius;
 
-        // Thin, Delicate Atmospheric Limb (No heavy neon blob)
+        // Thin, Natural Atmospheric Limb (Only where sunlight illuminates!)
         if (d > R) {
-          float haloDist = (d - R) / (R * 0.065);
+          float haloDist = (d - R) / (R * 0.045);
           if (haloDist < 1.0) {
-            float haloAlpha = pow(1.0 - haloDist, 2.8) * 0.42;
-            vec3 haloColor = vec3(0.30, 0.65, 0.95);
+            vec3 sunDir = normalize(vec3(0.55, 0.40, 0.80));
+            float sunFacing = max(0.0, dot(vec2(st.x, st.y) / d, normalize(sunDir.xy)));
+            float haloAlpha = pow(1.0 - haloDist, 3.0) * 0.45 * pow(sunFacing, 1.6);
+            vec3 haloColor = vec3(0.35, 0.65, 0.95);
             gl_FragColor = vec4(haloColor, haloAlpha);
           } else {
             discard;
@@ -180,9 +181,9 @@ export const InteractiveGlobe3D: React.FC = () => {
           return;
         }
 
-        // Spherical surface coordinates
+        // Correct spherical normal (North Pole at +y / Top)
         float z = sqrt(max(0.0, R * R - d * d));
-        vec3 normal = vec3(st.x / R, -st.y / R, z / R);
+        vec3 normal = vec3(st.x / R, st.y / R, z / R);
 
         // Apply 3D Rotation (Pitch X, Yaw Y)
         float cx = cos(uRotation.x);
@@ -196,17 +197,17 @@ export const InteractiveGlobe3D: React.FC = () => {
         // Yaw (Y)
         p = vec3(p.x * cy + p.z * sy, p.y, -p.x * sy + p.z * cy);
 
-        // Spherical UV Mapping
+        // Spherical UV Mapping (Latitude +PI/2 = North = v 1.0)
         float lat = asin(clamp(p.y, -1.0, 1.0));
         float lon = atan(p.x, p.z);
         vec2 uv = vec2((lon + PI) / (2.0 * PI), (lat + PI * 0.5) / PI);
 
         vec4 texColor = texture2D(uEarthTexture, uv);
 
-        // Natural Angled Sunlight (Direct, subtle shading)
+        // Natural Angled Sunlight
         vec3 sunDir = normalize(vec3(0.55, 0.40, 0.80));
         float NdotL = dot(normal, sunDir);
-        float diffuse = clamp(NdotL * 0.85 + 0.35, 0.20, 1.0);
+        float diffuse = clamp(NdotL * 0.85 + 0.35, 0.18, 1.0);
 
         // Specular Ocean Glint
         vec3 viewDir = vec3(0.0, 0.0, 1.0);
@@ -215,7 +216,7 @@ export const InteractiveGlobe3D: React.FC = () => {
         float isWater = smoothstep(0.32, 0.0, texColor.r);
         vec3 specular = vec3(0.9, 0.95, 1.0) * specFactor * 0.32 * isWater;
 
-        // Thin Rayleigh Horizon Edge Scattering (True orbital look)
+        // Thin Rayleigh Horizon Edge Scattering
         float rim = pow(1.0 - normal.z, 3.2);
         vec3 rimGlow = vec3(0.28, 0.60, 0.95) * rim * 0.45;
 
@@ -231,6 +232,7 @@ export const InteractiveGlobe3D: React.FC = () => {
       gl.shaderSource(shader, source);
       gl.compileShader(shader);
       if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.error("Shader error:", gl.getShaderInfoLog(shader));
         gl.deleteShader(shader);
         return null;
       }
@@ -323,9 +325,9 @@ export const InteractiveGlobe3D: React.FC = () => {
           offCtx.stroke();
         });
 
-        // Upload baked high-precision texture to WebGL
+        // Upload baked high-precision texture to WebGL with UNPACK_FLIP_Y_WEBGL = 1
         gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 0);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, offCanvas);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -349,11 +351,10 @@ export const InteractiveGlobe3D: React.FC = () => {
 
     // Render loop
     const render = () => {
-      // Natural, majestic steady axial rotation (West to East)
+      // Natural steady axial rotation (West to East)
       if (!isDraggingRef.current) {
         rotRef.current.y += velocityRef.current.y;
-        // Smooth deceleration to stable orbital pace
-        velocityRef.current.y = velocityRef.current.y * 0.96 + 0.00075 * 0.04;
+        velocityRef.current.y = velocityRef.current.y * 0.96 + 0.0005 * 0.04;
       }
 
       gl.clearColor(0.0, 0.0, 0.0, 0.0);
@@ -382,28 +383,28 @@ export const InteractiveGlobe3D: React.FC = () => {
 
       const newPins = cities.map((city) => {
         const phi = (90 - city.lat) * (Math.PI / 180);
-        const theta = (city.lon + 180) * (Math.PI / 180) + rotRef.current.y;
+        const lam = city.lon * (Math.PI / 180);
 
-        let px = -(cssRadius * Math.sin(phi) * Math.cos(theta));
-        let pz = cssRadius * Math.sin(phi) * Math.sin(theta);
-        let py = cssRadius * Math.cos(phi);
+        // Position relative to current rotation rotY
+        const x0 = cssRadius * Math.sin(phi) * Math.sin(lam - rotRef.current.y);
+        const y0 = cssRadius * Math.cos(phi);
+        const z0 = cssRadius * Math.sin(phi) * Math.cos(lam - rotRef.current.y);
 
-        // Pitch around X
+        // Pitch rotation around X
         const rotX = rotRef.current.x;
-        const py1 = py * Math.cos(rotX) - pz * Math.sin(rotX);
-        const pz1 = py * Math.sin(rotX) + pz * Math.cos(rotX);
+        const y1 = y0 * Math.cos(rotX) - z0 * Math.sin(rotX);
+        const z1 = y0 * Math.sin(rotX) + z0 * Math.cos(rotX);
 
-        // Smooth horizon fade: full opacity when facing, fading gracefully near edges
-        const isFacing = pz1 > 0;
-        const horizonFactor = Math.max(0, Math.min(1, pz1 / (cssRadius * 0.35)));
+        const isFacing = z1 > 0;
+        const horizonFactor = Math.max(0, Math.min(1, z1 / (cssRadius * 0.35)));
 
         return {
           pin: city,
-          x: cx + px,
-          y: cy - py1,
+          x: cx + x0,
+          y: cy - y1, // in CSS top is 0, y increases downward
           visible: isFacing && horizonFactor > 0.05,
           opacity: horizonFactor,
-          scale: Math.max(0.8, Math.min(1.05, 0.8 + (pz1 / cssRadius) * 0.25)),
+          scale: Math.max(0.8, Math.min(1.05, 0.8 + (z1 / cssRadius) * 0.25)),
         };
       });
 
@@ -420,7 +421,7 @@ export const InteractiveGlobe3D: React.FC = () => {
     };
   }, []);
 
-  // Natural Polar Axis Drag Controls (Clamped so Earth never flips upside down)
+  // Natural Polar Axis Drag Controls
   const handleMouseDown = (e: React.MouseEvent) => {
     isDraggingRef.current = true;
     lastMouseRef.current = { x: e.clientX, y: e.clientY };
@@ -431,12 +432,12 @@ export const InteractiveGlobe3D: React.FC = () => {
     const dx = e.clientX - lastMouseRef.current.x;
     const dy = e.clientY - lastMouseRef.current.y;
 
-    rotRef.current.y += dx * 0.005;
-    // Strict vertical tilt clamp (-0.95 to -0.25 rad) keeping Ukraine upright and visible
-    rotRef.current.x += dy * 0.003;
-    rotRef.current.x = Math.max(-0.95, Math.min(-0.25, rotRef.current.x));
+    rotRef.current.y -= dx * 0.005;
+    // Strict vertical tilt clamp keeping Europe and Ukraine upright
+    rotRef.current.x -= dy * 0.003;
+    rotRef.current.x = Math.max(-0.65, Math.min(-0.15, rotRef.current.x));
 
-    velocityRef.current = { x: dy * 0.0005, y: dx * 0.002 };
+    velocityRef.current = { x: dy * 0.0004, y: -dx * 0.0015 };
     lastMouseRef.current = { x: e.clientX, y: e.clientY };
   };
 
@@ -456,9 +457,9 @@ export const InteractiveGlobe3D: React.FC = () => {
     const dx = e.touches[0].clientX - lastMouseRef.current.x;
     const dy = e.touches[0].clientY - lastMouseRef.current.y;
 
-    rotRef.current.y += dx * 0.005;
-    rotRef.current.x += dy * 0.003;
-    rotRef.current.x = Math.max(-0.95, Math.min(-0.25, rotRef.current.x));
+    rotRef.current.y -= dx * 0.005;
+    rotRef.current.x -= dy * 0.003;
+    rotRef.current.x = Math.max(-0.65, Math.min(-0.15, rotRef.current.x));
 
     lastMouseRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
   };
