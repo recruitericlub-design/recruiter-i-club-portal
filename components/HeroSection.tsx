@@ -180,7 +180,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, locale }) =>
             transition={{ duration: 0.9, delay: 0.25 }}
             className="lg:col-span-7 relative flex items-center justify-center w-full"
           >
-            <InteractiveGlobe3D />
+            <InteractiveGlobe3D locale={locale} />
           </motion.div>
 
         </div>
