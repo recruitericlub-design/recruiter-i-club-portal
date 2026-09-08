@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import * as THREE from "three";
 import ThreeGlobe from "three-globe";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
 
 export interface HubPoint {
   id: string;
@@ -13,6 +14,7 @@ export interface HubPoint {
   lat: number;
   lng: number;
   isMainHub?: boolean;
+  isTransitHub?: boolean;
   color: string;
   flag: string;
   targetWage: string;
@@ -34,6 +36,20 @@ export const HUBS: HubPoint[] = [
     targetWage: "Головний хаб",
     visaTime: "0 днів",
     flightCode: "UA-HUB",
+  },
+  {
+    id: "chisinau",
+    name: "Кишинів",
+    country: "Молдова",
+    adminName: "Moldova",
+    lat: 47.0105,
+    lng: 28.8638,
+    isTransitHub: true,
+    color: "#10b981",
+    flag: "🇲🇩",
+    targetWage: "Транзитний хаб",
+    visaTime: "10–20 днів",
+    flightCode: "RMO-KBP",
   },
   {
     id: "tashkent",
@@ -145,6 +161,7 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const targetCamPosRef = useRef<THREE.Vector3 | null>(null);
   const isAnimatingCamRef = useRef<boolean>(false);
+  const countriesDataRef = useRef<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Helper to convert lat/lng to 3D position vector on sphere of radius R
@@ -158,21 +175,66 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
     );
   };
 
-  // Fly camera to specific hub
+  // Fly camera to specific hub with close cinematic zoom (dist = 175)
   const flyToHub = useCallback((hub: HubPoint) => {
-    const camDist = 260; // Optimal viewing distance for ThreeGlobe (R = 100)
+    // Zoom close to show detailed border polygons
+    const camDist = 175;
     const targetPos = latLngToVector(hub.lat, hub.lng, camDist);
     targetCamPosRef.current = targetPos;
     isAnimatingCamRef.current = true;
   }, []);
 
-  // When selectedHubId changes externally, trigger camera fly
+  // Update polygon colors and elevation when selectedHubId changes
+  const updateCountryHighlights = useCallback((activeId: string) => {
+    const Globe = globeInstanceRef.current;
+    if (!Globe || !countriesDataRef.current) return;
+
+    const activeHub = HUBS.find((h) => h.id === activeId);
+    const activeAdmin = activeHub ? activeHub.adminName : "";
+    const targetAdmins = HUBS.map((h) => h.adminName);
+
+    Globe.polygonCapColor((feat: any) => {
+      const admin = feat.properties.ADMIN || feat.properties.NAME;
+      if (admin === activeAdmin) {
+        if (admin === "Ukraine") return "rgba(56, 189, 248, 0.65)";
+        if (admin === "Moldova") return "rgba(16, 185, 129, 0.65)";
+        return "rgba(245, 158, 11, 0.65)"; // Intense gold highlight for active
+      }
+      if (admin === "Ukraine") return "rgba(56, 189, 248, 0.35)";
+      if (admin === "Moldova") return "rgba(16, 185, 129, 0.35)";
+      if (targetAdmins.includes(admin)) return "rgba(245, 158, 11, 0.28)";
+      return "rgba(15, 23, 42, 0.18)"; // Muted dark slate for background
+    });
+
+    Globe.polygonStrokeColor((feat: any) => {
+      const admin = feat.properties.ADMIN || feat.properties.NAME;
+      if (admin === activeAdmin) {
+        if (admin === "Ukraine") return "#38bdf8";
+        if (admin === "Moldova") return "#34d399";
+        return "#fbbf24"; // Bright razor-sharp neon border
+      }
+      if (admin === "Ukraine") return "rgba(56, 189, 248, 0.6)";
+      if (admin === "Moldova") return "rgba(16, 185, 129, 0.6)";
+      if (targetAdmins.includes(admin)) return "rgba(251, 191, 36, 0.5)";
+      return "rgba(51, 65, 85, 0.25)"; // Ultra-subtle border for background countries
+    });
+
+    Globe.polygonAltitude((feat: any) => {
+      const admin = feat.properties.ADMIN || feat.properties.NAME;
+      if (admin === activeAdmin) return 0.045; // Elevated holographic relief for selected country
+      if (admin === "Ukraine" || admin === "Moldova" || targetAdmins.includes(admin)) return 0.015;
+      return 0.003;
+    });
+  }, []);
+
+  // When selectedHubId changes, fly camera and update country highlights
   useEffect(() => {
     const hub = HUBS.find((h) => h.id === selectedHubId);
     if (hub) {
       flyToHub(hub);
+      updateCountryHighlights(selectedHubId);
     }
-  }, [selectedHubId, flyToHub]);
+  }, [selectedHubId, flyToHub, updateCountryHighlights]);
 
   useEffect(() => {
     const container = mountRef.current;
@@ -185,39 +247,52 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
     // 1. Scene Setup
     const scene = new THREE.Scene();
 
-    // 2. Camera Setup
+    // 2. Camera Setup (centered directly on globe)
     const camera = new THREE.PerspectiveCamera(45, width / height, 1, 2000);
-    camera.position.set(0, 80, 280);
+    camera.position.set(0, 50, 200);
     cameraRef.current = camera;
 
-    // 3. Renderer Setup
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+    // 3. WebGL Renderer
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true,
+      powerPreference: "high-performance",
+    });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.1;
+    renderer.toneMappingExposure = 1.15;
     container.innerHTML = "";
     container.appendChild(renderer.domElement);
 
-    // 4. OrbitControls
+    // 4. CSS2D Renderer for Razor-sharp HTML/SVG markers
+    const css2dRenderer = new CSS2DRenderer();
+    css2dRenderer.setSize(width, height);
+    css2dRenderer.domElement.style.position = "absolute";
+    css2dRenderer.domElement.style.top = "0px";
+    css2dRenderer.domElement.style.left = "0px";
+    css2dRenderer.domElement.style.pointerEvents = "none";
+    container.appendChild(css2dRenderer.domElement);
+
+    // 5. OrbitControls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.06;
     controls.rotateSpeed = 0.7;
     controls.zoomSpeed = 0.8;
-    controls.minDistance = 140;
-    controls.maxDistance = 450;
+    controls.minDistance = 125;
+    controls.maxDistance = 380;
     controls.autoRotate = isAutoRotate;
-    controls.autoRotateSpeed = 0.6;
+    controls.autoRotateSpeed = 0.5;
     controls.enablePan = false;
     controlsRef.current = controls;
 
-    // Interrupt camera animation if user manually rotates
+    // Interrupt camera animation if user manually grabs the globe
     controls.addEventListener("start", () => {
       isAnimatingCamRef.current = false;
     });
 
-    // 5. Lighting
+    // 6. Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
     scene.add(ambientLight);
 
@@ -233,44 +308,75 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
     dirLight3.position.set(-300, -150, 100);
     scene.add(dirLight3);
 
-    // 6. Instantiate ThreeGlobe
+    // 7. Instantiate ThreeGlobe
     const Globe = new ThreeGlobe({ waitForGlobeReady: true, animateIn: true })
       .globeImageUrl("/textures/earth-night.jpg")
       .bumpImageUrl("/textures/earth-topology.png")
       .showAtmosphere(true)
       .atmosphereColor("#0ea5e9")
-      .atmosphereAltitude(0.22);
+      .atmosphereAltitude(0.24);
 
     globeInstanceRef.current = Globe;
     scene.add(Globe);
 
-    // 7. Configure Arcs (from partner hubs into Kyiv)
-    const kyivHub = HUBS[0];
-    const arcsData = HUBS.slice(1).map((hub) => ({
-      startLat: hub.lat,
-      startLng: hub.lng,
+    // 8. Configure Arcs (Connecting partner hubs -> Moldova transit -> Kyiv destination)
+    const kyivHub = HUBS[0]; // Kyiv
+    const chisinauHub = HUBS[1]; // Moldova
+
+    const arcsData: any[] = [];
+
+    // Main corridors into Kyiv
+    HUBS.slice(2).forEach((hub) => {
+      // Direct high-altitude route to Kyiv
+      arcsData.push({
+        startLat: hub.lat,
+        startLng: hub.lng,
+        endLat: kyivHub.lat,
+        endLng: kyivHub.lng,
+        color: [hub.color, "#38bdf8"],
+        name: `${hub.name} → Київ`,
+        alt: 0.26,
+      });
+
+      // Route via Moldova transit hub
+      arcsData.push({
+        startLat: hub.lat,
+        startLng: hub.lng,
+        endLat: chisinauHub.lat,
+        endLng: chisinauHub.lng,
+        color: [hub.color, "#10b981"],
+        name: `${hub.name} → Кишинів (Транзит)`,
+        alt: 0.18,
+      });
+    });
+
+    // Dedicated Chisinau -> Kyiv ground/air transit corridor
+    arcsData.push({
+      startLat: chisinauHub.lat,
+      startLng: chisinauHub.lng,
       endLat: kyivHub.lat,
       endLng: kyivHub.lng,
-      color: [hub.color, "#38bdf8"],
-      hubId: hub.id,
-      name: `${hub.name} → Київ`,
-    }));
+      color: ["#10b981", "#38bdf8"],
+      name: "Кишинів → Київ (Офіційний наземний коридор)",
+      alt: 0.08,
+      stroke: 2.2,
+    });
 
     Globe.arcsData(arcsData)
       .arcColor((d: any) => d.color)
-      .arcAltitude(0.24)
-      .arcStroke(1.2)
+      .arcAltitude((d: any) => d.alt || 0.22)
+      .arcStroke((d: any) => d.stroke || 1.3)
       .arcDashLength(0.4)
       .arcDashGap(0.8)
       .arcDashInitialGap(() => Math.random())
       .arcDashAnimateTime(2000);
 
-    // 8. Configure Rings (pulsing radar rings at hubs)
+    // 9. Configure Concentric Radar Rings
     const ringsData = HUBS.map((hub) => ({
       lat: hub.lat,
       lng: hub.lng,
-      color: hub.isMainHub ? "#38bdf8" : hub.color,
-      maxR: hub.isMainHub ? 4.5 : 3.5,
+      color: hub.color,
+      maxR: hub.isMainHub ? 4.5 : (hub.isTransitHub ? 4.0 : 3.2),
       propagationSpeed: hub.isMainHub ? 2.5 : 1.8,
       repeatPeriod: hub.isMainHub ? 1200 : 1600,
     }));
@@ -281,104 +387,62 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
       .ringPropagationSpeed((d: any) => d.propagationSpeed)
       .ringRepeatPeriod((d: any) => d.repeatPeriod);
 
-    // 9. Configure Hub Labels
-    const labelsData = HUBS.map((hub) => ({
-      id: hub.id,
-      lat: hub.lat,
-      lng: hub.lng,
-      text: `${hub.flag} ${hub.name}`,
-      color: hub.isMainHub ? "#38bdf8" : "#fef08a",
-      size: hub.isMainHub ? 1.4 : 1.1,
-      dotRadius: hub.isMainHub ? 0.6 : 0.45,
-    }));
+    // 10. Configure High-DPI HTML/SVG Markers with Real Flags and Tactile Badges
+    Globe.htmlElementsData(HUBS)
+      .htmlElement((d: any) => {
+        const el = document.createElement("div");
+        el.className = "group pointer-events-auto cursor-pointer select-none -translate-x-1/2 -translate-y-1/2 transition-transform duration-200 hover:scale-125";
+        
+        const badgeBorder = d.isMainHub 
+          ? "border-cyan-400 shadow-[0_0_16px_rgba(56,189,248,0.5)]" 
+          : (d.isTransitHub 
+              ? "border-emerald-400 shadow-[0_0_16px_rgba(16,185,129,0.5)]"
+              : "border-amber-400 shadow-[0_0_16px_rgba(245,158,11,0.4)]");
 
-    Globe.labelsData(labelsData)
-      .labelText((d: any) => d.text)
-      .labelColor((d: any) => d.color)
-      .labelSize((d: any) => d.size)
-      .labelDotRadius((d: any) => d.dotRadius)
-      .labelAltitude(0.02)
-      .labelResolution(3);
+        const wageColor = d.isMainHub 
+          ? "text-cyan-300 bg-cyan-500/20" 
+          : (d.isTransitHub 
+              ? "text-emerald-300 bg-emerald-500/20" 
+              : "text-amber-300 bg-amber-500/20");
 
-    // 10. Load GeoJSON Polygons (Countries Borders)
-    const targetAdminNames = HUBS.map((h) => h.adminName);
+        el.innerHTML = `
+          <div class="flex flex-col items-center">
+            <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-950/90 border ${badgeBorder} backdrop-blur-md">
+              <span class="text-sm leading-none drop-shadow-md">${d.flag}</span>
+              <span class="text-[11px] font-bold font-mono text-white tracking-tight whitespace-nowrap">${d.name}</span>
+              <span class="text-[9px] font-bold font-mono px-1.5 py-0.5 rounded ${wageColor} whitespace-nowrap">${d.targetWage}</span>
+            </div>
+            <div class="w-2.5 h-2.5 mt-1 rounded-full border-2 border-white shadow-[0_0_10px_#fff]" style="background-color: ${d.color};"></div>
+          </div>
+        `;
 
+        el.addEventListener("click", (e) => {
+          e.stopPropagation();
+          onSelectHub(d);
+          flyToHub(d);
+        });
+
+        return el;
+      })
+      .htmlAltitude(0.025)
+      .htmlElementVisibilityModifier((el: HTMLElement, isVisible: boolean) => {
+        el.style.opacity = isVisible ? "1" : "0";
+        el.style.pointerEvents = isVisible ? "auto" : "none";
+      });
+
+    // 11. Load GeoJSON Polygons (Countries Borders)
     fetch("/data/countries.geojson")
       .then((res) => res.json())
       .then((countries) => {
-        Globe.polygonsData(countries.features)
-          .polygonCapColor((feat: any) => {
-            const admin = feat.properties.ADMIN || feat.properties.NAME;
-            if (admin === "Ukraine") {
-              return "rgba(56, 189, 248, 0.45)"; // Cyan fill for Ukraine
-            }
-            if (targetAdminNames.includes(admin)) {
-              return "rgba(245, 158, 11, 0.38)"; // Golden amber fill for partner countries
-            }
-            return "rgba(15, 23, 42, 0.25)"; // Dark slate background fill for other countries
-          })
-          .polygonSideColor(() => "rgba(0, 0, 0, 0.15)")
-          .polygonStrokeColor((feat: any) => {
-            const admin = feat.properties.ADMIN || feat.properties.NAME;
-            if (admin === "Ukraine") {
-              return "#38bdf8"; // Luminous cyan border
-            }
-            if (targetAdminNames.includes(admin)) {
-              return "#fbbf24"; // Luminous golden amber border
-            }
-            return "rgba(71, 85, 105, 0.35)"; // Subtle, dim borders for background countries so globe isn't empty
-          })
-          .polygonAltitude((feat: any) => {
-            const admin = feat.properties.ADMIN || feat.properties.NAME;
-            if (admin === "Ukraine" || targetAdminNames.includes(admin)) {
-              return 0.015; // Raised slightly for partner countries
-            }
-            return 0.005;
-          });
-
+        countriesDataRef.current = countries;
+        Globe.polygonsData(countries.features);
+        updateCountryHighlights(selectedHubId);
         setIsLoading(false);
       })
       .catch((err) => {
         console.error("Failed to load countries.geojson:", err);
         setIsLoading(false);
       });
-
-    // 11. Raycasting for Clicking on Globe
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-
-    const handleCanvasClick = (event: MouseEvent) => {
-      const rect = renderer.domElement.getBoundingClientRect();
-      mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-      mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-      raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects(Globe.children, true);
-
-      if (intersects.length > 0) {
-        const hitPoint = intersects[0].point;
-        // Find closest hub
-        let closestHub: HubPoint | null = null;
-        let minDist = Infinity;
-
-        HUBS.forEach((hub) => {
-          const hubVec = latLngToVector(hub.lat, hub.lng, 100);
-          const dist = hitPoint.distanceTo(hubVec);
-          if (dist < minDist) {
-            minDist = dist;
-            closestHub = hub;
-          }
-        });
-
-        // If clicked within reasonable proximity of a hub (35 units on sphere of R=100)
-        if (closestHub && minDist < 35) {
-          onSelectHub(closestHub);
-          flyToHub(closestHub);
-        }
-      }
-    };
-
-    renderer.domElement.addEventListener("click", handleCanvasClick);
 
     // 12. Resize Observer
     const resizeObserver = new ResizeObserver((entries) => {
@@ -388,6 +452,7 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
           camera.aspect = newW / newH;
           camera.updateProjectionMatrix();
           renderer.setSize(newW, newH);
+          css2dRenderer.setSize(newW, newH);
         }
       }
     });
@@ -402,34 +467,37 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
         camera.position.lerp(targetCamPosRef.current, 0.055);
         camera.lookAt(0, 0, 0);
 
-        if (camera.position.distanceTo(targetCamPosRef.current) < 1.5) {
+        if (camera.position.distanceTo(targetCamPosRef.current) < 1.0) {
           isAnimatingCamRef.current = false;
         }
       }
 
       controls.update();
       renderer.render(scene, camera);
+      css2dRenderer.render(scene, camera);
     };
 
     animate();
 
     // 14. Initial focus on Tashkent
-    const initialHub = HUBS.find((h) => h.id === selectedHubId) || HUBS[1];
+    const initialHub = HUBS.find((h) => h.id === selectedHubId) || HUBS[2];
     flyToHub(initialHub);
 
     // Cleanup on unmount
     return () => {
       cancelAnimationFrame(animationFrameId);
       resizeObserver.disconnect();
-      renderer.domElement.removeEventListener("click", handleCanvasClick);
       controls.dispose();
       renderer.dispose();
       Globe._destructor?.();
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
+      if (container.contains(css2dRenderer.domElement)) {
+        container.removeChild(css2dRenderer.domElement);
+      }
     };
-  }, [flyToHub, onSelectHub, isAutoRotate]);
+  }, [flyToHub, onSelectHub, isAutoRotate, updateCountryHighlights]);
 
   // Update autoRotate when prop changes
   useEffect(() => {
@@ -439,25 +507,19 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
   }, [isAutoRotate]);
 
   return (
-    <div className="relative w-full h-full min-h-[460px] sm:min-h-[520px] lg:min-h-[620px] flex items-center justify-center">
-      {/* Three.js Canvas Container */}
-      <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing flex items-center justify-center" />
+    <div className="relative w-full h-full min-h-[480px] sm:min-h-[560px] lg:min-h-[640px] flex items-center justify-center">
+      {/* Three.js + CSS2D Canvas Mount */}
+      <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing relative flex items-center justify-center" />
 
       {/* Loading Overlay */}
       {isLoading && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#020617]/80 backdrop-blur-sm z-20 transition-opacity">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#020617]/70 backdrop-blur-sm z-30 transition-opacity">
           <div className="w-12 h-12 rounded-full border-2 border-amber-500/20 border-t-amber-400 animate-spin mb-4" />
           <div className="font-mono text-xs text-amber-400/90 tracking-widest uppercase">
-            ІНІЦІАЛІЗАЦІЯ 3D-СФЕРИ NASA ТА GEOJSON МЕЖ...
+            ІНІЦІАЛІЗАЦІЯ СФЕРИ NASA ТА КОРДОНІВ КРАЇН...
           </div>
         </div>
       )}
-
-      {/* Subtle Hint */}
-      <div className="absolute bottom-3 left-4 z-10 pointer-events-none flex items-center gap-2 font-mono text-[10px] text-slate-500 bg-slate-950/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
-        <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-        <span>Обертання мишею / Клік на країну для наближення</span>
-      </div>
     </div>
   );
 };

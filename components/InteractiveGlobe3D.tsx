@@ -9,25 +9,23 @@ import {
   RotateCcw, 
   ShieldCheck, 
   Clock, 
-  Banknote, 
   Sparkles, 
   CheckCircle2, 
   ArrowRight,
-  Plane,
   Compass,
-  Building2,
-  Users
+  MapPin,
+  Route
 } from "lucide-react";
 import { playSciFiBeep, playMechanicalClick } from "@/lib/soundFX";
 import { HUBS, HubPoint } from "./ThreeGlobeScene";
 
-// Dynamically load ThreeGlobeScene with ssr: false so window/WebGL stays 100% client-side
+// Dynamically load ThreeGlobeScene with ssr: false
 const DynamicThreeGlobe = dynamic(
   () => import("./ThreeGlobeScene").then((mod) => mod.ThreeGlobeScene),
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-[520px] flex flex-col items-center justify-center bg-[#020617]/90 rounded-2xl border border-white/5">
+      <div className="w-full h-[520px] flex flex-col items-center justify-center">
         <div className="w-12 h-12 border-2 border-amber-500/20 border-t-amber-400 rounded-full animate-spin mb-4" />
         <div className="font-mono text-xs text-amber-400/90 tracking-widest uppercase">
           ЗАВАНТАЖЕННЯ 3D-СФЕРИ NASA ТА КОРДОНІВ...
@@ -57,6 +55,7 @@ export interface CountryDossier {
   economicAdvantage: string;
   flightCode: string;
   isMainHub?: boolean;
+  isTransitHub?: boolean;
 }
 
 const DOSSIERS: Record<string, CountryDossier[]> = {
@@ -85,6 +84,32 @@ const DOSSIERS: Record<string, CountryDossier[]> = {
       economicAdvantage: "Пряме зарахування у штат українського ТОВ/ФОП. 100% імунітет від мобілізації для іноземного персоналу (ст. 23 ЗУ).",
       flightCode: "UA-HUB",
       isMainHub: true,
+    },
+    {
+      id: "chisinau",
+      name: "Кишинів",
+      country: "Молдова",
+      region: "Східна Європа // Транзитний логістичний вузол",
+      flag: "🇲🇩",
+      code: "MD",
+      hubType: "ОФІЦІЙНИЙ ТРАНЗИТНИЙ ХАБ // СУПРОВІД КОРДОНУ",
+      targetWageUA: "Транзитний коридор",
+      targetWageUAH: "Організований трансфер до заводу",
+      homeWage: "Транзитний хаб",
+      homeWageUAH: "Зустріч в аеропорту",
+      wageMultiplier: "Безпечний транзит",
+      wageRatioNumber: 1.0,
+      visaTime: "10–20 днів (підготовка коридору)",
+      workSchedule: "Логістичний координаційний штаб 24/7",
+      culturalTraits: [
+        "Офіційний безпечний наземний коридор до кордону України",
+        "Зустріч в аеропорту Кишинева представниками Recruiter I Club",
+        "Організований трансфер комфортабельними автобусами до підприємства",
+        "Повний супровід митних і прикордонних процедур без затримок"
+      ],
+      economicAdvantage: "Гарантія безпечного прибуття персоналу: прямий організований транзит через Молдову без затримок на кордоні.",
+      flightCode: "RMO-KBP",
+      isTransitHub: true,
     },
     {
       id: "tashkent",
@@ -286,6 +311,32 @@ const DOSSIERS: Record<string, CountryDossier[]> = {
       isMainHub: true,
     },
     {
+      id: "chisinau",
+      name: "Кишинёв",
+      country: "Молдова",
+      region: "Восточная Европа // Транзитный логистический узел",
+      flag: "🇲🇩",
+      code: "MD",
+      hubType: "ОФИЦИАЛЬНЫЙ ТРАНЗИТНЫЙ ХАБ // СОПРОВОЖДЕНИЕ ГРАНИЦЫ",
+      targetWageUA: "Транзитный коридор",
+      targetWageUAH: "Организованный трансфер на завод",
+      homeWage: "Транзитный хаб",
+      homeWageUAH: "Встреча в аэропорту",
+      wageMultiplier: "Безопасный транзит",
+      wageRatioNumber: 1.0,
+      visaTime: "10–20 дней (подготовка коридора)",
+      workSchedule: "Логистический координационный штаб 24/7",
+      culturalTraits: [
+        "Официальный безопасный наземный коридор до границы Украины",
+        "Встреча в аэропорту Кишинёва представителями Recruiter I Club",
+        "Организованный трансфер комфортабельными автобусами до завода",
+        "Полное сопровождение таможенных и пограничных процедур без задержек"
+      ],
+      economicAdvantage: "Гарантия безопасного прибытия: прямой организованный транзит через Молдову без рисков на границе.",
+      flightCode: "RMO-KBP",
+      isTransitHub: true,
+    },
+    {
       id: "tashkent",
       name: "Ташкент",
       country: "Узбекистан",
@@ -366,7 +417,7 @@ const DOSSIERS: Record<string, CountryDossier[]> = {
       region: "Южная Азия // Текстиль & Строительство",
       flag: "🇧🇩",
       code: "BD",
-      hubType: "ТЕКСТИЛЬНЫЙ ГИГАНТ // ШВЕЙНЫЕ ЛИНИИ",
+      hubType: "ТЕКСТИЛЬНЫЙ ГІГАНТ // ШВЕЙНЫЕ ЛИНИИ",
       targetWageUA: "от 600 €",
       targetWageUAH: "~27 000 ₴ / мес",
       homeWage: "~140 € / мес",
@@ -483,6 +534,32 @@ const DOSSIERS: Record<string, CountryDossier[]> = {
       economicAdvantage: "Direct enrollment onto Ukrainian entity payroll. 100% statutory military draft exemption for foreign workers (Art. 23 Law of Ukraine).",
       flightCode: "UA-HUB",
       isMainHub: true,
+    },
+    {
+      id: "chisinau",
+      name: "Chisinau",
+      country: "Moldova",
+      region: "Eastern Europe // Transit Logistics Node",
+      flag: "🇲🇩",
+      code: "MD",
+      hubType: "OFFICIAL TRANSIT HUB // BORDER ESCORT",
+      targetWageUA: "Transit Corridor",
+      targetWageUAH: "Direct factory transfer",
+      homeWage: "Transit Hub",
+      homeWageUAH: "Airport meet & greet",
+      wageMultiplier: "Safe Transit",
+      wageRatioNumber: 1.0,
+      visaTime: "10–20 days (corridor setup)",
+      workSchedule: "24/7 Logistics command headquarters",
+      culturalTraits: [
+        "Official secure land corridor directly to Ukraine border",
+        "Chisinau airport reception by Recruiter I Club staff",
+        "Organized bus transit directly to employer manufacturing facility",
+        "Complete customs and border clearance management"
+      ],
+      economicAdvantage: "Guaranteed safe workforce arrival: direct organized transit via Moldova with zero border friction.",
+      flightCode: "RMO-KBP",
+      isTransitHub: true,
     },
     {
       id: "tashkent",
@@ -672,7 +749,7 @@ export const InteractiveGlobe3D: React.FC<InteractiveGlobe3DProps> = ({ locale =
 
   // Active Dossier
   const activeDossier = useMemo(() => {
-    return dossiers.find((d) => d.id === selectedHubId) || dossiers[1];
+    return dossiers.find((d) => d.id === selectedHubId) || dossiers[2];
   }, [dossiers, selectedHubId]);
 
   const handleSelectCountry = (hubId: string) => {
@@ -700,25 +777,39 @@ export const InteractiveGlobe3D: React.FC<InteractiveGlobe3DProps> = ({ locale =
 
   return (
     <div className="w-full flex flex-col space-y-4">
-      {/* 1. Country Selection Bar */}
+      {/* 1. Country Selection Bar (Top Horizontal Pills) */}
       <div className="w-full overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-amber-500/30">
         <div className="flex items-center gap-2 min-w-max">
           {dossiers.map((d) => {
             const isSelected = d.id === selectedHubId;
+            const isMoldova = d.id === "chisinau";
+            const isKyiv = d.id === "kyiv";
+
+            let activeBorder = "bg-amber-500/20 border-amber-400 text-white shadow-[0_0_20px_rgba(245,158,11,0.25)]";
+            let pillBg = "bg-amber-500/40 text-amber-200";
+
+            if (isKyiv) {
+              activeBorder = "bg-cyan-500/20 border-cyan-400 text-white shadow-[0_0_20px_rgba(56,189,248,0.25)]";
+              pillBg = "bg-cyan-500/40 text-cyan-200";
+            } else if (isMoldova) {
+              activeBorder = "bg-emerald-500/20 border-emerald-400 text-white shadow-[0_0_20px_rgba(16,185,129,0.25)]";
+              pillBg = "bg-emerald-500/40 text-emerald-200";
+            }
+
             return (
               <button
                 key={d.id}
                 onClick={() => handleSelectCountry(d.id)}
                 className={`group relative flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-mono transition-all duration-200 ${
                   isSelected
-                    ? "bg-amber-500/20 border-amber-400 text-white shadow-[0_0_20px_rgba(245,158,11,0.25)]"
-                    : "bg-slate-900/70 border-white/10 text-slate-400 hover:border-amber-500/40 hover:text-slate-200"
+                    ? activeBorder
+                    : "bg-slate-900/60 border-white/10 text-slate-400 hover:border-amber-500/40 hover:text-slate-200"
                 }`}
               >
                 <span className="text-base">{d.flag}</span>
                 <span className="font-bold">{d.country}</span>
                 <span className={`text-[10px] px-1.5 py-0.5 rounded ${
-                  isSelected ? "bg-amber-500/40 text-amber-200" : "bg-white/5 text-slate-400"
+                  isSelected ? pillBg : "bg-white/5 text-slate-400"
                 }`}>
                   {d.targetWageUA}
                 </span>
@@ -735,57 +826,37 @@ export const InteractiveGlobe3D: React.FC<InteractiveGlobe3DProps> = ({ locale =
         </div>
       </div>
 
-      {/* 2. Main Visual Canvas + Dossier Grid */}
+      {/* 2. Main Visual Canvas + Dossier Grid (Borderless Seamless Space View) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
         
-        {/* Left / Center: The 3D Three.js Globe */}
-        <div className="lg:col-span-7 xl:col-span-7 relative rounded-2xl bg-gradient-to-b from-slate-900/60 to-[#020617] border border-white/10 p-2 sm:p-4 overflow-hidden backdrop-blur-md shadow-2xl">
+        {/* Left / Center: The 3D Three.js Globe (No bounding box, floating freely in space) */}
+        <div className="lg:col-span-7 xl:col-span-7 relative w-full h-[480px] sm:h-[560px] lg:h-[640px] flex items-center justify-center">
           
-          {/* Top Status Header */}
-          <div className="flex items-center justify-between px-3 py-2 border-b border-white/10 font-mono text-[11px] text-slate-400">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-white font-bold tracking-wider">3D WEBGL ENGINE // NASA NIGHT LIGHTS</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={toggleAutoRotate}
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800/80 border border-white/10 hover:border-amber-500/50 text-slate-300 hover:text-white transition-colors"
-                title={isAutoRotate ? "Зупинити обертання" : "Увімкнути автообертання"}
-              >
-                {isAutoRotate ? <Pause className="w-3.5 h-3.5 text-amber-400" /> : <Play className="w-3.5 h-3.5 text-emerald-400" />}
-                <span>{isAutoRotate ? "Пауза" : "Автообертання"}</span>
-              </button>
-              <button
-                onClick={() => handleSelectCountry("tashkent")}
-                className="p-1.5 rounded-lg bg-slate-800/80 border border-white/10 hover:border-amber-500/50 text-slate-300 hover:text-white transition-colors"
-                title="Скинути камеру"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-              </button>
-            </div>
+          {/* Floating Minimalist Controls (Top-right of the planet) */}
+          <div className="absolute top-2 right-2 z-20 flex items-center gap-2">
+            <button
+              onClick={toggleAutoRotate}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/80 border border-white/10 hover:border-amber-500/50 text-slate-300 hover:text-white backdrop-blur-md text-[11px] font-mono transition-all shadow-lg"
+              title={isAutoRotate ? "Зупинити обертання" : "Увімкнути автообертання"}
+            >
+              {isAutoRotate ? <Pause className="w-3.5 h-3.5 text-amber-400" /> : <Play className="w-3.5 h-3.5 text-emerald-400" />}
+              <span>{isAutoRotate ? "Пауза" : "Авто"}</span>
+            </button>
+            <button
+              onClick={() => handleSelectCountry("tashkent")}
+              className="p-2 rounded-full bg-slate-900/80 border border-white/10 hover:border-amber-500/50 text-slate-300 hover:text-white backdrop-blur-md transition-all shadow-lg"
+              title="Скинути камеру на Ташкент"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+            </button>
           </div>
 
-          {/* Three.js Globe Render Container */}
-          <div className="relative w-full h-[460px] sm:h-[520px] lg:h-[580px] flex items-center justify-center">
-            <DynamicThreeGlobe
-              selectedHubId={selectedHubId}
-              onSelectHub={handleGlobeSelectHub}
-              isAutoRotate={isAutoRotate}
-            />
-          </div>
-
-          {/* Bottom Telemetry Info */}
-          <div className="flex flex-wrap items-center justify-between gap-3 px-3 py-2 border-t border-white/10 font-mono text-[10px] text-slate-500">
-            <div className="flex items-center gap-2">
-              <span className="text-amber-400 font-bold">ПОЛІГОНИ GEOJSON:</span>
-              <span>177 держав світу з акцентом на активні коридори найму</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-              <span>ДЦЗ & Робочі візи D</span>
-            </div>
-          </div>
+          {/* Seamless Three.js + CSS2D Scene */}
+          <DynamicThreeGlobe
+            selectedHubId={selectedHubId}
+            onSelectHub={handleGlobeSelectHub}
+            isAutoRotate={isAutoRotate}
+          />
         </div>
 
         {/* Right: The Luxury B2B Dossier Card (Matching the Generated Mockup) */}
@@ -797,10 +868,10 @@ export const InteractiveGlobe3D: React.FC<InteractiveGlobe3DProps> = ({ locale =
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
-              className="relative p-6 sm:p-7 rounded-2xl bg-slate-900/90 border border-amber-500/30 backdrop-blur-xl shadow-2xl space-y-6"
+              className="relative p-6 sm:p-7 rounded-2xl bg-slate-900/85 border border-amber-500/30 backdrop-blur-xl shadow-2xl space-y-5"
             >
               {/* Header: Flag, Country, Capital, Corridor Badge */}
-              <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-5">
+              <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-4">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2.5">
                     <span className="text-3xl">{activeDossier.flag}</span>
@@ -816,15 +887,21 @@ export const InteractiveGlobe3D: React.FC<InteractiveGlobe3DProps> = ({ locale =
                   </div>
                 </div>
 
-                <span className="px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 font-mono text-[11px] font-bold tracking-wider">
-                  {activeDossier.isMainHub ? "ГОЛОВНИЙ ХАБ" : "АКТИВНИЙ КОРИДОР"}
+                <span className={`px-3 py-1 rounded-full border font-mono text-[10px] font-bold tracking-wider ${
+                  activeDossier.isMainHub 
+                    ? "bg-cyan-500/20 border-cyan-400/40 text-cyan-300"
+                    : (activeDossier.isTransitHub
+                        ? "bg-emerald-500/20 border-emerald-400/40 text-emerald-300"
+                        : "bg-amber-500/20 border-amber-400/40 text-amber-300")
+                }`}>
+                  {activeDossier.isMainHub ? "ГОЛОВНИЙ ХАБ" : (activeDossier.isTransitHub ? "ТРАНЗИТНИЙ ХАБ" : "АКТИВНИЙ КОРИДОР")}
                 </span>
               </div>
 
-              {/* Main Salary Telemetry Box (Concept Highlight) */}
+              {/* Main Salary / Transit Telemetry Box */}
               <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-br from-amber-500/15 via-slate-900 to-slate-950 border border-amber-500/30 space-y-3">
                 <div className="text-[11px] font-mono text-slate-400 uppercase tracking-wider flex items-center justify-between">
-                  <span>Рівень заробітної плати в Україні</span>
+                  <span>{activeDossier.isTransitHub ? "Статус транзитного вузла" : "Рівень заробітної плати в Україні"}</span>
                   <span className="text-emerald-400 font-bold">{activeDossier.wageMultiplier}</span>
                 </div>
 
@@ -832,23 +909,20 @@ export const InteractiveGlobe3D: React.FC<InteractiveGlobe3DProps> = ({ locale =
                   <div className="text-3xl sm:text-4xl font-black text-white font-mono tracking-tight text-amber-400">
                     {activeDossier.targetWageUA}
                   </div>
-                  <div className="text-xs font-mono text-slate-400">
-                    ({activeDossier.targetWageUAH})
-                  </div>
                 </div>
 
                 <div className="pt-2 border-t border-white/10 flex items-center justify-between font-mono text-xs text-slate-400">
-                  <span>Дохід на батьківщині:</span>
+                  <span>{activeDossier.isTransitHub ? "Маршрут:" : "Дохід на батьківщині:"}</span>
                   <span className="text-slate-300 font-bold">{activeDossier.homeWage} ({activeDossier.homeWageUAH})</span>
                 </div>
               </div>
 
-              {/* Recruitment Telemetry 3-col Grid */}
+              {/* Recruitment Telemetry 2-col Grid */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="p-3 rounded-xl bg-slate-950/70 border border-white/10 space-y-1">
                   <div className="font-mono text-[10px] text-slate-400 uppercase flex items-center gap-1.5">
                     <Clock className="w-3.5 h-3.5 text-cyan-400" />
-                    <span>Строки прибуття</span>
+                    <span>{activeDossier.isTransitHub ? "Час підготовки" : "Строки прибуття"}</span>
                   </div>
                   <div className="text-xs font-bold text-white font-mono">
                     {activeDossier.visaTime}
@@ -858,19 +932,19 @@ export const InteractiveGlobe3D: React.FC<InteractiveGlobe3DProps> = ({ locale =
                 <div className="p-3 rounded-xl bg-slate-950/70 border border-white/10 space-y-1">
                   <div className="font-mono text-[10px] text-slate-400 uppercase flex items-center gap-1.5">
                     <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Імунітет від призову</span>
+                    <span>{activeDossier.isTransitHub ? "Контроль кордону" : "Імунітет від призову"}</span>
                   </div>
                   <div className="text-xs font-bold text-emerald-300 font-mono">
-                    100% (ст. 23 ЗУ)
+                    {activeDossier.isTransitHub ? "100% супровід" : "100% (ст. 23 ЗУ)"}
                   </div>
                 </div>
               </div>
 
-              {/* Cultural Adaptation & Work Ethic Checklist */}
+              {/* Cultural Traits or Transit Protocol Checklist */}
               <div className="space-y-2">
                 <div className="font-mono text-xs text-slate-300 font-bold uppercase tracking-wider flex items-center gap-2">
                   <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Культурні особливості та дисципліна:</span>
+                  <span>{activeDossier.isTransitHub ? "Протокол безпечного трансферу:" : "Особливості та дисципліна:"}</span>
                 </div>
                 <div className="space-y-2">
                   {activeDossier.culturalTraits.map((trait, idx) => (
@@ -882,9 +956,9 @@ export const InteractiveGlobe3D: React.FC<InteractiveGlobe3DProps> = ({ locale =
                 </div>
               </div>
 
-              {/* Economic Advantage Note */}
+              {/* Economic / Logistics Advantage Note */}
               <div className="p-3.5 rounded-xl bg-slate-950/80 border border-white/10 text-xs text-slate-400 leading-relaxed font-sans">
-                <span className="text-amber-300 font-semibold">Економічна перевага: </span>
+                <span className="text-amber-300 font-semibold">Перевага: </span>
                 {activeDossier.economicAdvantage}
               </div>
 
