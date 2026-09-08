@@ -268,7 +268,7 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
     const activeHub = HUBS.find((h) => h.id === activeId) || HUBS[2]; // Default Tashkent
     const kyivHub = HUBS[0]; // Kyiv
 
-    // 1. UPDATE ARCS: Exactly ONE clean, thick, glowing laser arc!
+    // 1. UPDATE ARCS: Exactly ONE clean, laser-sharp glowing arc (stroke 0.7)!
     const activeArcs: any[] = [];
     if (activeHub.id === "kyiv") {
       activeArcs.push({
@@ -277,8 +277,8 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
         endLat: kyivHub.lat,
         endLng: kyivHub.lng,
         color: ["#fbbf24", "#38bdf8"],
-        alt: 0.32,
-        stroke: 3.2,
+        alt: 0.28,
+        stroke: 0.7,
       });
     } else if (activeHub.id === "chisinau") {
       activeArcs.push({
@@ -287,8 +287,8 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
         endLat: kyivHub.lat,
         endLng: kyivHub.lng,
         color: ["#10b981", "#38bdf8"],
-        alt: 0.18,
-        stroke: 3.2,
+        alt: 0.16,
+        stroke: 0.7,
       });
     } else {
       activeArcs.push({
@@ -297,8 +297,8 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
         endLat: kyivHub.lat,
         endLng: kyivHub.lng,
         color: ["#fbbf24", "#38bdf8"],
-        alt: 0.32,
-        stroke: 3.2,
+        alt: 0.28,
+        stroke: 0.7,
       });
     }
 
@@ -306,25 +306,27 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
       .arcColor((d: any) => d.color)
       .arcAltitude((d: any) => d.alt)
       .arcStroke((d: any) => d.stroke)
-      .arcDashLength(0.5)
+      .arcDashLength(0.4)
       .arcDashGap(0.6)
       .arcDashInitialGap(0)
       .arcDashAnimateTime(1800);
 
-    // 2. UPDATE POLYGONS: 100% clean, NO gray cage lines on Earth!
+    // 2. UPDATE POLYGONS: Thin semi-transparent borders for ALL countries, glowing border for active!
     if (countriesDataRef.current) {
       const activeAdmin = activeHub.adminName;
 
       Globe.polygonCapColor((feat: any) => {
         const admin = feat.properties.ADMIN || feat.properties.NAME;
         if (admin === activeAdmin) {
-          if (admin === "Ukraine") return "rgba(56, 189, 248, 0.45)";
-          if (admin === "Moldova") return "rgba(16, 185, 129, 0.45)";
-          return "rgba(245, 158, 11, 0.45)"; // Rich golden amber fill for selected country
+          if (admin === "Ukraine") return "rgba(56, 189, 248, 0.28)";
+          if (admin === "Moldova") return "rgba(16, 185, 129, 0.28)";
+          return "rgba(245, 158, 11, 0.32)"; // Subtle glowing warm amber tint (no solid block)
         }
-        if (admin === "Ukraine") return "rgba(56, 189, 248, 0.25)";
-        return "rgba(0, 0, 0, 0)"; // Invisible for all other countries
+        if (admin === "Ukraine") return "rgba(56, 189, 248, 0.15)";
+        return "rgba(0, 0, 0, 0)"; // 100% transparent fill so NASA lights show cleanly
       });
+
+      Globe.polygonSideColor(() => "rgba(0, 0, 0, 0)");
 
       Globe.polygonStrokeColor((feat: any) => {
         const admin = feat.properties.ADMIN || feat.properties.NAME;
@@ -333,19 +335,20 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
           if (admin === "Moldova") return "#34d399";
           return "#fbbf24"; // Radiant golden laser neon border (Screenshot 2)
         }
-        if (admin === "Ukraine") return "rgba(56, 189, 248, 0.75)";
+        if (admin === "Ukraine") return "rgba(56, 189, 248, 0.7)";
         if (admin === "Moldova") return "rgba(16, 185, 129, 0.6)";
         if (HUBS.some((h) => h.adminName === admin)) {
-          return "rgba(245, 158, 11, 0.25)";
+          return "rgba(245, 158, 11, 0.35)";
         }
-        return "rgba(0, 0, 0, 0)"; // 100% invisible background countries
+        // ALL OTHER COUNTRIES: delicate, thin, semi-transparent line!
+        return "rgba(148, 163, 184, 0.2)";
       });
 
       Globe.polygonAltitude((feat: any) => {
         const admin = feat.properties.ADMIN || feat.properties.NAME;
-        if (admin === activeAdmin) return 0.045; // 3D elevated holographic relief
-        if (admin === "Ukraine") return 0.015;
-        return 0.002;
+        if (admin === activeAdmin) return 0.015; // Smooth subtle elevation (no giant walls)
+        if (admin === "Ukraine") return 0.008;
+        return 0.003;
       });
     }
 

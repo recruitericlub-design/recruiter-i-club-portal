@@ -851,7 +851,7 @@ export const InteractiveGlobe3D: React.FC<InteractiveGlobe3DProps> = ({ locale =
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={{ duration: 0.25 }}
-              className="relative p-5 sm:p-6 rounded-2xl bg-slate-950/85 border border-white/15 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] space-y-4"
+              className="relative p-5 sm:p-6 rounded-2xl bg-slate-950/40 border border-white/10 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] space-y-4"
             >
               {/* Header: Title + Corridor Pill + Ellipsis */}
               <div className="flex items-center justify-between border-b border-white/10 pb-3.5">
@@ -880,7 +880,7 @@ export const InteractiveGlobe3D: React.FC<InteractiveGlobe3DProps> = ({ locale =
               </div>
 
               {/* Salary Section (Matching Screenshot 2) */}
-              <div className="p-3.5 rounded-xl bg-white/[0.03] border border-white/10 space-y-2">
+              <div className="p-3.5 rounded-xl bg-white/[0.04] border border-white/10 space-y-2">
                 <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 uppercase">
                   <span>Рівень оплати праці</span>
                   <span className="text-emerald-400 font-bold">{activeDossier.wageMultiplier}</span>
@@ -902,7 +902,7 @@ export const InteractiveGlobe3D: React.FC<InteractiveGlobe3DProps> = ({ locale =
                   <span>Гарантії та строки прибуття:</span>
                 </div>
 
-                <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-900/70 border border-white/10">
+                <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/[0.03] border border-white/10">
                   <div className="w-7 h-7 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0">
                     <ShieldCheck className="w-4 h-4" />
                   </div>
@@ -912,7 +912,7 @@ export const InteractiveGlobe3D: React.FC<InteractiveGlobe3DProps> = ({ locale =
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-900/70 border border-white/10">
+                <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/[0.03] border border-white/10">
                   <div className="w-7 h-7 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 shrink-0">
                     <Clock className="w-4 h-4" />
                   </div>
@@ -924,7 +924,7 @@ export const InteractiveGlobe3D: React.FC<InteractiveGlobe3DProps> = ({ locale =
               </div>
 
               {/* Economic Advantage */}
-              <div className="p-3 rounded-xl bg-slate-900/60 border border-white/5 text-[11px] text-slate-300 leading-relaxed font-sans">
+              <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 text-[11px] text-slate-300 leading-relaxed font-sans">
                 <span className="text-amber-400 font-semibold">Перевага: </span>
                 {activeDossier.economicAdvantage}
               </div>
