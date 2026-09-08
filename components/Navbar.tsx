@@ -74,14 +74,16 @@ export const Navbar: React.FC<NavbarProps> = ({ locale, messages }) => {
                 />
               </div>
               <div className="flex flex-col">
-                <span className="text-xl font-black tracking-tight text-white flex items-center gap-1.5 font-sans">
-                  <span className="text-amber-400 font-serif italic text-2xl leading-none">I</span> CLUB
+                <span className="text-lg sm:text-xl font-black tracking-tight text-white flex items-center gap-1.5 font-sans">
+                  <span>RECRUITER</span>
+                  <span className="text-amber-400 font-black">I</span>
+                  <span>CLUB</span>
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-[9px] font-mono font-bold text-amber-300">
                     <span className="text-xs">🇺🇦</span> УКРАЇНА
                   </span>
                 </span>
                 <span className="text-[9px] uppercase tracking-widest text-slate-400 font-medium font-mono">
-                  Recruiter I Club • Прямий найм у штат
+                  Міжнародний найм у штат підприємства
                 </span>
               </div>
             </Link>

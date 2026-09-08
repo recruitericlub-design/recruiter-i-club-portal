@@ -21,11 +21,11 @@ export const Footer: React.FC<{ locale: string }> = ({ locale }) => {
               </div>
               <div className="flex flex-col">
                 <span className="text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
-                  RECRUITER <span className="text-amber-400 font-serif italic">I</span> CLUB
+                  RECRUITER <span className="text-amber-400 font-bold">I</span> CLUB
                   <span className="text-xs">🇺🇦</span>
                 </span>
                 <span className="text-[10px] uppercase tracking-widest text-slate-400 font-medium font-mono">
-                  Прямий міжнародний найм у штат
+                  Міжнародний найм у штат підприємства
                 </span>
               </div>
             </Link>
