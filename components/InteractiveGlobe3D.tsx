@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { Sparkles, Info, Shield, CheckCircle2 } from "lucide-react";
 
 interface CityPin {
   id: string;
   name: string;
   country: string;
   flag: string;
+  code: string;
   lat: number;
   lon: number;
   workers: string;
@@ -18,28 +18,120 @@ export const InteractiveGlobe3D: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [selectedCity, setSelectedCity] = useState<CityPin | null>(null);
-  const [isHovered, setIsHovered] = useState(false);
 
-  // Rotation angles
-  const rotRef = useRef({ x: 0.35, y: -0.8 });
+  // STARTING ORIENTATION: Ukraine is front and center from the very first frame!
+  // Latitude ~49°N, Longitude ~31.5°E
+  // rotY = 31.5° * PI/180 = 0.55 rad (Longitude centered on Kyiv)
+  // rotX = -38° * PI/180 = -0.66 rad (Tilted slightly down so Ukraine is at eye level)
+  const rotRef = useRef({ x: -0.66, y: 0.55 });
   const isDraggingRef = useRef(false);
   const lastMouseRef = useRef({ x: 0, y: 0 });
-  const velocityRef = useRef({ x: 0, y: 0.0025 });
+  const velocityRef = useRef({ x: 0, y: 0.0006 });
 
-  // Sovereign recruitment hubs & Ukraine main destination (Clean, uncluttered)
+  // Clean, professional cartographic partner network
   const cities: CityPin[] = [
-    { id: "kyiv", name: "Київ", country: "Україна", flag: "🇺🇦", lat: 50.4501, lon: 30.5234, workers: "Головний B2B Хаб (Прямий найм)", isMainHub: true },
-    { id: "tashkent", name: "Ташкент", country: "Узбекистан", flag: "🇺🇿", lat: 41.2995, lon: 69.2401, workers: "480+ атестованих майстрів" },
-    { id: "delhi", name: "Нью-Делі", country: "Індія", flag: "🇮🇳", lat: 28.6139, lon: 77.2090, workers: "320+ робітничих фахівців" },
-    { id: "manila", name: "Маніла", country: "Філіппіни", flag: "🇵🇭", lat: 14.5995, lon: 120.9842, workers: "190+ операторів виробництва" },
-    { id: "dhaka", name: "Дакка", country: "Бангладеш", flag: "🇧🇩", lat: 23.8103, lon: 90.4125, workers: "150+ монтажників" },
-    { id: "kathmandu", name: "Катманду", country: "Непал", flag: "🇳🇵", lat: 27.7172, lon: 85.3240, workers: "110+ будівельників" },
-    { id: "chisinau", name: "Кишинів", country: "Молдова", flag: "🇲🇩", lat: 47.0105, lon: 28.8638, workers: "Транзитний логістичний коридор" },
+    { id: "kyiv", name: "КИЇВ", country: "Україна", flag: "🇺🇦", code: "UA", lat: 50.4501, lon: 30.5234, workers: "Головний B2B Хаб прямого найму в штат", isMainHub: true },
+    { id: "tashkent", name: "ТАШКЕНТ", country: "Узбекистан", flag: "🇺🇿", code: "UZ", lat: 41.2995, lon: 69.2401, workers: "480+ атестованих майстрів" },
+    { id: "delhi", name: "НЬЮ-ДЕЛІ", country: "Індія", flag: "🇮🇳", code: "IN", lat: 28.6139, lon: 77.2090, workers: "320+ виробничих фахівців" },
+    { id: "manila", name: "МАНІЛА", country: "Філіппіни", flag: "🇵🇭", code: "PH", lat: 14.5995, lon: 120.9842, workers: "190+ операторів та швачок" },
+    { id: "dhaka", name: "ДАККА", country: "Бангладеш", flag: "🇧🇩", code: "BD", lat: 23.8103, lon: 90.4125, workers: "150+ монтажників" },
+    { id: "kathmandu", name: "КАТМАНДУ", country: "Непал", flag: "🇳🇵", code: "NP", lat: 27.7172, lon: 85.3240, workers: "110+ будівельників" },
+    { id: "chisinau", name: "КИШИНІВ", country: "Молдова", flag: "🇲🇩", code: "MD", lat: 47.0105, lon: 28.8638, workers: "Транзитний логістичний коридор" },
   ];
 
-  const [projectedPins, setProjectedPins] = useState<{ pin: CityPin; x: number; y: number; visible: boolean; z: number }[]>([]);
+  // Sovereign Country Borders Polygons
+  const countryPolygons: { name: string; stroke: string; fill: string; width: number; points: [number, number][] }[] = [
+    {
+      name: "Україна",
+      stroke: "rgba(245, 158, 11, 0.95)",
+      fill: "rgba(245, 158, 11, 0.22)",
+      width: 3.2,
+      points: [
+        [52.38, 33.19], [52.10, 34.20], [51.50, 34.80], [50.80, 35.30],
+        [50.10, 36.50], [49.80, 38.00], [49.25, 40.23], [48.60, 39.80],
+        [47.80, 39.20], [47.10, 38.20], [46.80, 36.80], [46.10, 35.00],
+        [45.40, 36.50], [44.90, 36.40], [44.40, 34.00], [44.38, 33.74],
+        [45.20, 33.00], [45.80, 33.50], [46.30, 31.80], [46.60, 30.80],
+        [45.40, 29.80], [45.30, 28.20], [46.20, 28.50], [47.80, 27.20],
+        [48.20, 26.50], [47.90, 25.00], [48.00, 24.20], [48.43, 22.14],
+        [49.00, 22.50], [49.80, 23.00], [50.40, 24.10], [51.50, 23.80],
+        [51.90, 25.50], [51.70, 27.50], [52.10, 30.50], [52.38, 33.19]
+      ]
+    },
+    {
+      name: "Узбекистан",
+      stroke: "rgba(14, 165, 233, 0.85)",
+      fill: "rgba(14, 165, 233, 0.16)",
+      width: 2.2,
+      points: [
+        [45.0, 56.0], [45.6, 58.5], [44.9, 61.5], [42.0, 63.0],
+        [41.0, 66.0], [41.3, 69.2], [41.0, 71.5], [40.5, 73.0],
+        [40.0, 71.5], [39.0, 68.0], [37.2, 67.3], [37.5, 65.5],
+        [38.5, 63.5], [40.0, 62.0], [41.5, 60.5], [41.2, 56.0], [45.0, 56.0]
+      ]
+    },
+    {
+      name: "Індія",
+      stroke: "rgba(14, 165, 233, 0.85)",
+      fill: "rgba(14, 165, 233, 0.14)",
+      width: 2.2,
+      points: [
+        [35.5, 74.8], [34.5, 77.5], [31.5, 79.0], [30.0, 81.0],
+        [27.0, 88.0], [27.5, 92.0], [28.0, 97.0], [24.0, 95.0],
+        [22.0, 89.0], [21.5, 87.0], [17.5, 83.0], [13.0, 80.2],
+        [10.0, 79.8], [8.1, 77.5], [10.0, 75.8], [15.0, 73.8],
+        [19.0, 72.8], [23.0, 68.5], [24.5, 71.0], [28.0, 70.0],
+        [31.0, 74.5], [35.5, 74.8]
+      ]
+    },
+    {
+      name: "Філіппіни",
+      stroke: "rgba(14, 165, 233, 0.85)",
+      fill: "rgba(14, 165, 233, 0.16)",
+      width: 2.0,
+      points: [
+        [18.5, 121.0], [18.0, 122.5], [16.0, 122.5], [14.0, 124.2],
+        [12.5, 125.5], [9.5, 126.2], [6.0, 126.0], [5.5, 125.0],
+        [7.0, 122.0], [9.0, 123.0], [10.5, 122.5], [12.0, 120.0],
+        [14.5, 120.5], [16.5, 119.8], [18.5, 121.0]
+      ]
+    },
+    {
+      name: "Бангладеш",
+      stroke: "rgba(14, 165, 233, 0.85)",
+      fill: "rgba(14, 165, 233, 0.16)",
+      width: 2.0,
+      points: [
+        [26.5, 88.5], [26.0, 89.8], [25.2, 92.0], [23.8, 92.5],
+        [21.5, 92.2], [21.7, 91.8], [22.3, 90.5], [21.8, 89.5],
+        [22.5, 89.0], [24.5, 88.2], [26.5, 88.5]
+      ]
+    },
+    {
+      name: "Непал",
+      stroke: "rgba(14, 165, 233, 0.85)",
+      fill: "rgba(14, 165, 233, 0.16)",
+      width: 2.0,
+      points: [
+        [30.4, 80.5], [30.0, 81.5], [28.8, 83.5], [28.0, 85.5],
+        [27.7, 88.2], [26.8, 88.0], [26.5, 87.0], [27.5, 85.0],
+        [28.2, 82.0], [29.0, 80.2], [30.4, 80.5]
+      ]
+    },
+    {
+      name: "Молдова",
+      stroke: "rgba(14, 165, 233, 0.85)",
+      fill: "rgba(14, 165, 233, 0.16)",
+      width: 2.0,
+      points: [
+        [48.4, 27.5], [48.2, 28.5], [47.5, 29.2], [46.5, 30.0],
+        [45.5, 28.2], [46.0, 28.1], [47.0, 27.6], [48.0, 27.0], [48.4, 27.5]
+      ]
+    }
+  ];
 
-  // WebGL realistic Earth Renderer
+  const [projectedPins, setProjectedPins] = useState<{ pin: CityPin; x: number; y: number; visible: boolean; opacity: number; scale: number }[]>([]);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -47,10 +139,7 @@ export const InteractiveGlobe3D: React.FC = () => {
     const gl = canvas.getContext("webgl", { alpha: true, antialias: true }) ||
                canvas.getContext("experimental-webgl", { alpha: true, antialias: true }) as WebGLRenderingContext | null;
 
-    if (!gl) {
-      console.warn("WebGL not supported, rendering fallback.");
-      return;
-    }
+    if (!gl) return;
 
     // Vertex Shader
     const vsSource = `
@@ -62,7 +151,7 @@ export const InteractiveGlobe3D: React.FC = () => {
       }
     `;
 
-    // Fragment Shader: Photorealistic Earth Sphere with Rayleigh Atmosphere & Sun Shading
+    // Fragment Shader: Natural Earth Sphere, Subtle Rayleigh Atmosphere, No Cheap Neon
     const fsSource = `
       precision highp float;
       varying vec2 vUv;
@@ -78,12 +167,12 @@ export const InteractiveGlobe3D: React.FC = () => {
         float d = length(st);
         float R = uRadius;
 
-        // Outer Atmosphere Glow
+        // Thin, Delicate Atmospheric Limb (No heavy neon blob)
         if (d > R) {
-          float haloDist = (d - R) / (R * 0.16);
+          float haloDist = (d - R) / (R * 0.065);
           if (haloDist < 1.0) {
-            float haloAlpha = pow(1.0 - haloDist, 3.2) * 0.65;
-            vec3 haloColor = vec3(0.25, 0.65, 1.0);
+            float haloAlpha = pow(1.0 - haloDist, 2.8) * 0.42;
+            vec3 haloColor = vec3(0.30, 0.65, 0.95);
             gl_FragColor = vec4(haloColor, haloAlpha);
           } else {
             discard;
@@ -114,22 +203,21 @@ export const InteractiveGlobe3D: React.FC = () => {
 
         vec4 texColor = texture2D(uEarthTexture, uv);
 
-        // Sun Direction Lighting (Gentle angled sunlight)
-        vec3 sunDir = normalize(vec3(0.65, 0.45, 0.85));
+        // Natural Angled Sunlight (Direct, subtle shading)
+        vec3 sunDir = normalize(vec3(0.55, 0.40, 0.80));
         float NdotL = dot(normal, sunDir);
-        float diffuse = clamp(NdotL * 0.9 + 0.22, 0.12, 1.0);
+        float diffuse = clamp(NdotL * 0.85 + 0.35, 0.20, 1.0);
 
         // Specular Ocean Glint
         vec3 viewDir = vec3(0.0, 0.0, 1.0);
         vec3 halfVec = normalize(sunDir + viewDir);
-        float specFactor = pow(max(0.0, dot(normal, halfVec)), 28.0);
-        // Water is blue-ish/darker in red
-        float isWater = smoothstep(0.35, 0.0, texColor.r);
-        vec3 specular = vec3(1.0, 0.95, 0.8) * specFactor * 0.45 * isWater;
+        float specFactor = pow(max(0.0, dot(normal, halfVec)), 32.0);
+        float isWater = smoothstep(0.32, 0.0, texColor.r);
+        vec3 specular = vec3(0.9, 0.95, 1.0) * specFactor * 0.32 * isWater;
 
-        // Realistic Rayleigh Limb Atmosphere
-        float rim = pow(1.0 - normal.z, 2.5);
-        vec3 rimGlow = vec3(0.25, 0.65, 1.0) * rim * 0.6;
+        // Thin Rayleigh Horizon Edge Scattering (True orbital look)
+        float rim = pow(1.0 - normal.z, 3.2);
+        vec3 rimGlow = vec3(0.28, 0.60, 0.95) * rim * 0.45;
 
         vec3 finalColor = texColor.rgb * diffuse + specular + rimGlow;
 
@@ -143,7 +231,6 @@ export const InteractiveGlobe3D: React.FC = () => {
       gl.shaderSource(shader, source);
       gl.compileShader(shader);
       if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        console.error("Shader error:", gl.getShaderInfoLog(shader));
         gl.deleteShader(shader);
         return null;
       }
@@ -160,14 +247,10 @@ export const InteractiveGlobe3D: React.FC = () => {
     gl.attachShader(program, fs);
     gl.linkProgram(program);
 
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      console.error("Program link error:", gl.getProgramInfoLog(program));
-      return;
-    }
-
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
     gl.useProgram(program);
 
-    // Full-screen Quad
+    // Full-screen Quad Buffer
     const quadBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);
     gl.bufferData(
@@ -192,26 +275,63 @@ export const InteractiveGlobe3D: React.FC = () => {
     const uRadiusLoc = gl.getUniformLocation(program, "uRadius");
     const uEarthTextureLoc = gl.getUniformLocation(program, "uEarthTexture");
 
-    // Load Earth Texture
+    // Texture setup: Bake realistic country borders directly into texture!
     const texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
-    // Temporary 1x1 navy pixel while texture loads
     gl.texImage2D(
       gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-      new Uint8Array([10, 25, 45, 255])
+      new Uint8Array([10, 20, 40, 255])
     );
 
     const earthImage = new Image();
     earthImage.crossOrigin = "anonymous";
     earthImage.src = "/earth-blue-marble.jpg";
     earthImage.onload = () => {
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 0);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, earthImage);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      // Offscreen canvas to bake country borders onto the satellite image
+      const offCanvas = document.createElement("canvas");
+      const tw = 2048;
+      const th = 1024;
+      offCanvas.width = tw;
+      offCanvas.height = th;
+      const offCtx = offCanvas.getContext("2d");
+
+      if (offCtx) {
+        // 1. Draw NASA Blue Marble Satellite Map
+        offCtx.drawImage(earthImage, 0, 0, tw, th);
+
+        // 2. Draw Realistic Political Sovereign Borders for Key Partners
+        countryPolygons.forEach((poly) => {
+          if (poly.points.length < 2) return;
+          offCtx.beginPath();
+          poly.points.forEach(([lat, lon], idx) => {
+            const x = ((lon + 180) / 360) * tw;
+            const y = ((90 - lat) / 180) * th;
+            if (idx === 0) offCtx.moveTo(x, y);
+            else offCtx.lineTo(x, y);
+          });
+          offCtx.closePath();
+
+          // Delicate natural tint fill
+          offCtx.fillStyle = poly.fill;
+          offCtx.fill();
+
+          // Authentic cartographic border line
+          offCtx.strokeStyle = poly.stroke;
+          offCtx.lineWidth = poly.width;
+          offCtx.lineJoin = "round";
+          offCtx.lineCap = "round";
+          offCtx.stroke();
+        });
+
+        // Upload baked high-precision texture to WebGL
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 0);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, offCanvas);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      }
     };
 
     let animId: number;
@@ -229,11 +349,11 @@ export const InteractiveGlobe3D: React.FC = () => {
 
     // Render loop
     const render = () => {
-      // Inertia & auto-rotation
+      // Natural, majestic steady axial rotation (West to East)
       if (!isDraggingRef.current) {
         rotRef.current.y += velocityRef.current.y;
-        velocityRef.current.y = velocityRef.current.y * 0.98 + 0.0022 * 0.02;
-        rotRef.current.x = Math.max(-0.85, Math.min(0.85, rotRef.current.x));
+        // Smooth deceleration to stable orbital pace
+        velocityRef.current.y = velocityRef.current.y * 0.96 + 0.00075 * 0.04;
       }
 
       gl.clearColor(0.0, 0.0, 0.0, 0.0);
@@ -255,7 +375,7 @@ export const InteractiveGlobe3D: React.FC = () => {
 
       gl.drawArrays(gl.TRIANGLES, 0, 6);
 
-      // Project Hub Pins in 3D Space (Screen Coords)
+      // Project Cartographic Markers in 3D Space
       const cssRadius = Math.min(rect.width, rect.height) * 0.38;
       const cx = rect.width / 2;
       const cy = rect.height / 2;
@@ -273,13 +393,17 @@ export const InteractiveGlobe3D: React.FC = () => {
         const py1 = py * Math.cos(rotX) - pz * Math.sin(rotX);
         const pz1 = py * Math.sin(rotX) + pz * Math.cos(rotX);
 
-        // Only visible if on the front side facing the camera (pz1 > 0)
+        // Smooth horizon fade: full opacity when facing, fading gracefully near edges
+        const isFacing = pz1 > 0;
+        const horizonFactor = Math.max(0, Math.min(1, pz1 / (cssRadius * 0.35)));
+
         return {
           pin: city,
           x: cx + px,
           y: cy - py1,
-          visible: pz1 > cssRadius * 0.05,
-          z: pz1,
+          visible: isFacing && horizonFactor > 0.05,
+          opacity: horizonFactor,
+          scale: Math.max(0.8, Math.min(1.05, 0.8 + (pz1 / cssRadius) * 0.25)),
         };
       });
 
@@ -296,7 +420,7 @@ export const InteractiveGlobe3D: React.FC = () => {
     };
   }, []);
 
-  // Mouse / Touch Drag Handlers
+  // Natural Polar Axis Drag Controls (Clamped so Earth never flips upside down)
   const handleMouseDown = (e: React.MouseEvent) => {
     isDraggingRef.current = true;
     lastMouseRef.current = { x: e.clientX, y: e.clientY };
@@ -307,11 +431,12 @@ export const InteractiveGlobe3D: React.FC = () => {
     const dx = e.clientX - lastMouseRef.current.x;
     const dy = e.clientY - lastMouseRef.current.y;
 
-    rotRef.current.y += dx * 0.007;
-    rotRef.current.x -= dy * 0.007;
-    rotRef.current.x = Math.max(-0.85, Math.min(0.85, rotRef.current.x));
+    rotRef.current.y += dx * 0.005;
+    // Strict vertical tilt clamp (-0.95 to -0.25 rad) keeping Ukraine upright and visible
+    rotRef.current.x += dy * 0.003;
+    rotRef.current.x = Math.max(-0.95, Math.min(-0.25, rotRef.current.x));
 
-    velocityRef.current = { x: dy * 0.001, y: dx * 0.003 };
+    velocityRef.current = { x: dy * 0.0005, y: dx * 0.002 };
     lastMouseRef.current = { x: e.clientX, y: e.clientY };
   };
 
@@ -331,9 +456,9 @@ export const InteractiveGlobe3D: React.FC = () => {
     const dx = e.touches[0].clientX - lastMouseRef.current.x;
     const dy = e.touches[0].clientY - lastMouseRef.current.y;
 
-    rotRef.current.y += dx * 0.007;
-    rotRef.current.x -= dy * 0.007;
-    rotRef.current.x = Math.max(-0.85, Math.min(0.85, rotRef.current.x));
+    rotRef.current.y += dx * 0.005;
+    rotRef.current.x += dy * 0.003;
+    rotRef.current.x = Math.max(-0.95, Math.min(-0.25, rotRef.current.x));
 
     lastMouseRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
   };
@@ -346,13 +471,11 @@ export const InteractiveGlobe3D: React.FC = () => {
     <div
       ref={containerRef}
       className="relative w-full aspect-square max-w-[540px] mx-auto select-none touch-none"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Background Radial Glow */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/10 via-amber-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
+      {/* Delicate Deep-Space Backlight (No cheap neon) */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-sky-950/20 via-transparent to-amber-950/10 rounded-full pointer-events-none" />
 
-      {/* WebGL Photorealistic Earth Canvas */}
+      {/* WebGL Photorealistic Earth Canvas with Baked Sovereign Borders */}
       <canvas
         ref={canvasRef}
         className="w-full h-full cursor-grab active:cursor-grabbing block"
@@ -364,9 +487,9 @@ export const InteractiveGlobe3D: React.FC = () => {
         onTouchEnd={handleTouchEnd}
       />
 
-      {/* Overlay 3D Hub Pins (Clean & Uncluttered) */}
+      {/* Professional Cartographic Hub Markers (Restrained, no neon) */}
       <div className="absolute inset-0 pointer-events-none">
-        {projectedPins.map(({ pin, x, y, visible, z }) => {
+        {projectedPins.map(({ pin, x, y, visible, opacity, scale }) => {
           if (!visible) return null;
           const isSelected = selectedCity?.id === pin.id;
           const isMain = pin.isMainHub;
@@ -377,42 +500,34 @@ export const InteractiveGlobe3D: React.FC = () => {
               style={{
                 left: `${x}px`,
                 top: `${y}px`,
-                transform: `translate(-50%, -100%) scale(${Math.max(0.75, Math.min(1.15, 0.7 + (z / 200) * 0.4))})`,
+                opacity,
+                transform: `translate(-50%, -100%) scale(${scale})`,
               }}
-              className="absolute pointer-events-auto transition-transform duration-75 group"
+              className="absolute pointer-events-auto transition-opacity duration-150"
               onClick={() => setSelectedCity(isSelected ? null : pin)}
             >
-              {/* Marker Pin */}
-              <div className="relative flex flex-col items-center cursor-pointer">
-                {/* Pulse Ring */}
-                <span
-                  className={`absolute -inset-1 rounded-full animate-ping opacity-60 ${
-                    isMain ? "bg-amber-400" : "bg-cyan-400"
-                  }`}
-                  style={{ animationDuration: isMain ? "2s" : "3s" }}
-                />
-
-                {/* Center Beacon Dot */}
+              <div className="relative flex flex-col items-center cursor-pointer group">
+                {/* Precision Cartographic Dot */}
                 <div
-                  className={`w-3.5 h-3.5 rounded-full flex items-center justify-center shadow-lg border ${
+                  className={`w-2.5 h-2.5 rounded-full border flex items-center justify-center ${
                     isMain
-                      ? "bg-amber-500 border-yellow-200 text-[8px] shadow-[0_0_15px_rgba(245,158,11,0.8)]"
-                      : "bg-cyan-500 border-cyan-200 text-[8px] shadow-[0_0_12px_rgba(6,182,212,0.7)]"
+                      ? "bg-amber-400 border-amber-200"
+                      : "bg-sky-400 border-sky-200"
                   }`}
                 >
-                  <div className="w-1.5 h-1.5 rounded-full bg-slate-950" />
+                  <div className="w-1 h-1 rounded-full bg-slate-950" />
                 </div>
 
-                {/* Country Flag & City Name Badge */}
+                {/* Refined Engineering Label Badge */}
                 <div
-                  className={`mt-1 px-2 py-0.5 rounded-md border text-[10px] font-mono font-bold flex items-center gap-1 backdrop-blur-md whitespace-nowrap shadow-xl transition-all ${
+                  className={`mt-1 px-2 py-0.5 rounded border text-[9px] font-mono font-bold flex items-center gap-1.5 backdrop-blur-md shadow-md transition-colors ${
                     isMain
-                      ? "bg-amber-950/85 border-amber-400/80 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.4)]"
-                      : "bg-slate-900/85 border-white/20 text-white/90 group-hover:border-cyan-400/70"
+                      ? "bg-slate-950/90 border-amber-500/70 text-amber-300"
+                      : "bg-slate-950/85 border-white/20 text-slate-200 group-hover:border-sky-400"
                   }`}
                 >
-                  <span>{pin.flag}</span>
-                  <span>{pin.name}</span>
+                  <span className="text-[10px]">{pin.flag}</span>
+                  <span className="tracking-wider">{pin.name}</span>
                 </div>
               </div>
             </div>
@@ -420,13 +535,13 @@ export const InteractiveGlobe3D: React.FC = () => {
         })}
       </div>
 
-      {/* Selected City HUD Card */}
+      {/* Cartographic Telemetry Dossier Card */}
       {selectedCity && (
-        <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-72 p-3.5 rounded-xl bg-slate-900/95 border border-amber-500/40 text-xs shadow-2xl backdrop-blur-md z-30 animate-in fade-in slide-in-from-bottom-2">
+        <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-72 p-3.5 rounded-xl bg-slate-950/95 border border-white/20 text-xs shadow-2xl backdrop-blur-md z-30 animate-in fade-in">
           <div className="flex items-center justify-between mb-1.5">
-            <span className="font-mono text-[10px] text-amber-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              {selectedCity.isMainHub ? "B2B ПРИЙМАЮЧИЙ ХАБ" : "АКРЕДИТОВАНИЙ ХАБ ВІДБОРУ"}
+            <span className="font-mono text-[9px] text-amber-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              {selectedCity.isMainHub ? "B2B ПРИЙМАЮЧИЙ ХАБ // УКРАЇНА" : "АКРЕДИТОВАНИЙ ЦЕНТР ВІДБОРУ"}
             </span>
             <button
               onClick={() => setSelectedCity(null)}
@@ -436,23 +551,29 @@ export const InteractiveGlobe3D: React.FC = () => {
             </button>
           </div>
           <div className="text-sm font-bold text-white flex items-center gap-2">
-            <span className="text-base">{selectedCity.flag}</span>
+            <span>{selectedCity.flag}</span>
             <span>{selectedCity.name}, {selectedCity.country}</span>
           </div>
           <p className="text-[11px] text-slate-300 mt-1 font-mono">
             {selectedCity.workers}
           </p>
           <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-slate-400">
-            <span>Прямий найм у штат</span>
-            <span className="text-emerald-400 font-bold">100% Легально</span>
+            <span>Офіційний контракт</span>
+            <span className="text-emerald-400 font-bold">100% Прямий найм</span>
           </div>
         </div>
       )}
 
-      {/* Minimalistic Interactive Indicator Bottom Left */}
-      <div className="absolute bottom-3 left-3 pointer-events-none hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-950/60 border border-white/10 text-[9px] font-mono text-slate-400 backdrop-blur-sm">
-        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-        <span>Обертайте планету 360°</span>
+      {/* Cartographic Legend (Subtle, bottom left) */}
+      <div className="absolute bottom-3 left-3 pointer-events-none hidden sm:flex items-center gap-3 px-2.5 py-1 rounded bg-slate-950/70 border border-white/10 text-[9px] font-mono text-slate-400 backdrop-blur-sm">
+        <span className="flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+          <span className="text-amber-300">Україна</span>
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+          <span>Країни найму</span>
+        </span>
       </div>
     </div>
   );
