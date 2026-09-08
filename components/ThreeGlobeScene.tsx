@@ -154,7 +154,7 @@ export const HUBS: HubPoint[] = [
   },
 ];
 
-// High-DPI SVG circular flag renderers
+// Vector SVG Circular National Flags
 const getFlagSvg = (code: string): string => {
   switch (code) {
     case "UZ":
@@ -241,11 +241,10 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
   const countriesDataRef = useRef<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Convert lat/lng to 3D position vector on sphere of radius R with slight tilt
+  // Convert lat/lng to 3D position vector on sphere of radius R with cinematic tilt
   const latLngToVector = (lat: number, lng: number, radius: number): THREE.Vector3 => {
-    // Add slight offset for cinematic perspective (seeing horizon)
-    const phi = (90 - (lat + 12)) * (Math.PI / 180);
-    const theta = (lng + 90 - 15) * (Math.PI / 180);
+    const phi = (90 - (lat + 14)) * (Math.PI / 180);
+    const theta = (lng + 90 - 20) * (Math.PI / 180);
     return new THREE.Vector3(
       -(radius * Math.sin(phi) * Math.cos(theta)),
       radius * Math.cos(phi),
@@ -269,10 +268,9 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
     const activeHub = HUBS.find((h) => h.id === activeId) || HUBS[2]; // Default Tashkent
     const kyivHub = HUBS[0]; // Kyiv
 
-    // 1. UPDATE ARCS: Show ONLY the ONE active, glowing golden laser route!
+    // 1. UPDATE ARCS: Exactly ONE clean, thick, glowing laser arc!
     const activeArcs: any[] = [];
     if (activeHub.id === "kyiv") {
-      // If Kyiv selected, show golden arc from Tashkent to Kyiv
       activeArcs.push({
         startLat: HUBS[2].lat,
         startLng: HUBS[2].lng,
@@ -280,21 +278,19 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
         endLng: kyivHub.lng,
         color: ["#fbbf24", "#38bdf8"],
         alt: 0.32,
-        stroke: 2.8,
+        stroke: 3.2,
       });
     } else if (activeHub.id === "chisinau") {
-      // If Moldova selected, show emerald arc from Chisinau to Kyiv
       activeArcs.push({
         startLat: activeHub.lat,
         startLng: activeHub.lng,
         endLat: kyivHub.lat,
         endLng: kyivHub.lng,
         color: ["#10b981", "#38bdf8"],
-        alt: 0.16,
-        stroke: 3.0,
+        alt: 0.18,
+        stroke: 3.2,
       });
     } else {
-      // Selected partner country: Clean, thick golden arc curving into Kyiv
       activeArcs.push({
         startLat: activeHub.lat,
         startLng: activeHub.lng,
@@ -302,7 +298,7 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
         endLng: kyivHub.lng,
         color: ["#fbbf24", "#38bdf8"],
         alt: 0.32,
-        stroke: 2.8,
+        stroke: 3.2,
       });
     }
 
@@ -315,7 +311,7 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
       .arcDashInitialGap(0)
       .arcDashAnimateTime(1800);
 
-    // 2. UPDATE POLYGONS: Completely CLEAN, NO random gray cage lines!
+    // 2. UPDATE POLYGONS: 100% clean, NO gray cage lines on Earth!
     if (countriesDataRef.current) {
       const activeAdmin = activeHub.adminName;
 
@@ -327,8 +323,7 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
           return "rgba(245, 158, 11, 0.45)"; // Rich golden amber fill for selected country
         }
         if (admin === "Ukraine") return "rgba(56, 189, 248, 0.25)";
-        // Completely transparent for background countries to avoid clutter
-        return "rgba(0, 0, 0, 0)";
+        return "rgba(0, 0, 0, 0)"; // Invisible for all other countries
       });
 
       Globe.polygonStrokeColor((feat: any) => {
@@ -336,27 +331,25 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
         if (admin === activeAdmin) {
           if (admin === "Ukraine") return "#38bdf8";
           if (admin === "Moldova") return "#34d399";
-          return "#fbbf24"; // Radiant golden laser neon border (like Screenshot 2)
+          return "#fbbf24"; // Radiant golden laser neon border (Screenshot 2)
         }
         if (admin === "Ukraine") return "rgba(56, 189, 248, 0.75)";
         if (admin === "Moldova") return "rgba(16, 185, 129, 0.6)";
-        // Inactive partner countries: very faint subtle gold border
         if (HUBS.some((h) => h.adminName === admin)) {
           return "rgba(245, 158, 11, 0.25)";
         }
-        // Background world countries: totally invisible (0 clutter!)
-        return "rgba(0, 0, 0, 0)";
+        return "rgba(0, 0, 0, 0)"; // 100% invisible background countries
       });
 
       Globe.polygonAltitude((feat: any) => {
         const admin = feat.properties.ADMIN || feat.properties.NAME;
-        if (admin === activeAdmin) return 0.045; // Extruded 3D holographic relief for selected country
+        if (admin === activeAdmin) return 0.045; // 3D elevated holographic relief
         if (admin === "Ukraine") return 0.015;
         return 0.002;
       });
     }
 
-    // 3. UPDATE HTML MARKERS: Clean view (Selected country has text pill, others have clean round flag pin!)
+    // 3. UPDATE HTML MARKERS
     Globe.htmlElementsData(HUBS);
   }, []);
 
@@ -374,15 +367,15 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
     if (!container) return;
 
     let animationFrameId: number;
-    const width = container.clientWidth || 600;
-    const height = container.clientHeight || 600;
+    const width = container.clientWidth || 800;
+    const height = container.clientHeight || 750;
 
     // 1. Scene Setup
     const scene = new THREE.Scene();
 
     // 2. Camera Setup (zoomed closer, angled)
-    const camera = new THREE.PerspectiveCamera(45, width / height, 1, 2000);
-    camera.position.set(0, 40, 210);
+    const camera = new THREE.PerspectiveCamera(42, width / height, 1, 2000);
+    camera.position.set(0, 40, 215);
     cameraRef.current = camera;
 
     // 3. WebGL Renderer
@@ -394,7 +387,7 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.25;
+    renderer.toneMappingExposure = 1.3;
     container.innerHTML = "";
     container.appendChild(renderer.domElement);
 
@@ -413,10 +406,10 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
     controls.dampingFactor = 0.06;
     controls.rotateSpeed = 0.6;
     controls.zoomSpeed = 0.8;
-    controls.minDistance = 130;
-    controls.maxDistance = 350;
+    controls.minDistance = 140;
+    controls.maxDistance = 380;
     controls.autoRotate = isAutoRotate;
-    controls.autoRotateSpeed = 0.4;
+    controls.autoRotateSpeed = 0.35;
     controls.enablePan = false;
     controlsRef.current = controls;
 
@@ -424,7 +417,7 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
       isAnimatingCamRef.current = false;
     });
 
-    // 6. Planetary Atmosphere Outer Halo Mesh (Creates the exact bright cyan rim glow of Screenshot 2)
+    // 6. Planetary Atmosphere Outer Halo Mesh (Exact cyan rim glow of Screenshot 2)
     const atmosphereGeo = new THREE.SphereGeometry(100 * 1.18, 64, 64);
     const atmosphereMat = new THREE.ShaderMaterial({
       vertexShader: `
@@ -437,8 +430,8 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
       fragmentShader: `
         varying vec3 vNormal;
         void main() {
-          float intensity = pow(0.65 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.2);
-          gl_FragColor = vec4(0.0, 0.82, 1.0, 1.0) * intensity;
+          float intensity = pow(0.66 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.2);
+          gl_FragColor = vec4(0.0, 0.85, 1.0, 1.0) * intensity;
         }
       `,
       blending: THREE.AdditiveBlending,
@@ -449,14 +442,14 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
     scene.add(atmosphereMesh);
 
     // 7. Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.6);
     scene.add(ambientLight);
 
     const dirLight1 = new THREE.DirectionalLight(0xffffff, 2.0);
     dirLight1.position.set(-200, 200, 300);
     scene.add(dirLight1);
 
-    const cyanRimLight = new THREE.DirectionalLight(0x38bdf8, 1.6);
+    const cyanRimLight = new THREE.DirectionalLight(0x00e5ff, 1.8);
     cyanRimLight.position.set(300, -100, -100);
     scene.add(cyanRimLight);
 
@@ -469,7 +462,7 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
       .globeImageUrl("/textures/earth-night.jpg")
       .bumpImageUrl("/textures/earth-topology.png")
       .showAtmosphere(true)
-      .atmosphereColor("#00d2ff")
+      .atmosphereColor("#00e5ff")
       .atmosphereAltitude(0.28);
 
     globeInstanceRef.current = Globe;
@@ -485,19 +478,16 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
         const el = document.createElement("div");
         el.className = "group pointer-events-auto cursor-pointer select-none -translate-x-1/2 -translate-y-full transition-transform duration-200 hover:scale-125";
 
-        // Circular Flag Pin styling
         const flagHtml = getFlagSvg(d.code);
 
         if (isSelected) {
-          // ACTIVE SELECTED PIN: Big round flag pin + pointing needle + elegant dark badge!
+          // ACTIVE SELECTED PIN: Big round flag pin + pointer needle + elegant dark badge!
           el.innerHTML = `
-            <div class="flex items-center gap-2 filter drop-shadow-[0_0_16px_rgba(245,158,11,0.5)]">
-              <!-- Circular Flag Pin with Pointer -->
+            <div class="flex items-center gap-2.5 filter drop-shadow-[0_0_20px_rgba(245,158,11,0.6)]">
               <div class="relative flex flex-col items-center">
-                <div class="w-9 h-9 rounded-full border-2 border-white bg-slate-900 overflow-hidden shadow-2xl p-0.5">
+                <div class="w-10 h-10 rounded-full border-2 border-white bg-slate-900 overflow-hidden shadow-2xl p-0.5">
                   ${flagHtml}
                 </div>
-                <!-- Pin Needle Triangle pointing to city coordinate -->
                 <div class="w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[6px] border-t-white -mt-0.5"></div>
               </div>
 
@@ -518,7 +508,7 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
                 </div>
                 <div class="w-0 h-0 border-l-[3px] border-l-transparent border-r-[3px] border-r-transparent border-t-[5px] border-t-cyan-400 -mt-0.5"></div>
               </div>
-              <span class="px-2 py-0.5 rounded-lg bg-slate-950/80 border border-cyan-400/40 text-[10px] font-mono font-bold text-cyan-300 backdrop-blur-md">
+              <span class="px-2 py-0.5 rounded-lg bg-slate-950/85 border border-cyan-400/40 text-[10px] font-mono font-bold text-cyan-300 backdrop-blur-md">
                 Київ (UA)
               </span>
             </div>
@@ -536,9 +526,9 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
             </div>
           `;
         } else {
-          // OTHER HUBS: Minimalist round flag pin with subtle glowing beacon (No cluttering text!)
+          // OTHER HUBS: Clean circular flag pin with glowing beacon (NO cluttering text!)
           el.innerHTML = `
-            <div class="relative flex flex-col items-center filter drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">
+            <div class="relative flex flex-col items-center filter drop-shadow-[0_0_8px_rgba(255,255,255,0.35)]">
               <div class="w-6 h-6 rounded-full border border-white/80 bg-slate-900 overflow-hidden shadow-md">
                 ${flagHtml}
               </div>
@@ -575,7 +565,7 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
         setIsLoading(false);
       });
 
-    // 11. Concentric Pulse Radar Ring (Only at destination Kyiv and selected hub)
+    // 11. Pulse Radar Ring at Kyiv & selected hub
     const kyivHub = HUBS[0];
     const activeHub = HUBS.find((h) => h.id === selectedHubId) || HUBS[2];
     const ringsData = [
@@ -603,7 +593,7 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
     });
     resizeObserver.observe(container);
 
-    // 13. Render Loop with Smooth Camera Lerp
+    // 13. Render Loop
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
 
@@ -623,12 +613,10 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
 
     animate();
 
-    // Initial setup
     const initialHub = HUBS.find((h) => h.id === selectedHubId) || HUBS[2];
     flyToHub(initialHub);
     updateActiveVisuals(selectedHubId);
 
-    // Cleanup on unmount
     return () => {
       cancelAnimationFrame(animationFrameId);
       resizeObserver.disconnect();
@@ -651,7 +639,7 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
   }, [isAutoRotate]);
 
   return (
-    <div className="relative w-full h-full min-h-[500px] sm:min-h-[580px] lg:min-h-[660px] flex items-center justify-center">
+    <div className="relative w-full h-full min-h-[520px] sm:min-h-[620px] lg:min-h-[720px] flex items-center justify-center">
       <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing relative flex items-center justify-center" />
 
       {isLoading && (
