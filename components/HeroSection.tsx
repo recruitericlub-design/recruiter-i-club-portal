@@ -47,10 +47,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ messages, locale }) =>
           />
         </video>
 
-        {/* Multi-layered Gradients */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/90 to-slate-950/70" />
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent" />
-        <div className="absolute -top-40 left-1/3 w-[800px] h-[500px] bg-amber-500/10 blur-[150px] rounded-full" />
+        {/* Multi-layered Gradients (transparent to reveal stars) */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#020617]/70 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#020617]/60 via-transparent to-transparent" />
+        <div className="absolute -top-40 left-1/3 w-[800px] h-[500px] bg-amber-500/5 blur-[150px] rounded-full pointer-events-none" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

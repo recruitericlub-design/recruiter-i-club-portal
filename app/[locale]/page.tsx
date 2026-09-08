@@ -18,7 +18,7 @@ import { HomeKnowledgeSection } from "@/components/HomeKnowledgeSection";
 import { FaqSection } from "@/components/FaqSection";
 import { Footer } from "@/components/Footer";
 import { DockNavigation } from "@/components/DockNavigation";
-import { SparklesFullpageDemo } from "@/components/sparkles-fullpage-demo";
+import { CosmicStarryBackground } from "@/components/CosmicStarryBackground";
 
 export default async function HomePage({
   params: { locale },
@@ -28,10 +28,9 @@ export default async function HomePage({
   const messages = await getMessages();
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-950 text-slate-100 overflow-x-hidden selection:bg-amber-500 selection:text-black relative">
-      {/* Background Interactive Gravitational Particles & Sparkles */}
-      <CyberGridBackground />
-      <SparklesFullpageDemo />
+    <div className="flex flex-col min-h-screen bg-[#020617] text-slate-100 overflow-x-hidden selection:bg-amber-500 selection:text-black relative">
+      {/* Deep Cosmic Starfield with Twinkling Stars & Meteors across Entire Background */}
+      <CosmicStarryBackground />
 
       {/* Fixed Navigation Bar with Audio Toggle */}
       <Navbar locale={locale} messages={messages} />
