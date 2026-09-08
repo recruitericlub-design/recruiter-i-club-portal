@@ -252,9 +252,10 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
     );
   };
 
-  // Fly camera to specific hub with close cinematic zoom (dist = 185)
+  // Fly camera to specific hub with responsive cinematic zoom
   const flyToHub = useCallback((hub: HubPoint) => {
-    const camDist = 185;
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
+    const camDist = isMobile ? 220 : 185;
     const targetPos = latLngToVector(hub.lat, hub.lng, camDist);
     targetCamPosRef.current = targetPos;
     isAnimatingCamRef.current = true;
@@ -403,17 +404,21 @@ export const ThreeGlobeScene: React.FC<ThreeGlobeSceneProps> = ({
     css2dRenderer.domElement.style.pointerEvents = "none";
     container.appendChild(css2dRenderer.domElement);
 
-    // 5. OrbitControls
+    // 5. OrbitControls with Touch Support for Mobile
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.06;
     controls.rotateSpeed = 0.6;
     controls.zoomSpeed = 0.8;
-    controls.minDistance = 140;
+    controls.minDistance = 130;
     controls.maxDistance = 380;
     controls.autoRotate = isAutoRotate;
     controls.autoRotateSpeed = 0.35;
     controls.enablePan = false;
+    controls.touches = {
+      ONE: THREE.TOUCH.ROTATE,
+      TWO: THREE.TOUCH.DOLLY_PAN,
+    };
     controlsRef.current = controls;
 
     controls.addEventListener("start", () => {

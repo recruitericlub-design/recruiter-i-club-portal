@@ -811,39 +811,39 @@ export const InteractiveGlobe3D: React.FC<InteractiveGlobe3DProps> = ({ locale =
         </div>
       </div>
 
-      {/* 2. Main Stage: Expansive Full-Width 3D Globe with Floating Frosted Glass HUD Card (Exact Match to Screenshot 2) */}
-      <div className="relative w-full h-[620px] sm:h-[680px] lg:h-[740px] flex items-center justify-center overflow-visible">
+      {/* 2. Main Stage: Responsive layout (Stacked on mobile, floating HUD on desktop) */}
+      <div className="relative w-full flex flex-col lg:block lg:h-[740px] overflow-visible">
         
-        {/* The Giant 3D Three.js Globe filling the entire viewport with cyan atmosphere glow */}
-        <div className="absolute inset-0 w-full h-full flex items-center justify-center">
+        {/* The 3D Three.js Globe Container */}
+        <div className="relative w-full h-[380px] sm:h-[480px] lg:h-full lg:absolute lg:inset-0 flex items-center justify-center">
           <DynamicThreeGlobe
             selectedHubId={selectedHubId}
             onSelectHub={handleGlobeSelectHub}
             isAutoRotate={isAutoRotate}
           />
+
+          {/* Minimalist Floating Camera & Playback Controls (Top Left of Globe) */}
+          <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-30 flex items-center gap-1.5 sm:gap-2">
+            <button
+              onClick={toggleAutoRotate}
+              className="flex items-center gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-slate-950/80 border border-white/10 hover:border-amber-500/50 text-slate-300 hover:text-white backdrop-blur-xl text-[10px] sm:text-[11px] font-mono transition-all shadow-xl"
+              title={isAutoRotate ? "Пауза" : "Авто"}
+            >
+              {isAutoRotate ? <Pause className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400" /> : <Play className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-400" />}
+              <span>{isAutoRotate ? "Пауза" : "Авто"}</span>
+            </button>
+            <button
+              onClick={() => handleSelectCountry("tashkent")}
+              className="p-1.5 sm:p-2 rounded-full bg-slate-950/80 border border-white/10 hover:border-amber-500/50 text-slate-300 hover:text-white backdrop-blur-xl transition-all shadow-xl"
+              title="Скинути камеру"
+            >
+              <RotateCcw className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+            </button>
+          </div>
         </div>
 
-        {/* Minimalist Floating Camera & Playback Controls (Top Left of Globe) */}
-        <div className="absolute top-3 left-3 z-30 flex items-center gap-2">
-          <button
-            onClick={toggleAutoRotate}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-950/80 border border-white/10 hover:border-amber-500/50 text-slate-300 hover:text-white backdrop-blur-xl text-[11px] font-mono transition-all shadow-xl"
-            title={isAutoRotate ? "Пауза" : "Авто"}
-          >
-            {isAutoRotate ? <Pause className="w-3.5 h-3.5 text-amber-400" /> : <Play className="w-3.5 h-3.5 text-emerald-400" />}
-            <span>{isAutoRotate ? "Пауза" : "Авто"}</span>
-          </button>
-          <button
-            onClick={() => handleSelectCountry("tashkent")}
-            className="p-2 rounded-full bg-slate-950/80 border border-white/10 hover:border-amber-500/50 text-slate-300 hover:text-white backdrop-blur-xl transition-all shadow-xl"
-            title="Скинути камеру"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-          </button>
-        </div>
-
-        {/* Floating Frosted Glass HUD Card on the Upper Right (Exact Layout of Screenshot 2) */}
-        <div className="absolute top-3 right-3 sm:top-6 sm:right-6 w-full max-w-[340px] sm:max-w-[370px] z-30 pointer-events-auto">
+        {/* Frosted Glass HUD Card (Below globe on mobile, floating on desktop) */}
+        <div className="w-full lg:absolute lg:top-6 lg:right-6 lg:max-w-[370px] z-30 pointer-events-auto mt-3 lg:mt-0">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeDossier.id}
