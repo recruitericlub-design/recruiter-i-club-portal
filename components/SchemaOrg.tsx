@@ -76,6 +76,13 @@ export const SchemaOrg: React.FC<SchemaOrgProps> = ({ locale }) => {
         offerCount: "6",
         priceValidUntil: "2027-12-31",
       },
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: "4.96",
+        reviewCount: "148",
+        bestRating: "5",
+        worstRating: "1",
+      },
     },
     {
       "@context": "https://schema.org",

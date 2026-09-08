@@ -13,9 +13,11 @@ import {
   Sparkles,
   ArrowRight,
   Volume2,
-  VolumeX
+  VolumeX,
+  FileCheck2
 } from "lucide-react";
 import { ClientLoginModal } from "./ClientLoginModal";
+import { ContractPreviewModal } from "./ContractPreviewModal";
 import { isSoundEnabled, setSoundEnabled, playSciFiBeep } from "@/lib/soundFX";
 
 interface NavbarProps {
@@ -26,6 +28,7 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ locale, messages }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isContractModalOpen, setIsContractModalOpen] = useState(false);
   const [soundOn, setSoundOn] = useState(true);
   const pathname = usePathname();
   const router = useRouter();
@@ -95,6 +98,17 @@ export const Navbar: React.FC<NavbarProps> = ({ locale, messages }) => {
                   {link.label}
                 </a>
               ))}
+
+              <button
+                onClick={() => {
+                  playSciFiBeep(1100, 0.06);
+                  setIsContractModalOpen(true);
+                }}
+                className="text-xs font-mono font-bold text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-500/10 border border-amber-500/30"
+              >
+                <FileCheck2 className="w-3.5 h-3.5" />
+                <span>[Зразок договору]</span>
+              </button>
             </nav>
 
             {/* Right actions */}
@@ -249,6 +263,13 @@ export const Navbar: React.FC<NavbarProps> = ({ locale, messages }) => {
         onClose={() => setIsLoginModalOpen(false)}
         locale={locale}
         messages={messages}
+      />
+
+      {/* Direct Employment Contract Preview Modal */}
+      <ContractPreviewModal
+        isOpen={isContractModalOpen}
+        onClose={() => setIsContractModalOpen(false)}
+        locale={locale}
       />
     </>
   );

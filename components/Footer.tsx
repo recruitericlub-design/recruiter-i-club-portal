@@ -98,11 +98,21 @@ export const Footer: React.FC<{ locale: string }> = ({ locale }) => {
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-amber-400 shrink-0" />
-                <a href="tel:+380501234567" className="hover:text-white">+38 (050) 123-45-67</a>
+                <a href="tel:+380734277174" className="hover:text-white font-mono">+380 (73) 427-71-74</a>
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-amber-400 shrink-0" />
-                <a href="mailto:office@recruiter-club.com" className="hover:text-white">office@recruiter-club.com</a>
+                <a href="mailto:office@recruiter-club.com" className="hover:text-white font-mono">office@recruiter-club.com</a>
+              </li>
+              <li className="flex items-center gap-2.5 pt-1">
+                <a 
+                  href="https://t.me/recruiter_i_club" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-sky-500/10 border border-sky-500/30 text-sky-400 font-mono text-xs font-bold hover:bg-sky-500 hover:text-black transition-all shadow-sm"
+                >
+                  <span>✈ Telegram B2B Консультація</span>
+                </a>
               </li>
             </ul>
           </div>

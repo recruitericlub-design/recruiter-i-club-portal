@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { 
   CheckCircle2, 
@@ -14,6 +14,7 @@ import {
   ShieldCheck
 } from "lucide-react";
 import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
+import { CandidateVideoModal } from "./CandidateVideoModal";
 import { playMechanicalClick, playSciFiBeep } from "@/lib/soundFX";
 
 export const CandidateShowcase: React.FC = () => {
@@ -68,6 +69,8 @@ export const CandidateShowcase: React.FC = () => {
     },
   ];
 
+  const [selectedCandidate, setSelectedCandidate] = useState<typeof sampleCandidates[0] | null>(null);
+
   return (
     <section id="candidates" className="py-24 relative bg-slate-900/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -93,7 +96,14 @@ export const CandidateShowcase: React.FC = () => {
               <CardBody className="glass-card glass-card-hover rounded-2xl p-5 border-white/10 flex flex-col justify-between group relative w-full h-full bg-slate-950/80 backdrop-blur-xl">
                 <div>
                   {/* Photo & Video Tag with 3D pop */}
-                  <CardItem translateZ="50" className="w-full relative mb-4">
+                  <CardItem 
+                    translateZ="50" 
+                    className="w-full relative mb-4 cursor-pointer"
+                    onClick={() => {
+                      playSciFiBeep(1100, 0.08);
+                      setSelectedCandidate(cand);
+                    }}
+                  >
                     <img
                       src={cand.avatar}
                       alt={cand.name}
@@ -160,14 +170,25 @@ export const CandidateShowcase: React.FC = () => {
                 </div>
 
                 {/* Action Button with high 3D pop */}
-                <CardItem translateZ="60" className="w-full">
+                <CardItem translateZ="60" className="w-full flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      playSciFiBeep(1100, 0.08);
+                      setSelectedCandidate(cand);
+                    }}
+                    className="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 hover:brightness-110 text-black text-xs font-bold flex items-center justify-center gap-1.5 shadow-gold-glow transition-all duration-200"
+                  >
+                    <Play className="w-3.5 h-3.5 fill-black" />
+                    <span>Відео Trade-тесту</span>
+                  </button>
+
                   <a
                     href="#calculator"
                     onClick={() => playMechanicalClick()}
-                    className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 hover:brightness-110 text-black text-xs font-bold flex items-center justify-center gap-2 shadow-gold-glow transition-all duration-200"
+                    className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 border border-amber-500/30 flex items-center justify-center transition-colors"
+                    title="Замовити кандидата"
                   >
-                    <span>Запросити повне досьє</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <ArrowRight className="w-4 h-4" />
                   </a>
                 </CardItem>
               </CardBody>
@@ -182,6 +203,12 @@ export const CandidateShowcase: React.FC = () => {
           </p>
         </div>
       </div>
+
+      {/* Interactive Candidate Video Trade-Test Modal */}
+      <CandidateVideoModal
+        candidate={selectedCandidate}
+        onClose={() => setSelectedCandidate(null)}
+      />
     </section>
   );
 };
