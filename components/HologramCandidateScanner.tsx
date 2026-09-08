@@ -12,8 +12,10 @@ import {
   QrCode, 
   Sparkles, 
   Cpu, 
-  ExternalLink 
+  ExternalLink,
+  Search
 } from "lucide-react";
+import { Lens } from "@/components/ui/lens";
 import { playSciFiBeep } from "@/lib/soundFX";
 
 export const HologramCandidateScanner: React.FC = () => {
@@ -111,95 +113,99 @@ export const HologramCandidateScanner: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
           
-          {/* Left Column: Visual Hologram Canvas */}
-          <div className="lg:col-span-6 relative aspect-square sm:aspect-[4/3] rounded-2xl overflow-hidden border border-white/15 bg-slate-950 flex items-center justify-center group">
-            
-            {/* LAYER 1: Biometrics Photo */}
-            {activeLayer === "biometrics" && (
-              <div className="relative w-full h-full animate-in fade-in duration-300">
-                <img
-                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80"
-                  alt="Candidate portrait"
-                  className="w-full h-full object-cover grayscale-[30%] contrast-125"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/40" />
+          {/* Left Column: Visual Hologram Canvas with Tactical Lens Inspection */}
+          <div className="lg:col-span-6 relative flex flex-col">
+            <div className="mb-2 flex items-center justify-between text-[9px] font-mono text-cyan-400">
+              <span className="flex items-center gap-1">
+                <Search className="w-3 h-3 animate-pulse text-cyan-400" />
+                <span>[ ТАКТИЧНА ЛУПА: НАВЕДІТЬ ДЛЯ МІКРОСКОПІЧНОГО АУДИТУ ]</span>
+              </span>
+              <span className="text-amber-400 font-bold">LENS x1.9</span>
+            </div>
 
-                {/* Face Targeting Brackets */}
-                <div className="absolute inset-16 border-2 border-dashed border-amber-400/60 rounded-2xl flex flex-col justify-between p-2 pointer-events-none animate-pulse">
-                  <div className="flex justify-between text-[10px] font-mono text-amber-300">
-                    <span>[ FACE IDENT: PASS ]</span>
-                    <span>MATCH: 99.8%</span>
-                  </div>
-                  <div className="text-center text-[10px] font-mono text-emerald-400 bg-black/60 py-0.5 rounded">
-                    BIOMETRICS VERIFIED
-                  </div>
-                </div>
-              </div>
-            )}
+            <Lens zoomFactor={1.9} lensSize={160}>
+              <div className="relative aspect-square sm:aspect-[4/3] rounded-2xl overflow-hidden border border-white/15 bg-slate-950 flex items-center justify-center group w-full">
+                {/* LAYER 1: Biometrics Photo */}
+                {activeLayer === "biometrics" && (
+                  <div className="relative w-full h-full animate-in fade-in duration-300">
+                    <img
+                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80"
+                      alt="Candidate portrait"
+                      className="w-full h-full object-cover grayscale-[30%] contrast-125"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/40" />
 
-            {/* LAYER 2: X-Ray Weld Radiography (The Showstopper) */}
-            {activeLayer === "xray" && (
-              <div className="relative w-full h-full bg-slate-950 flex flex-col items-center justify-center p-4 animate-in zoom-in-95 duration-300">
-                {/* Radiographic X-Ray image */}
-                <div 
-                  className="w-full h-full bg-cover bg-center rounded-xl filter invert contrast-200 opacity-80"
-                  style={{
-                    backgroundImage: `url("https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80")`,
-                  }}
-                />
-                <div className="absolute inset-0 bg-cyan-950/40 mix-blend-overlay" />
-
-                {/* Laser weld telemetry crosshair overlay */}
-                <div className="absolute inset-4 border border-cyan-500/40 rounded-xl p-3 flex flex-col justify-between pointer-events-none font-mono text-[11px]">
-                  <div className="flex justify-between text-cyan-300 bg-slate-950/80 px-2 py-1 rounded border border-cyan-500/30">
-                    <span>X-RAY SCAN: ISO 9606-1 135 P BW FM1</span>
-                    <span className="text-emerald-400 font-bold">GRADE A+</span>
-                  </div>
-
-                  {/* Radiographic seam indicators */}
-                  <div className="space-y-1 bg-slate-950/85 p-2 rounded border border-cyan-500/20 text-[10px]">
-                    <div className="flex justify-between text-slate-300">
-                      <span>Глибина кореня шва:</span>
-                      <span className="text-emerald-400 font-bold">100% ПРОВАРЕНО</span>
-                    </div>
-                    <div className="flex justify-between text-slate-300">
-                      <span>Мікропори / Тріщини:</span>
-                      <span className="text-emerald-400 font-bold">0.0% (ВІДСУТНІ)</span>
-                    </div>
-                    <div className="flex justify-between text-slate-300">
-                      <span>Міцність на розрив:</span>
-                      <span className="text-cyan-300 font-bold">540 MPa (Норма: 490)</span>
+                    {/* Face Targeting Brackets */}
+                    <div className="absolute inset-16 border-2 border-dashed border-amber-400/60 rounded-2xl flex flex-col justify-between p-2 pointer-events-none animate-pulse">
+                      <div className="flex justify-between text-[10px] font-mono text-amber-300">
+                        <span>[ FACE IDENT: PASS ]</span>
+                        <span>MATCH: 99.8%</span>
+                      </div>
+                      <div className="text-center text-[10px] font-mono text-emerald-400 bg-black/60 py-0.5 rounded">
+                        BIOMETRICS VERIFIED
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            )}
+                )}
 
-            {/* LAYER 3: Visa D Schengen Authorization */}
-            {activeLayer === "visa" && (
-              <div className="relative w-full h-full bg-slate-950 flex flex-col items-center justify-center p-6 text-center animate-in fade-in duration-300">
-                <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/40 flex items-center justify-center text-emerald-400 mb-4 shadow-lg">
-                  <QrCode className="w-10 h-10" />
-                </div>
-                <h4 className="text-base font-bold text-white font-mono">
-                  РОБОЧА ВІЗА ТИПУ D (МУЛЬТИ)
-                </h4>
-                <p className="text-xs text-slate-400 font-mono mt-1">
-                  ДОЗВІЛ НА ПРАЦЮ: ZEZWOLENIE TYP A / ДСЗУ
-                </p>
+                {/* LAYER 2: X-Ray Weld Radiography (The Showstopper) */}
+                {activeLayer === "xray" && (
+                  <div className="relative w-full h-full bg-slate-950 flex flex-col items-center justify-center p-4 animate-in zoom-in-95 duration-300">
+                    {/* Radiographic X-Ray image */}
+                    <div 
+                      className="w-full h-full bg-cover bg-center rounded-xl filter invert contrast-200 opacity-80"
+                      style={{
+                        backgroundImage: `url("https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80")`,
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-cyan-950/40 mix-blend-overlay" />
 
-                <div className="grid grid-cols-2 gap-2 w-full mt-4 text-[10px] font-mono text-left">
-                  <div className="bg-slate-900 p-2 rounded border border-white/5">
-                    <span className="text-slate-500 block">Термін дії:</span>
-                    <strong className="text-white">365 днів з пролонгацією</strong>
+                    {/* Laser weld telemetry crosshair overlay */}
+                    <div className="absolute inset-4 border border-cyan-500/40 rounded-xl p-3 flex flex-col justify-between pointer-events-none font-mono text-[11px]">
+                      <div className="flex justify-between text-cyan-300 bg-slate-950/80 px-2 py-1 rounded border border-cyan-500/30">
+                        <span>X-RAY SCAN: ISO 9606-1 135 P BW FM1</span>
+                        <span className="text-emerald-400 font-bold">GRADE A+</span>
+                      </div>
+
+                      {/* Radiographic seam indicators */}
+                      <div className="space-y-1 bg-slate-950/85 p-2 rounded border border-cyan-500/20 text-[10px]">
+                        <div className="flex justify-between text-slate-300">
+                          <span>Глибина кореня шва:</span>
+                          <span className="text-emerald-400 font-bold">100% ПРОВАРЕНО</span>
+                        </div>
+                        <div className="flex justify-between text-slate-300">
+                          <span>Мікропори / Тріщини:</span>
+                          <span className="text-emerald-400 font-bold">0.0% (ВІДСУТНІ)</span>
+                        </div>
+                        <div className="flex justify-between text-slate-300">
+                          <span>Міцність на розрив:</span>
+                          <span className="text-cyan-300 font-bold">540 MPa (Норма: 490)</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="bg-slate-900 p-2 rounded border border-white/5">
-                    <span className="text-slate-500 block">Міграційна перевірка:</span>
-                    <strong className="text-emerald-400">ПОГОДЖЕНО 100%</strong>
+                )}
+
+                {/* LAYER 3: Visa D Schengen Authorization */}
+                {activeLayer === "visa" && (
+                  <div className="relative w-full h-full bg-slate-950 flex flex-col items-center justify-center p-6 text-center animate-in fade-in duration-300">
+                    <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mb-4">
+                      <ShieldCheck className="w-8 h-8 text-emerald-400" />
+                    </div>
+                    <h4 className="text-lg font-bold text-white mb-2 font-mono">
+                      Віза D-04 та Дозвіл ДЦЗ
+                    </h4>
+                    <p className="text-xs text-slate-400 mb-4 max-w-sm">
+                      Офіційний дозвіл Державного центру зайнятості України на працевлаштування іноземного фахівця.
+                    </p>
+                    <div className="w-full bg-slate-900/80 p-3 rounded-xl border border-white/10 text-xs font-mono flex justify-between">
+                      <span className="text-slate-400">Перевірка СБУ:</span>
+                      <strong className="text-emerald-400">ПОГОДЖЕНО 100%</strong>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
-            )}
+            </Lens>
           </div>
 
           {/* Right Column: Candidate Dossier Details */}

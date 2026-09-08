@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { KNOWLEDGE_ARTICLES, KnowledgeArticle } from "@/lib/knowledgeBase";
 import { SpotlightCard } from "./SpotlightCard";
+import { TextHoverEffect } from "./ui/text-hover-effect";
 import { playMechanicalClick } from "@/lib/soundFX";
 
 interface BentoKnowledgeHubProps {
@@ -193,6 +194,11 @@ export const BentoKnowledgeHub: React.FC<BentoKnowledgeHubProps> = ({
             <span>Розрахувати потребу</span>
             <ArrowRight className="w-4 h-4" />
           </a>
+        </div>
+
+        {/* Large Industrial Outline Typography with Interactive Laser Mask (Aceternity UI) */}
+        <div className="mt-12 h-20 sm:h-28 w-full flex items-center justify-center opacity-80 hover:opacity-100 transition-opacity">
+          <TextHoverEffect text="RECRUITER I CLUB" />
         </div>
 
       </div>

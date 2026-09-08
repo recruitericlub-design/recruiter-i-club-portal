@@ -105,8 +105,24 @@ export const Footer: React.FC<{ locale: string }> = ({ locale }) => {
 
         </div>
 
+        {/* Ukrainian Industrial Solidarity Note */}
+        <div className="py-6 my-6 border-y border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-400 bg-slate-900/40 p-4 rounded-xl">
+          <div className="flex items-center gap-3">
+            <span className="text-xl">🇺🇦</span>
+            <div>
+              <strong className="text-white">Підтримка промислового тилу України:</strong>
+              <span className="text-slate-400 ml-1.5">
+                Ми — українці. Допомагаємо вітчизняним заводам та агрохолдингам долати дефіцит кадрів під час війни, забезпечуємо безперебійну роботу підприємств та сплату податків до бюджету України.
+              </span>
+            </div>
+          </div>
+          <div className="shrink-0 text-[10px] font-bold text-amber-400 px-3 py-1 rounded bg-amber-500/10 border border-amber-500/30">
+            ЗРОБЛЕНО В УКРАЇНІ // 2026
+          </div>
+        </div>
+
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+        <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
           <p>© {new Date().getFullYear()} Recruiter I Club. Всі права захищено.</p>
           <div className="flex gap-6">
             <span className="hover:text-slate-400 cursor-pointer">Політика конфіденційності</span>

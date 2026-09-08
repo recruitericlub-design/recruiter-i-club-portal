@@ -17,6 +17,7 @@ import { B2BTrustSection } from "@/components/B2BTrustSection";
 import { HomeKnowledgeSection } from "@/components/HomeKnowledgeSection";
 import { FaqSection } from "@/components/FaqSection";
 import { Footer } from "@/components/Footer";
+import { DockNavigation } from "@/components/DockNavigation";
 
 export default async function HomePage({
   params: { locale },
@@ -93,6 +94,9 @@ export default async function HomePage({
 
       {/* Footer */}
       <Footer locale={locale} />
+
+      {/* Floating Tactical Dock Navigation (Aceternity UI) */}
+      <DockNavigation locale={locale} />
     </div>
   );
 }

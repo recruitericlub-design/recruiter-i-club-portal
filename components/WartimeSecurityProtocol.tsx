@@ -3,6 +3,7 @@
 import React from "react";
 import { ShieldCheck, FileCheck, Lock, Globe, AlertCircle, CheckCircle2 } from "lucide-react";
 import { SpotlightCard } from "./SpotlightCard";
+import { CometCard } from "./ui/comet-card";
 
 export const WartimeSecurityProtocol: React.FC<{ locale: string }> = ({ locale }) => {
   const isUk = locale === "uk";
@@ -95,6 +96,40 @@ export const WartimeSecurityProtocol: React.FC<{ locale: string }> = ({ locale }
               </SpotlightCard>
             );
           })}
+        </div>
+
+        {/* Comet Card: Strategic Industrial Defense Banner */}
+        <div className="mt-8">
+          <CometCard cometColor="#06b6d4" className="p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-5">
+              <div className="w-14 h-14 rounded-2xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center shrink-0 text-cyan-400 shadow-[0_0_25px_rgba(6,182,212,0.3)]">
+                <ShieldCheck className="w-7 h-7" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[10px] font-mono font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded">
+                    🇺🇦 СТ. 23 ЗУ // ІМУНІТЕТ 100%
+                  </span>
+                  <span className="text-[10px] font-mono text-slate-400">
+                    ЗАКОН УКРАЇНИ «ПРО МОБІЛІЗАЦІЙНУ ПІДГОТОВКУ ТА МОБІЛІЗАЦІЮ»
+                  </span>
+                </div>
+                <h4 className="text-lg sm:text-xl font-bold text-white">
+                  Збереження виробничого потенціалу України без ризику мобілізаційних втрат
+                </h4>
+                <p className="text-xs text-slate-300 mt-1 max-w-3xl">
+                  Іноземні громадяни офіційно не підлягають мобілізації до лав ЗСУ. Ваші верстати, виробничі лінії та будівельні обʼєкти працюють безперервно у 3 зміни.
+                </p>
+              </div>
+            </div>
+
+            <a
+              href="#calculator"
+              className="shrink-0 px-6 py-3 rounded-xl font-mono text-xs font-bold text-black bg-gradient-to-r from-cyan-400 to-emerald-400 hover:brightness-110 shadow-cyan-glow transition-all"
+            >
+              Отримати юридичне розʼяснення
+            </a>
+          </CometCard>
         </div>
 
       </div>

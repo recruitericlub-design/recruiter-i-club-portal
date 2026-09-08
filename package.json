@@ -11,10 +11,12 @@
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
+    "@tabler/icons-react": "^3.46.0",
     "clsx": "^2.1.1",
     "framer-motion": "^11.11.17",
     "jose": "^5.9.6",
     "lucide-react": "^0.460.0",
+    "motion": "^13.2.0",
     "next": "14.2.18",
     "next-intl": "^3.25.3",
     "react": "^18.3.1",
