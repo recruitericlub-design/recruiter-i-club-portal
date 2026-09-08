@@ -58,11 +58,20 @@ const config: Config = {
         "hud-card": "0 0 0 1px rgba(245, 158, 11, 0.2), 0 20px 50px -10px rgba(0, 0, 0, 0.8)",
       },
       animation: {
+        "aurora": "aurora 45s linear infinite",
         "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "scan-laser": "scanLaser 2.5s ease-in-out infinite",
         "radar-sweep": "radarSweep 6s linear infinite",
       },
       keyframes: {
+        aurora: {
+          from: {
+            backgroundPosition: "50% 50%, 50% 50%",
+          },
+          to: {
+            backgroundPosition: "350% 50%, 350% 50%",
+          },
+        },
         scanLaser: {
           "0%, 100%": { top: "0%" },
           "50%": { top: "100%" },
