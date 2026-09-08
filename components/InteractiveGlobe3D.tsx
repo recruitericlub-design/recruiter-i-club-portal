@@ -8,8 +8,10 @@ import {
   ZoomOut, 
   ShieldCheck, 
   Clock, 
-  Users, 
-  ArrowRight
+  TrendingUp, 
+  ArrowRight,
+  Sparkles,
+  Banknote
 } from "lucide-react";
 import { playSciFiBeep } from "@/lib/soundFX";
 
@@ -17,18 +19,22 @@ export interface CountryDossier {
   id: string;
   name: string;
   country: string;
+  region: string;
   flag: string;
   code: string;
   lat: number;
   lon: number;
   hubType: string;
-  workersCount: string;
-  visaTime: string;
-  securityCheck: string;
-  languageSupport: string;
+  targetWageUA: string;       // e.g. "від 900 € / міс" or "від 600 € / міс"
+  targetWageUAH: string;      // e.g. "~39 500 ₴ / міс"
+  homeWage: string;           // e.g. "~220 – 320 € / міс"
+  homeWageUAH: string;        // e.g. "~9 500 – 14 000 ₴"
+  wageMultiplier: string;     // e.g. "у 3.2 рази вище"
+  visaTime: string;           // e.g. "25–35 робочих днів"
+  securityCheck: string;      // "100% ВТК / Інтерпол / ст. 23 ЗУ"
+  workSchedule: string;       // "10–12 год / зміна, 6 днів/тиж"
+  economicAdvantage: string;  // Economic motivation rationale
   isMainHub?: boolean;
-  professions: string[];
-  keyStrengths: string;
 }
 
 export const InteractiveGlobe3D: React.FC = () => {
@@ -51,169 +57,163 @@ export const InteractiveGlobe3D: React.FC = () => {
   const velocityRef = useRef({ x: 0, y: 0.0006 });
   const isAutoRotatingRef = useRef(true);
 
-  // Keep ref in sync
+  // Synchronize rotation ref
   useEffect(() => {
     isAutoRotatingRef.current = isAutoRotating;
   }, [isAutoRotating]);
 
-  // Clean, professional cartographic partner network & B2B dossier
+  // Clean, realistic B2B wage metrics & economic partner dossiers
   const countries: CountryDossier[] = [
     {
       id: "kyiv",
       name: "Київ",
       country: "Україна",
+      region: "Східна Європа // Базовий ринок",
       flag: "🇺🇦",
       code: "UA",
       lat: 50.4501,
       lon: 30.5234,
-      hubType: "ГОЛОВНИЙ B2B ХАБ // ПРЯМИЙ НАЙМ У ШТАТ",
-      workersCount: "Єдиний офіційний центр координації",
+      hubType: "ГОЛОВНИЙ B2B ХАБ // ОФОРМЛЕННЯ В ШТАТ",
+      targetWageUA: "1 100 – 1 450 €",
+      targetWageUAH: "48 000 – 65 000 ₴ / міс",
+      homeWage: "Дефіцитний ринок",
+      homeWageUAH: "Високий ризик мобілізації",
+      wageMultiplier: "100% захист",
       visaTime: "0 днів (Оформлення на місці)",
       securityCheck: "100% ВТК / Захист від штрафів Держпраці",
-      languageSupport: "Державна мова / Виробничі стандарти ДСТУ",
+      workSchedule: "Штатний розпис підприємства, офіційне бронювання",
+      economicAdvantage: "Пряме зарахування у штат українського підприємства без посередників. 100% імунітет від мобілізації для іноземного персоналу (ст. 23 ЗУ).",
       isMainHub: true,
-      professions: [
-        "Зварювальники 135/136",
-        "Оператори ЧПУ",
-        "Слюсарі-монтажники",
-        "Будівельники-монолітники",
-        "Швачки"
-      ],
-      keyStrengths: "Пряме зарахування робітників у штатні розписи українських заводів без посередників та аутстафінгу."
     },
     {
       id: "tashkent",
       name: "Ташкент",
       country: "Узбекистан",
+      region: "Країни СНД // Центральна Азія",
       flag: "🇺🇿",
       code: "UZ",
       lat: 41.2995,
       lon: 69.2401,
-      hubType: "АКРЕДИТОВАНИЙ ВІДБІРКОВИЙ ЦЕНТР",
-      workersCount: "480+ атестованих майстрів у пулі",
+      hubType: "КРАЇНИ СНД // БЕЗВІЗОВИЙ РЕЖИМ",
+      targetWageUA: "від 900 €",
+      targetWageUAH: "~39 500 ₴ / міс",
+      homeWage: "~220 – 320 € / міс",
+      homeWageUAH: "~9 500 – 14 000 ₴",
+      wageMultiplier: "у 3.2 рази вище",
       visaTime: "25–35 робочих днів",
       securityCheck: "МВС + Інтерпол + Біометричний скринінг",
-      languageSupport: "Вільна виробнича комунікація / Бригадири",
-      professions: [
-        "Зварювальники труб під рентген",
-        "Арматурники",
-        "Оператори фрезерних верстатів",
-        "Бетонярі"
-      ],
-      keyStrengths: "Висока культура праці, сувора дисципліна, відсутність алкогольного фактору, повна готовність до змін 10–12 год."
+      workSchedule: "Готовність до 10–12 год змін, 6 днів/тиж",
+      economicAdvantage: "Робітники з країн СНД без мовного бар'єру. Дохід у 3+ рази перевищує домашній, що гарантує 100% дисципліну, відсутність алкогольного фактору та нульову плинність.",
     },
     {
       id: "delhi",
       name: "Нью-Делі",
       country: "Індія",
+      region: "Південна Азія // Технічний кластер",
       flag: "🇮🇳",
       code: "IN",
       lat: 28.6139,
       lon: 77.2090,
-      hubType: "ІНЖЕНЕРНО-ТЕХНІЧНИЙ КЛАСТЕР",
-      workersCount: "320+ спеціалістів виробництва",
+      hubType: "ПІВДЕННА АЗІЯ // ПРОМИСЛОВИЙ ПУЛ",
+      targetWageUA: "від 600 €",
+      targetWageUAH: "~26 500 ₴ / міс",
+      homeWage: "~140 – 210 € / міс",
+      homeWageUAH: "~6 000 – 9 200 ₴",
+      wageMultiplier: "у 3.5 рази вище",
       visaTime: "35–45 робочих днів",
       securityCheck: "Консульська легалізація + Довідка несудимості",
-      languageSupport: "Англійська мова / Російськомовні координатори",
-      professions: [
-        "Токарі-універсали",
-        "Фрезерувальники 4-6 розряду",
-        "Електромонтажники промислового устаткування",
-        "Оператори лазерної різки"
-      ],
-      keyStrengths: "Потужна базова технічна освіта, висока швидкість читання креслень, досвід на міжнародних заводах."
+      workSchedule: "Цехові позмінні графіки, точне слідування техкартам",
+      economicAdvantage: "Ставка від 600 € забезпечує підприємству колосальну економію ФОП до 35–40% при найвищій мотивації кадрів працювати на повну потужність.",
     },
     {
       id: "manila",
       name: "Маніла",
       country: "Філіппіни",
+      region: "Південно-Східна Азія",
       flag: "🇵🇭",
       code: "PH",
       lat: 14.5995,
       lon: 120.9842,
-      hubType: "СПЕЦІАЛІЗОВАНИЙ ЦЕНТР ПРЕЦИЗІЙНОГО ВИРОБНИЦТВА",
-      workersCount: "190+ операторів та швачок",
+      hubType: "ТОЧНЕ ВИРОБНИЦТВО & ШВЕЙНІ ЛІНІЇ",
+      targetWageUA: "від 650 €",
+      targetWageUAH: "~28 500 ₴ / міс",
+      homeWage: "~160 – 240 € / міс",
+      homeWageUAH: "~7 000 – 10 500 ₴",
+      wageMultiplier: "у 3.0 рази вище",
       visaTime: "40–50 робочих днів",
       securityCheck: "Державна сертифікація DMW/POEA + Інтерпол",
-      languageSupport: "Англійська мова (високий рівень)",
-      professions: [
-        "Швачки високошвидкісних ліній",
-        "Збирачі мікроелектроніки",
-        "Оператори пакувальних комплексів",
-        "Контролери якості ВТК"
-      ],
-      keyStrengths: "Еталонна акуратність, мінімальний рівень браку (менше 0.1%), ідеальне дотримання технологічних карт."
+      workSchedule: "Швидкісні конвеєрні та операційні лінії",
+      economicAdvantage: "Еталонна якість праці: рівень браку менше 0.1%. Вільне володіння англійською мовою, висока культура праці та акуратність.",
     },
     {
       id: "dhaka",
       name: "Дакка",
       country: "Бангладеш",
+      region: "Південна Азія // Будівництво",
       flag: "🇧🇩",
       code: "BD",
       lat: 23.8103,
       lon: 90.4125,
       hubType: "МАСОВИЙ БУДІВЕЛЬНО-МОНТАЖНИЙ ПУЛ",
-      workersCount: "150+ монтажників та будівельників",
+      targetWageUA: "від 600 €",
+      targetWageUAH: "~26 500 ₴ / міс",
+      homeWage: "~110 – 160 € / міс",
+      homeWageUAH: "~4 800 – 7 000 ₴",
+      wageMultiplier: "у 4.0 рази вище",
       visaTime: "30–40 робочих днів",
       securityCheck: "Урядовий BMET реєстр + Сертифікат здоров'я",
-      languageSupport: "Бригадири-координатори",
-      professions: [
-        "Монтажники будівельних лісів",
-        "Бетонярі-монолітники",
-        "Дорожні робітники",
-        "Слюсарі металоконструкцій"
-      ],
-      keyStrengths: "Швидке закриття великих потреб (від 15 до 50 осіб на один об'єкт), стійкість до важких погодних умов."
+      workSchedule: "Монолітні, фасадні та монтажні об'єкти",
+      economicAdvantage: "Швидке комплектування великих об'єктів сформованими бригадами від 15 до 50 осіб із власними координаторами.",
     },
     {
       id: "kathmandu",
       name: "Катманду",
       country: "Непал",
+      region: "Гірський регіон Азії",
       flag: "🇳🇵",
       code: "NP",
       lat: 27.7172,
       lon: 85.3240,
-      hubType: "ГІРНИЧО-БУДІВЕЛЬНИЙ РЕЗЕРВ ВИТРИВАЛОСТІ",
-      workersCount: "110+ фізично загартованих майстрів",
+      hubType: "ВАЖКІ ВИРОБНИЦТВА & КАР'ЄРИ",
+      targetWageUA: "від 600 €",
+      targetWageUAH: "~26 500 ₴ / міс",
+      homeWage: "~120 – 170 € / міс",
+      homeWageUAH: "~5 200 – 7 400 ₴",
+      wageMultiplier: "у 3.8 рази вище",
       visaTime: "35–45 робочих днів",
-      securityCheck: "Поліцейський департамент Непалу + Медогляд",
-      languageSupport: "Базова виробнича термінологія / Координатори",
-      professions: [
-        "Арматурники",
-        "Каменярі-муляри",
-        "Такелажники важких вантажів",
-        "Робітники кар'єрів"
-      ],
-      keyStrengths: "Феноменальна фізична витривалість, чесність, повага до керівництва та нульовий рівень конфліктності."
+      securityCheck: "Поліцейський департамент Непалу + Медогляд ВООЗ",
+      workSchedule: "Фізично складні умови, відкриті майданчики",
+      economicAdvantage: "Феноменальна витривалість, абсолютна безконфліктність, повага до керівництва та суворе виконання трудового розпорядку.",
     },
     {
       id: "chisinau",
       name: "Кишинів",
       country: "Молдова",
+      region: "Східна Європа // Транзит",
       flag: "🇲🇩",
       code: "MD",
       lat: 47.0105,
       lon: 28.8638,
       hubType: "ТРАНЗИТНИЙ ЄВРОПЕЙСЬКИЙ ХАБ",
-      workersCount: "Логістичний коридор прибуття",
+      targetWageUA: "від 950 €",
+      targetWageUAH: "~41 500 ₴ / міс",
+      homeWage: "~450 – 600 € / міс",
+      homeWageUAH: "~19 500 – 26 000 ₴",
+      wageMultiplier: "у 1.8 рази вище",
       visaTime: "Оперативний транзит (1–2 дні)",
       securityCheck: "Прикордонна служба України (ДПСУ) + ДЦЗ",
-      languageSupport: "Українська / Румунська / Російська",
-      professions: [
-        "Водії міжнародних категорій C/E",
-        "Логісти транзитних потоків"
-      ],
-      keyStrengths: "Сухопутний коридор безпечної доставки рекрутованих працівників прямо до підприємств замовника в Україні."
+      workSchedule: "Сухопутний коридор безпечного трансферу",
+      economicAdvantage: "Пряма доставка рекрутованих співробітників автобусами безпосередньо до гуртожитків замовника в Україні.",
     }
   ];
 
-  // Sovereign Country Borders Polygons (Baked directly into NASA Earth texture)
+  // Realistic Cartographic Borders: Muted Warm Sand/Parchment (NO cheap neon cyan!)
   const countryPolygons: { name: string; stroke: string; fill: string; width: number; points: [number, number][] }[] = [
     {
       name: "Україна",
-      stroke: "rgba(245, 158, 11, 0.98)",
-      fill: "rgba(245, 158, 11, 0.28)",
-      width: 4.5,
+      stroke: "rgba(234, 179, 8, 0.95)", // Sovereign Deep Warm Gold
+      fill: "rgba(234, 179, 8, 0.16)",
+      width: 3.8,
       points: [
         [52.38, 33.19], [52.10, 34.20], [51.50, 34.80], [50.80, 35.30],
         [50.10, 36.50], [49.80, 38.00], [49.25, 40.23], [48.60, 39.80],
@@ -228,9 +228,9 @@ export const InteractiveGlobe3D: React.FC = () => {
     },
     {
       name: "Узбекистан",
-      stroke: "rgba(56, 189, 248, 0.95)",
-      fill: "rgba(56, 189, 248, 0.22)",
-      width: 2.8,
+      stroke: "rgba(226, 201, 160, 0.90)", // Warm Titanium Sand / Parchment
+      fill: "rgba(226, 201, 160, 0.13)",
+      width: 2.2,
       points: [
         [45.0, 56.0], [45.6, 58.5], [44.9, 61.5], [42.0, 63.0],
         [41.0, 66.0], [41.3, 69.2], [41.0, 71.5], [40.5, 73.0],
@@ -240,9 +240,9 @@ export const InteractiveGlobe3D: React.FC = () => {
     },
     {
       name: "Індія",
-      stroke: "rgba(56, 189, 248, 0.95)",
-      fill: "rgba(56, 189, 248, 0.20)",
-      width: 2.8,
+      stroke: "rgba(226, 201, 160, 0.90)",
+      fill: "rgba(226, 201, 160, 0.13)",
+      width: 2.2,
       points: [
         [35.5, 74.8], [34.5, 77.5], [31.5, 79.0], [30.0, 81.0],
         [27.0, 88.0], [27.5, 92.0], [28.0, 97.0], [24.0, 95.0],
@@ -254,9 +254,9 @@ export const InteractiveGlobe3D: React.FC = () => {
     },
     {
       name: "Філіппіни",
-      stroke: "rgba(56, 189, 248, 0.95)",
-      fill: "rgba(56, 189, 248, 0.22)",
-      width: 2.4,
+      stroke: "rgba(226, 201, 160, 0.90)",
+      fill: "rgba(226, 201, 160, 0.13)",
+      width: 2.0,
       points: [
         [18.5, 121.0], [18.0, 122.5], [16.0, 122.5], [14.0, 124.2],
         [12.5, 125.5], [9.5, 126.2], [6.0, 126.0], [5.5, 125.0],
@@ -266,9 +266,9 @@ export const InteractiveGlobe3D: React.FC = () => {
     },
     {
       name: "Бангладеш",
-      stroke: "rgba(56, 189, 248, 0.95)",
-      fill: "rgba(56, 189, 248, 0.22)",
-      width: 2.4,
+      stroke: "rgba(226, 201, 160, 0.90)",
+      fill: "rgba(226, 201, 160, 0.13)",
+      width: 2.0,
       points: [
         [26.5, 88.5], [26.0, 89.8], [25.2, 92.0], [23.8, 92.5],
         [21.5, 92.2], [21.7, 91.8], [22.3, 90.5], [21.8, 89.5],
@@ -277,9 +277,9 @@ export const InteractiveGlobe3D: React.FC = () => {
     },
     {
       name: "Непал",
-      stroke: "rgba(56, 189, 248, 0.95)",
-      fill: "rgba(56, 189, 248, 0.22)",
-      width: 2.4,
+      stroke: "rgba(226, 201, 160, 0.90)",
+      fill: "rgba(226, 201, 160, 0.13)",
+      width: 2.0,
       points: [
         [30.4, 80.5], [30.0, 81.5], [28.8, 83.5], [28.0, 85.5],
         [27.7, 88.2], [26.8, 88.0], [26.5, 87.0], [27.5, 85.0],
@@ -288,9 +288,9 @@ export const InteractiveGlobe3D: React.FC = () => {
     },
     {
       name: "Молдова",
-      stroke: "rgba(56, 189, 248, 0.95)",
-      fill: "rgba(56, 189, 248, 0.22)",
-      width: 2.4,
+      stroke: "rgba(226, 201, 160, 0.90)",
+      fill: "rgba(226, 201, 160, 0.13)",
+      width: 2.0,
       points: [
         [48.4, 27.5], [48.2, 28.5], [47.5, 29.2], [46.5, 30.0],
         [45.5, 28.2], [46.0, 28.1], [47.0, 27.6], [48.0, 27.0], [48.4, 27.5]
@@ -298,7 +298,7 @@ export const InteractiveGlobe3D: React.FC = () => {
     }
   ];
 
-  // Cartographic Inscriptions directly on Map Surface
+  // Cartographic Inscriptions: warm parchment and gold typography
   const countryInscriptions = [
     { country: "УКРАЇНА", city: "Київ ★", lat: 48.8, lon: 32.2, size: 21, isGold: true },
     { country: "УЗБЕКИСТАН", city: "Ташкент •", lat: 41.5, lon: 64.5, size: 16, isGold: false },
@@ -318,10 +318,11 @@ export const InteractiveGlobe3D: React.FC = () => {
     scale: number;
   }[]>([]);
 
-  // Smooth Fly-To Function for quick selection
-  const flyToCountry = (country: CountryDossier, zoomLevel = 1.48) => {
-    playSciFiBeep(1100, 0.07);
-    setSelectedCity(country);
+  // Active country is either hovered or pinned
+  const activeCountry = hoveredCity || selectedCity;
+
+  // Smooth Fly-To Function for quick selection & hover
+  const focusCountry = (country: CountryDossier, zoomLevel = 1.50) => {
     targetZoomRef.current = zoomLevel;
 
     // Calculate optimal rotX and rotY to place country front and center
@@ -332,9 +333,35 @@ export const InteractiveGlobe3D: React.FC = () => {
     targetRotRef.current = { x: targetX, y: targetY };
   };
 
+  const handleCountryHover = (country: CountryDossier) => {
+    setHoveredCity(country);
+    focusCountry(country, 1.50);
+  };
+
+  const handleCountryLeave = () => {
+    setHoveredCity(null);
+    if (!selectedCity) {
+      targetZoomRef.current = 1.0;
+      targetRotRef.current = { x: -0.38, y: 0.53 };
+    } else {
+      focusCountry(selectedCity, 1.50);
+    }
+  };
+
+  const handleCountryClick = (country: CountryDossier) => {
+    playSciFiBeep(1100, 0.07);
+    if (selectedCity?.id === country.id) {
+      resetView();
+    } else {
+      setSelectedCity(country);
+      focusCountry(country, 1.52);
+    }
+  };
+
   const resetView = () => {
     playSciFiBeep(840, 0.06);
     setSelectedCity(null);
+    setHoveredCity(null);
     targetZoomRef.current = 1.0;
     targetRotRef.current = { x: -0.38, y: 0.53 };
   };
@@ -417,9 +444,9 @@ export const InteractiveGlobe3D: React.FC = () => {
         // Day diffuse illumination
         float diffuse = clamp(NdotL * 0.85 + 0.35, 0.0, 1.0);
 
-        // Night city lights emergence on the shaded hemisphere (Authentic NASA city lighting)
+        // Night city lights emergence on shaded hemisphere (Authentic NASA city lighting)
         float nightFactor = smoothstep(0.20, -0.28, NdotL);
-        vec3 cityLights = nightColor.rgb * vec3(1.4, 1.2, 0.85) * nightFactor * 1.65;
+        vec3 cityLights = nightColor.rgb * vec3(1.35, 1.15, 0.82) * nightFactor * 1.65;
 
         // Specular Ocean Glint (only on sunlight side)
         vec3 viewDir = vec3(0.0, 0.0, 1.0);
@@ -430,7 +457,7 @@ export const InteractiveGlobe3D: React.FC = () => {
 
         // Thin Internal Rayleigh Atmospheric Limb (Real orbital blue haze)
         float rim = pow(1.0 - normal.z, 3.5);
-        vec3 rimGlow = vec3(0.25, 0.60, 0.95) * rim * 0.55;
+        vec3 rimGlow = vec3(0.25, 0.60, 0.95) * rim * 0.52;
 
         // Final Composite
         vec3 finalColor = (dayColor.rgb * diffuse) + cityLights + specular + rimGlow;
@@ -516,7 +543,7 @@ export const InteractiveGlobe3D: React.FC = () => {
         // 1. Draw NASA Blue Marble Satellite Map
         offCtx.drawImage(earthImage, 0, 0, tw, th);
 
-        // 2. Draw Realistic Political Sovereign Borders for Key Partners
+        // 2. Draw Realistic Political Sovereign Borders for Key Partners (Natural warm tones)
         countryPolygons.forEach((poly) => {
           if (poly.points.length < 2) return;
           offCtx.beginPath();
@@ -556,8 +583,8 @@ export const InteractiveGlobe3D: React.FC = () => {
           offCtx.lineJoin = "round";
           offCtx.strokeText(item.country, x, y);
 
-          // Fill text
-          offCtx.fillStyle = item.isGold ? "#fef08a" : "#ffffff";
+          // Fill text: Gold for Ukraine, Warm Ivory/Champagne for Partners
+          offCtx.fillStyle = item.isGold ? "#fef08a" : "#f5ede0";
           offCtx.fillText(item.country, x, y);
 
           // Capital city inscription
@@ -568,7 +595,7 @@ export const InteractiveGlobe3D: React.FC = () => {
             offCtx.lineWidth = 3.6;
             offCtx.strokeText(item.city, x, y + item.size * 0.95);
 
-            offCtx.fillStyle = item.isGold ? "#fde047" : "#bae6fd";
+            offCtx.fillStyle = item.isGold ? "#fde047" : "#e8d8be";
             offCtx.fillText(item.city, x, y + item.size * 0.95);
           }
 
@@ -626,7 +653,7 @@ export const InteractiveGlobe3D: React.FC = () => {
     // Render loop with smooth interpolation (lerp) for rotation and zoom
     const render = () => {
       // 1. Zoom lerp
-      zoomRef.current += (targetZoomRef.current - zoomRef.current) * 0.08;
+      zoomRef.current += (targetZoomRef.current - zoomRef.current) * 0.085;
       setCurrentZoomState(zoomRef.current);
 
       // 2. Rotation physics and fly-to interpolation
@@ -635,14 +662,14 @@ export const InteractiveGlobe3D: React.FC = () => {
         targetRotRef.current.x = rotRef.current.x;
         targetRotRef.current.y = rotRef.current.y;
       } else {
-        if (selectedCity) {
+        if (hoveredCity || selectedCity) {
           // Smooth Lerp to focused target country using shortest angular arc for Yaw
-          rotRef.current.x += (targetRotRef.current.x - rotRef.current.x) * 0.08;
+          rotRef.current.x += (targetRotRef.current.x - rotRef.current.x) * 0.085;
           
           let diffY = (targetRotRef.current.y - rotRef.current.y) % (2 * Math.PI);
           if (diffY > Math.PI) diffY -= 2 * Math.PI;
           if (diffY < -Math.PI) diffY += 2 * Math.PI;
-          rotRef.current.y += diffY * 0.08;
+          rotRef.current.y += diffY * 0.085;
         } else if (isAutoRotatingRef.current) {
           // Natural steady axial rotation (West to East)
           rotRef.current.y += velocityRef.current.y;
@@ -712,7 +739,7 @@ export const InteractiveGlobe3D: React.FC = () => {
           y: cy - p2y * cssRadius,
           visible: isFacing && horizonFactor > 0.05,
           opacity: horizonFactor,
-          scale: Math.max(0.85, Math.min(1.2, 0.85 + p2z * 0.3)),
+          scale: Math.max(0.85, Math.min(1.25, 0.85 + p2z * 0.3)),
         };
       });
 
@@ -727,7 +754,7 @@ export const InteractiveGlobe3D: React.FC = () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", resize);
     };
-  }, [selectedCity]);
+  }, [hoveredCity, selectedCity]);
 
   // Natural Polar Axis Drag Controls
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -776,8 +803,8 @@ export const InteractiveGlobe3D: React.FC = () => {
     isDraggingRef.current = false;
   };
 
-  // Find projected pin for selected city to render targeting reticle
-  const activeProjectedPin = projectedPins.find(p => p.pin.id === selectedCity?.id);
+  // Find projected pin for active country to render targeting reticle
+  const activeProjectedPin = projectedPins.find(p => p.pin.id === activeCountry?.id);
 
   return (
     <div className="relative w-full max-w-[560px] mx-auto flex flex-col items-center select-none">
@@ -799,22 +826,22 @@ export const InteractiveGlobe3D: React.FC = () => {
           onTouchEnd={handleTouchEnd}
         />
 
-        {/* Aerospace Telemetry Top HUD Badge */}
+        {/* Top Cartographic Header HUD */}
         <div className="absolute top-2.5 left-3 right-3 pointer-events-none flex items-center justify-between text-[10px] font-mono text-slate-400">
-          <div className="flex items-center gap-2 px-2.5 py-1 rounded-md bg-slate-950/80 border border-white/10 backdrop-blur-md">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <div className="flex items-center gap-2 px-2.5 py-1 rounded-md bg-slate-950/85 border border-[#e2c9a0]/20 backdrop-blur-md">
+            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
             <span className="text-white font-bold tracking-wider">
-              {selectedCity ? `ЦІЛЬ: ${selectedCity.code} // ${selectedCity.name.toUpperCase()}` : "СУПУТНИКОВИЙ МОНІТОРИНГ"}
+              {activeCountry ? `МОНІТОРИНГ: ${activeCountry.code} // ${activeCountry.name.toUpperCase()}` : "СУПУТНИКОВИЙ МОНІТОРИНГ РИНКІВ ПРАЦІ"}
             </span>
           </div>
 
-          <div className="flex items-center gap-2 px-2 py-1 rounded-md bg-slate-950/80 border border-white/10 backdrop-blur-md">
+          <div className="flex items-center gap-2 px-2 py-1 rounded-md bg-slate-950/85 border border-[#e2c9a0]/20 backdrop-blur-md">
             <span className="text-slate-400">МАСШТАБ:</span>
-            <span className="text-amber-400 font-bold">{(currentZoomState * 100).toFixed(0)}%</span>
+            <span className="text-[#e2c9a0] font-bold">{(currentZoomState * 100).toFixed(0)}%</span>
           </div>
         </div>
 
-        {/* Aerospace Targeting Reticle around active focused country */}
+        {/* Reticle around active country (Clean warm titanium/champagne) */}
         {activeProjectedPin && activeProjectedPin.visible && (
           <div
             style={{
@@ -825,21 +852,17 @@ export const InteractiveGlobe3D: React.FC = () => {
             }}
             className="absolute pointer-events-none transition-all duration-200 z-30"
           >
-            {/* Spinning Tactical Target Crosshair */}
             <div className="relative w-16 h-16 flex items-center justify-center">
-              {/* Outer corner brackets */}
-              <div className="absolute inset-0 border border-amber-400/40 rounded-full animate-ping duration-1000 opacity-30" />
-              <div className="absolute inset-0 border border-amber-400/70 rounded-full animate-[spin_8s_linear_infinite]" />
-              {/* Crosshair ticks */}
-              <div className="absolute w-full h-[1px] bg-amber-400/50" />
-              <div className="absolute h-full w-[1px] bg-amber-400/50" />
-              {/* Inner focal pip */}
-              <div className="w-3.5 h-3.5 rounded-full border-2 border-amber-300 bg-amber-500/50 shadow-[0_0_12px_rgba(245,158,11,0.9)]" />
+              <div className="absolute inset-0 border border-[#e2c9a0]/40 rounded-full animate-ping duration-1000 opacity-25" />
+              <div className="absolute inset-0 border border-[#e2c9a0]/60 rounded-full animate-[spin_8s_linear_infinite]" />
+              <div className="absolute w-full h-[1px] bg-[#e2c9a0]/40" />
+              <div className="absolute h-full w-[1px] bg-[#e2c9a0]/40" />
+              <div className="w-3.5 h-3.5 rounded-full border-2 border-[#fff8ed] bg-[#e2c9a0] shadow-[0_0_10px_rgba(226,201,160,0.8)]" />
             </div>
           </div>
         )}
 
-        {/* Interactive Hub Pips */}
+        {/* Interactive Hub Pips (Warm, realistic cartographic tones) */}
         <div className="absolute inset-0 pointer-events-none">
           {projectedPins.map(({ pin, x, y, visible, opacity, scale }) => {
             if (!visible) return null;
@@ -857,39 +880,32 @@ export const InteractiveGlobe3D: React.FC = () => {
                   transform: `translate(-50%, -50%) scale(${scale})`,
                 }}
                 className="absolute pointer-events-auto transition-opacity duration-150"
-                onClick={() => {
-                  if (isSelected) {
-                    resetView();
-                  } else {
-                    flyToCountry(pin, 1.48);
-                  }
-                }}
-                onMouseEnter={() => setHoveredCity(pin)}
-                onMouseLeave={() => setHoveredCity(null)}
+                onClick={() => handleCountryClick(pin)}
+                onMouseEnter={() => handleCountryHover(pin)}
+                onMouseLeave={handleCountryLeave}
               >
                 <div className="relative flex items-center justify-center cursor-pointer group">
-                  {/* Micro-Pip */}
+                  {/* Pip: Gold for Ukraine, Warm Champagne Titanium for Partners */}
                   <div
                     className={`rounded-full border transition-all ${
                       isMain
                         ? "w-3 h-3 bg-amber-400 border-amber-100 shadow-[0_0_10px_rgba(245,158,11,0.8)]"
-                        : "w-2.5 h-2.5 bg-sky-400 border-sky-100 group-hover:scale-125"
+                        : "w-2.5 h-2.5 bg-[#e2c9a0] border-[#fff8ed] shadow-[0_0_6px_rgba(226,201,160,0.5)] group-hover:scale-125"
                     }`}
                   />
 
-                  {/* Refined Tooltip on Hover only if not selected */}
-                  {(isHovered && !isSelected) && (
+                  {/* Micro-Tooltip on hover only if not active */}
+                  {(isHovered && !selectedCity) && (
                     <div
                       className={`absolute bottom-full mb-1.5 px-2.5 py-1 rounded-md border text-[10px] font-mono font-bold flex items-center gap-1.5 backdrop-blur-md shadow-xl whitespace-nowrap z-40 transition-all ${
                         isMain
                           ? "bg-slate-950/95 border-amber-500/80 text-amber-300"
-                          : "bg-slate-950/95 border-sky-400/80 text-sky-200"
+                          : "bg-slate-950/95 border-[#e2c9a0]/60 text-[#f5ede0]"
                       }`}
                     >
                       <span>{pin.flag}</span>
                       <span>{pin.name}</span>
-                      <span className="text-[8px] text-white/60 font-normal">({pin.country})</span>
-                      <span className="text-amber-400 text-[9px]">🔍 Натисніть для наближення</span>
+                      <span className="text-[9px] text-amber-300 font-bold">({pin.targetWageUA})</span>
                     </div>
                   )}
                 </div>
@@ -898,19 +914,19 @@ export const InteractiveGlobe3D: React.FC = () => {
           })}
         </div>
 
-        {/* High-Detail B2B Dossier HUD Card overlay */}
-        {selectedCity && (
-          <div className="absolute bottom-3 left-3 right-3 sm:left-auto sm:right-3 sm:w-80 p-4 rounded-xl bg-slate-950/95 border border-amber-500/40 text-xs shadow-2xl backdrop-blur-xl z-40 animate-in fade-in zoom-in-95 duration-200">
-            {/* Header with Close */}
-            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
-              <span className="font-mono text-[9px] text-amber-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+        {/* High-Detail B2B Salary Comparison Dossier Card */}
+        {activeCountry && (
+          <div className="absolute bottom-2 left-2 right-2 sm:left-auto sm:right-3 sm:w-88 p-4 rounded-2xl bg-slate-950/95 border border-[#e2c9a0]/40 text-xs shadow-2xl backdrop-blur-xl z-40 animate-in fade-in zoom-in-95 duration-200">
+            {/* Header with Region & Close */}
+            <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-white/10">
+              <span className="font-mono text-[9px] text-[#e2c9a0] font-bold uppercase tracking-wider flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                {selectedCity.hubType}
+                {activeCountry.hubType}
               </span>
               <button
                 onClick={resetView}
                 className="text-white/50 hover:text-white font-mono text-xs px-1.5 py-0.5 rounded hover:bg-white/10 transition-colors"
-                title="Закрити та скинути наближення"
+                title="Скинути фокус"
               >
                 ✕
               </button>
@@ -919,64 +935,90 @@ export const InteractiveGlobe3D: React.FC = () => {
             {/* Country Title */}
             <div className="flex items-center justify-between">
               <div className="text-base font-bold text-white flex items-center gap-2">
-                <span className="text-lg">{selectedCity.flag}</span>
-                <span>{selectedCity.name}, {selectedCity.country}</span>
+                <span className="text-xl">{activeCountry.flag}</span>
+                <span>{activeCountry.name}, {activeCountry.country}</span>
               </div>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-300 font-bold">
-                {selectedCity.code}
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#e2c9a0]/10 border border-[#e2c9a0]/30 text-[#e2c9a0] font-bold">
+                {activeCountry.code}
               </span>
             </div>
 
-            {/* Strength Description */}
-            <p className="text-[11px] text-slate-300 mt-2 leading-relaxed">
-              {selectedCity.keyStrengths}
+            {/* MAIN WAGE COMPARISON BENTO BOX (Key User Requirement) */}
+            <div className="mt-3 p-3 rounded-xl bg-gradient-to-br from-slate-900/90 to-slate-950 border border-[#e2c9a0]/30 shadow-inner">
+              <div className="text-[9px] font-mono uppercase text-[#e2c9a0]/80 tracking-wider flex items-center justify-between pb-1.5 border-b border-white/10">
+                <span className="flex items-center gap-1">
+                  <Banknote className="w-3 h-3 text-amber-400" />
+                  Рівень заробітних плат (нетто)
+                </span>
+                <span className="text-emerald-400 font-bold">{activeCountry.wageMultiplier}</span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 mt-2">
+                {/* UA Target Wage */}
+                <div className="text-left">
+                  <div className="text-[9px] text-slate-400 font-mono">Готові працювати в UA:</div>
+                  <div className="text-lg sm:text-xl font-black text-amber-400 tracking-tight mt-0.5">
+                    {activeCountry.targetWageUA}
+                  </div>
+                  <div className="text-[10px] text-amber-300/80 font-mono font-medium">
+                    {activeCountry.targetWageUAH}
+                  </div>
+                </div>
+
+                {/* Home Country Wage */}
+                <div className="text-left border-l border-white/10 pl-3">
+                  <div className="text-[9px] text-slate-400 font-mono">Дохід на батьківщині:</div>
+                  <div className="text-sm sm:text-base font-bold text-slate-400 tracking-tight mt-0.5 line-through decoration-red-400/50">
+                    {activeCountry.homeWage}
+                  </div>
+                  <div className="text-[10px] text-slate-500 font-mono">
+                    {activeCountry.homeWageUAH}
+                  </div>
+                </div>
+              </div>
+
+              {/* Motivation Multiplier */}
+              <div className="mt-2.5 pt-2 border-t border-white/5 flex items-center justify-between text-[10px] font-mono">
+                <span className="text-slate-400">Мотивація персоналу:</span>
+                <span className="text-emerald-400 font-bold flex items-center gap-1">
+                  <TrendingUp className="w-3 h-3" />
+                  Висока дисципліна / 0% плинності
+                </span>
+              </div>
+            </div>
+
+            {/* Economic Rationale */}
+            <p className="text-[11px] text-slate-300 mt-2.5 leading-relaxed font-sans">
+              {activeCountry.economicAdvantage}
             </p>
 
-            {/* Telemetry Metrics Grid */}
-            <div className="grid grid-cols-2 gap-2 my-3 pt-2 border-t border-white/10 text-[10px] font-mono">
+            {/* Key Safety & Visa Metrics */}
+            <div className="grid grid-cols-2 gap-2 my-2.5 pt-2 border-t border-white/10 text-[10px] font-mono">
               <div className="p-1.5 rounded bg-white/5 border border-white/5">
                 <div className="text-slate-400 flex items-center gap-1">
                   <Clock className="w-3 h-3 text-amber-400" />
                   <span>Строк візи D-04:</span>
                 </div>
-                <div className="text-white font-bold mt-0.5">{selectedCity.visaTime}</div>
+                <div className="text-white font-bold mt-0.5">{activeCountry.visaTime}</div>
               </div>
 
               <div className="p-1.5 rounded bg-white/5 border border-white/5">
                 <div className="text-slate-400 flex items-center gap-1">
                   <ShieldCheck className="w-3 h-3 text-emerald-400" />
-                  <span>Безпека:</span>
+                  <span>Мобілізація:</span>
                 </div>
-                <div className="text-emerald-400 font-bold mt-0.5">100% Перевірено</div>
-              </div>
-            </div>
-
-            {/* Professions tags */}
-            <div className="mb-3">
-              <div className="text-[9px] font-mono uppercase text-slate-400 mb-1.5 flex items-center gap-1">
-                <Users className="w-3 h-3 text-sky-400" />
-                <span>Доступні фахівці в пулі:</span>
-              </div>
-              <div className="flex flex-wrap gap-1">
-                {selectedCity.professions.slice(0, 3).map((prof, i) => (
-                  <span
-                    key={i}
-                    className="px-2 py-0.5 rounded text-[9px] font-mono bg-sky-500/10 text-sky-300 border border-sky-500/20"
-                  >
-                    {prof}
-                  </span>
-                ))}
+                <div className="text-emerald-400 font-bold mt-0.5">100% Імунітет (ст. 23)</div>
               </div>
             </div>
 
             {/* Action CTA Button: Order Specialists */}
-            <div className="pt-2 border-t border-white/10 flex items-center gap-2">
+            <div className="pt-1 border-t border-white/10 flex items-center gap-2">
               <a
                 href="#calculator"
                 onClick={() => playSciFiBeep(1200, 0.08)}
-                className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-bold text-[11px] hover:brightness-110 shadow-gold-glow transition-all"
+                className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-400 text-black font-bold text-[11px] hover:brightness-110 shadow-gold-glow transition-all"
               >
-                <span>Замовити з {selectedCity.name}</span>
+                <span>Розрахувати витрати на {activeCountry.name}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </a>
 
@@ -994,31 +1036,33 @@ export const InteractiveGlobe3D: React.FC = () => {
 
       {/* Tactile Country Quick-Selector Bar & Aerospace Controls */}
       <div className="w-full mt-3 px-1">
-        {/* Country Quick Tabs */}
+        {/* Country Quick Tabs with Hover Zoom support */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none no-scrollbar justify-start sm:justify-center">
           {countries.slice(0, 6).map((country) => {
             const isSelected = selectedCity?.id === country.id;
+            const isHovered = hoveredCity?.id === country.id;
+            const isActive = isSelected || isHovered;
+
             return (
               <button
                 key={country.id}
-                onClick={() => {
-                  if (isSelected) {
-                    resetView();
-                  } else {
-                    flyToCountry(country, 1.48);
-                  }
-                }}
+                onClick={() => handleCountryClick(country)}
+                onMouseEnter={() => handleCountryHover(country)}
+                onMouseLeave={handleCountryLeave}
                 className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-mono transition-all duration-200 ${
-                  isSelected
+                  isActive
                     ? "bg-amber-500/20 border-amber-400 text-amber-300 font-bold shadow-[0_0_12px_rgba(245,158,11,0.4)] scale-105"
                     : country.isMainHub
                     ? "bg-slate-900/80 border-amber-500/40 text-amber-200/90 hover:bg-slate-800 hover:border-amber-400"
-                    : "bg-slate-900/70 border-white/10 text-slate-300 hover:text-white hover:bg-slate-800 hover:border-white/20"
+                    : "bg-slate-900/70 border-white/10 text-slate-300 hover:text-white hover:bg-slate-800 hover:border-[#e2c9a0]/30"
                 }`}
               >
                 <span>{country.flag}</span>
                 <span>{country.country}</span>
-                {isSelected && <span className="text-[10px] text-amber-400 font-bold">🔍</span>}
+                <span className="text-[10px] font-mono text-[#e2c9a0]/80">
+                  {country.isMainHub ? "Хаб" : country.targetWageUA.replace(" / міс", "")}
+                </span>
+                {isActive && <span className="text-[10px] text-amber-400 font-bold">🔍</span>}
               </button>
             );
           })}
@@ -1037,12 +1081,12 @@ export const InteractiveGlobe3D: React.FC = () => {
               {isAutoRotating ? (
                 <>
                   <Pause className="w-3 h-3 text-amber-400" />
-                  <span>Пауза обертання</span>
+                  <span>Пауза</span>
                 </>
               ) : (
                 <>
                   <Play className="w-3 h-3 text-emerald-400" />
-                  <span>Відновити оберт</span>
+                  <span>Обертання</span>
                 </>
               )}
             </button>
@@ -1051,13 +1095,13 @@ export const InteractiveGlobe3D: React.FC = () => {
               onClick={resetView}
               className="inline-flex items-center gap-1 px-2 py-1 rounded bg-slate-900/60 border border-white/10 hover:border-white/20 hover:text-white transition-colors"
             >
-              <RotateCcw className="w-3 h-3 text-sky-400" />
+              <RotateCcw className="w-3 h-3 text-[#e2c9a0]" />
               <span>Огляд Землі (100%)</span>
             </button>
           </div>
 
-          <div className="hidden sm:flex items-center gap-2 text-[9px] text-slate-500">
-            <span>🖱️ Перетягуйте мишкою або клікайте на країну</span>
+          <div className="hidden sm:flex items-center gap-2 text-[9px] text-slate-400">
+            <span>💡 Наведіть на країну для наближення та порівняння зарплат</span>
           </div>
         </div>
       </div>
